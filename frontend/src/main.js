@@ -10,12 +10,24 @@ import Vuex from 'vuex'
 
 import { actions } from './scripts/actions.js'
 
+// Views
+
+import AuthView from './views/AuthView.vue'
+import ExplorerView from './views/ExplorerView.vue'
+import ImageView from './views/ImageView.vue'
+import ProfileView from './views/ProfileView.vue'
+import PurchaseView from './views/PurchaseView.vue'
+
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
 const router = new VueRouter({
   routes: [
-
+    { component: ExplorerView, path: '/' },
+    { component: AuthView, path: '/authentication' },
+    { component: ProfileView, path: '/profile' },
+    { component: ImageView, path: '/:id' },
+    { component: PurchaseView, path: '/purchase'}
   ]
 })
 

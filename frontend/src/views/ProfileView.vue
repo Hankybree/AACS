@@ -1,0 +1,15 @@
+<template>
+  <div class="content">
+    <!-- Bläddra bland privata bilder -->
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ProfileView'
+}
+</script>
+
+<style scoped>
+
+</style>
