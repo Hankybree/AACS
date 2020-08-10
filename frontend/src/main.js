@@ -17,6 +17,11 @@ import ExplorerView from './views/ExplorerView.vue'
 import ImageView from './views/ImageView.vue'
 import ProfileView from './views/ProfileView.vue'
 import PurchaseView from './views/PurchaseView.vue'
+import OfflineView from './views/OfflineView.vue'
+
+// PWA
+
+import './registerServiceWorker'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -27,7 +32,8 @@ const router = new VueRouter({
     { component: AuthView, path: '/authentication' },
     { component: ProfileView, path: '/profile' },
     { component: ImageView, path: '/:id' },
-    { component: PurchaseView, path: '/purchase'}
+    { component: PurchaseView, path: '/purchase'},
+    { component: OfflineView, path: '/offline'}
   ]
 })
 
