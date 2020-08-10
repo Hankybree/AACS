@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <!-- Här är all inloggningsfunktionalitet som vi ska ha -->
+    <!-- Här är all inloggningsfunktionalitet som vi ska ha i denna app -->
   </div>
 </template>
 
