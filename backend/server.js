@@ -11,3 +11,7 @@ let clients = []
 let id = 0
 
 const wss = new WebSocketServer({ server: server })
+
+
+
+app.use('/auth', require('./routes/auth/'))
