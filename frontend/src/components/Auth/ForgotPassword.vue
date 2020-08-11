@@ -5,7 +5,7 @@
     <!-- Reset password components -->
     <div id="reset-password-components">
 
-      <label for="reset-password-email" class="left-padding">Email</label>
+      <label for="reset-password-email" class="left-padding whiteColor">Email</label>
       <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
 
       <!-- Reset password button -->
@@ -53,6 +53,8 @@ export default {
   box-sizing: border-box;
   font-size: 15pt;
   margin-bottom: 10pt;
+  border-radius: 7px;
+  border: 0px;
 }
 
 /* Button components */
@@ -67,17 +69,7 @@ export default {
   height: 100%;
   border: 0px;
   background-color: white;
+  border-radius: 7px;
 }
 
-/* Register components
-#login-components{
-  width: 100%;
-}
-.login-button{
-  width: 100%;
-  height: 30pt;
-  margin-top: 50pt;
-  background-color: white;
-  border: 0px;
-} */
 </style>

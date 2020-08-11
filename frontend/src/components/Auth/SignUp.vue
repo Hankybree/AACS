@@ -72,6 +72,8 @@ export default {
   box-sizing: border-box;
   font-size: 15pt;
   margin-bottom: 10pt;
+  border-radius: 7px;
+  border: 0px;
 }
 
 /* Button components */
@@ -86,6 +88,7 @@ export default {
   height: 100%;
   border: 0px;
   background-color: white;
+  border-radius: 7px;
 }
 
 /* Register components */
