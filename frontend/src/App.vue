@@ -2,12 +2,17 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <router-view></router-view>
+
+    <FileUpload />
   </div>
 </template>
 
 <script>
+import FileUpload from './components/file/FileUpload.vue'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {FileUpload}
 }
 </script>
 
