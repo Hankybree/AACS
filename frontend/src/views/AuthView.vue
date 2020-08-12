@@ -25,6 +25,11 @@ export default {
     Signup,
     ForgotPassword
   },
+  created() {
+    if (this.$store.getters.isLoggedIn) {
+      this.$router.push({ name: "ExplorerView" })
+    }
+  },
   methods:{
     goBack(){
       this.$router.push({name: "ExplorerView"})
