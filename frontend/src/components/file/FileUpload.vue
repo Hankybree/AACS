@@ -73,11 +73,12 @@ export default {
     },
 
     async sendFile() {
+      let url = "http://localhost:8000/"
       const formData = new FormData();
       formData.append("file", this.file);
 
       try {
-        await axios.post("/upload", formData);
+        await axios.post(url + "file/upload/", formData);
         this.message = "File successfully uploaded";
         this.file = "";
         this.error = false;
