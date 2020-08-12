@@ -19,6 +19,7 @@
       <div id="register-components">
         <input class="sign-up-button whiteColor" type="button" value="No account? Sign up" @click="signUpButtonTapped" />
       </div>
+      {{ errorMessage }}
     </div>
   </div>
 </template>
@@ -31,26 +32,24 @@ export default {
     return {
       emailUsername: "",
       password: "",
+      errorMessage: ""
     }
   },
   methods: {
     loginButtonTapped(){
       const credentials = { emailUsername: this.emailUsername, password: this.password }
 
-
-
-
-
       let url = "http://localhost:8000/"
 
       this.axios.post(url + 'auth/login', credentials)
       .then(res => {
-        let username = res.data.username
+        let user = res.data.user
         let token = res.data.token
-        this.$store.dispatch('login', { username, token })
+        this.$store.dispatch('login', { user, token })
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response.data)
+        this.errorMessage = err.response.data.msg
       })
     },
     signUpButtonTapped(){

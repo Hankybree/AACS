@@ -63,7 +63,7 @@ const actions = {
     commit('SET_TOKEN', token);
     commit('SET_USER', user);
     commit('SET_IS_LOGGED_IN', true)
-    router.push({ name: 'Home' })
+    router.push({ name: 'ExplorerView' })
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   },
   logout: ({ commit }) => {

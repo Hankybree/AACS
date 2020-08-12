@@ -30,7 +30,7 @@ router.post('/login', (req, res, next) => {
       console.log(err);
       return res.status(500).send();
     }
-
+  
     if (!result.length) {
       return res.status(401).send({
         msg: 'Felaktigt användarnamn eller lösenord'
@@ -42,11 +42,12 @@ router.post('/login', (req, res, next) => {
         msg: 'Please confirm your email address first!'
       });
     }
-    bcrypt.compare(req.body.password, result[0]['passwordHash'], (bErr, bResult) => {
+
+    bcrypt.compare(req.body.password, result[0]['password'], (bErr, bResult) => {
       if (bErr) {
         console.log(bErr);
         return res.status(401).send({
-          msg: 'Felaktigt användarnamn eller lösenord'
+          msg: 'Felaktigt lösenord'
         });
       }
       if (bResult) {
@@ -59,13 +60,13 @@ router.post('/login', (req, res, next) => {
         }
         );
         console.log("Logged in: " + result[0].email);
-        delete result[0].passwordHash
+        delete result[0].password
         return res.status(200).send({
           token,
           user: result[0]
         });
       }
-      return res.status(401).send({
+      return res.status(400).send({
         msg: 'Felaktigt användarnamn eller lösenord'
       });
     }
@@ -136,8 +137,8 @@ router.post('/signup', (req, res, next) => {
     const confirmToken = uuid.v4()
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, confirmToken) 
-      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, username, password, confirmToken) 
+      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
             console.log(err);
