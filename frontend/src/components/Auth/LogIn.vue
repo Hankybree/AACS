@@ -4,22 +4,22 @@
 
     <!-- Login components -->
     <div id="login-components">
-      <label for="login-username" class="left-padding whiteColor">Usere awd awdname</label>
+      <label for="login-username" class="whiteColor">Email</label>
       <input type="text" id="login-username" class="login-input" v-model="emailUsername" />
-      <label for="login-password" class="left-padding whiteColor">Password</label>
+      <label for="login-password" class="whiteColor">Password</label>
       <input type="password" id="login-password" class="login-input" v-model="password" />
 
       <!-- Login & Forgot password buttons -->
       <div id="button-components">
-        <input class="forgot-password-button left-padding whiteColor" type="button" value="Forgot password?" @click="resetPasswordButtonTapped" />
+        <input class="forgot-password-button whiteColor" type="button" value="Forgot password?" @click="resetPasswordButtonTapped" />
         <input class="login-button" type="button" value="Login" @click="loginButtonTapped"/>
       </div>
+      <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
 
       <!-- Register button -->
       <div id="register-components">
         <input class="sign-up-button whiteColor" type="button" value="No account? Sign up" @click="signUpButtonTapped" />
       </div>
-      {{ errorMessage }}
     </div>
   </div>
 </template>
@@ -64,19 +64,24 @@ export default {
 
 <style scoped>
 /* Login components */
+
+
 #login-components{
   width: 80%;
   margin: auto;
   text-align: left;
 }
-.left-padding{
-  padding-left: 10pt;
+
+#login-components label {
+  padding-bottom: 5px;
+  display: block;
 }
+
 .login-input{
   width: 100%;
-  height: 40pt;
+  padding: 12px;
   box-sizing: border-box;
-  font-size: 15pt;
+  font-size: 12pt;
   margin-bottom: 10pt;
   border-radius: 7px;
   border: 0px;
@@ -114,4 +119,6 @@ export default {
   border: 0px;
   font-size: 10pt;
 }
+
+
 </style>
