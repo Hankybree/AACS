@@ -92,8 +92,6 @@ router.post('/signup', (req, res, next) => {
     });
   }
 
-  console.log("1")
-
   mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)}) 
   OR LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
     if (err) {
@@ -101,14 +99,12 @@ router.post('/signup', (req, res, next) => {
       return res.status(500).send();
     }
 
-    console.log("2")
-    console.log(result.length + " <-- crashed?")
     if(result.length){
       if (result[0].email == req.body.email) {
         return res.status(409).send({
           msg: 'This email already exists!'
         });
-        console.log("3")
+
       } else if (result[0].username == req.body.username) {
         return res.status(409).send({
           msg: 'This username already exists!'
