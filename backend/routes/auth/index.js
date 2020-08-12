@@ -77,88 +77,97 @@ router.post('/login', (req, res, next) => {
 
 /* Signup */
 router.post('/signup', (req, res, next) => {
+    
+  console.log(req.body.email + " <--")
 
-    if (!validateEmail(req.body.email)) {
-      return res.status(400).send({
-        msg: 'Enter a valid email'
-      });
+  if (!validateEmail(req.body.email)) {
+    return res.status(400).send({
+      msg: 'Enter a valid email'
+    });
+  }
+
+  if (!req.body.email) {
+    return res.status(400).send({
+      msg: 'Enter an email'
+    });
+  }
+
+  console.log("1")
+
+  mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)}) 
+  OR LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send();
     }
 
-    if (!req.body.email) {
-      return res.status(400).send({
-        msg: 'Enter an email'
-      });
-    }
-
-    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)}) 
-    OR LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send();
-      }
-
+    console.log("2")
+    console.log(result.length + " <-- crashed?")
+    if(result.length){
       if (result[0].email == req.body.email) {
         return res.status(409).send({
           msg: 'This email already exists!'
         });
+        console.log("3")
       } else if (result[0].username == req.body.username) {
         return res.status(409).send({
           msg: 'This username already exists!'
         });
       }
-      
-      if (!req.body.username) {
-        return res.status(400).send({
-          msg: 'Enter an username'
-        });
-      }
-      
-      if (!req.body.password || req.body.password.length < 5) {
-        return res.status(400).send({
-          msg: 'Enter a password with atleast 6 characters'
-        });
-      }
-      
-      if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
-        return res.status(400).send({
-          msg: 'Passwords does not match!'
-        });
-      }
-      
-      const confirmToken = uuid.v4()
-      
-      bcrypt.hash(req.body.password, 10, (err, hash) => {
-        mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
-        VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
-        (err, result) => {
-          if (err) {
-            console.log(err);
-            return res.status(500).send();
+    }
+    
+    if (!req.body.username) {
+      return res.status(400).send({
+        msg: 'Enter an username'
+      });
+    }
+    
+    if (!req.body.password || req.body.password.length < 5) {
+      return res.status(400).send({
+        msg: 'Enter a password with atleast 6 characters'
+      });
+    }
+    
+    if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
+      return res.status(400).send({
+        msg: 'Passwords does not match!'
+      });
+    }
+    
+    const confirmToken = uuid.v4()
+    
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
+      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send();
+        }
+
+        var mailOptions = {
+          from: 'AACS <AACS@aviliax.com>',
+          to: req.body.email,
+          subject: 'Confirm your email',
+          html: ` Hello! Please <a href="${process.env.HOST}/auth/confirm/${confirmToken}">Confirm your email</a>
+          `
+        }
+        
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
           }
-          
-          var mailOptions = {
-            from: 'AACS <AACS@aviliax.com>',
-            to: req.body.email,
-            subject: 'Confirm your email',
-            html: ` Hello! Please <a href="${process.env.HOST}/auth/confirm/${confirmToken}">Confirm your email</a>
-            `
-          }
-          
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-          
-          return res.status(201).send({
-            msg: 'Registration succeded! Check your email for confirmation!'
-          });
         });
         
+        return res.status(201).send({
+          msg: 'Registration succeded! Check your email for confirmation!'
+        });
       });
+      
     });
+  });
 });
 
 
@@ -205,7 +214,6 @@ router.post('/confirm', (req, res, next) => {
 
 router.post('/forgot', (req, res, next) => {
 
-
   if (!req.body.changingPass) {
     const token = uuid.v4();
 
@@ -224,7 +232,6 @@ router.post('/forgot', (req, res, next) => {
       mysqlConnection.query(
         `UPDATE users SET resetToken = '${token}' WHERE email = ${mysqlConnection.escape(req.body.email)}`
       );
-
 
       var mailOptions = {
         from: 'AutoPlanner <AutoPlanner@aviliax.com>',
