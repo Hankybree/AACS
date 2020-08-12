@@ -73,8 +73,8 @@ export default {
 
   methods: {
     selectFile() {
-      // append files
       const files = this.$refs.files.files;
+      // append files
       this.uploadFiles = [...this.files, ...files];
         // create object to validate client side
       this.files = [
