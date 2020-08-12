@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button id="show-modal" @click="showModal = true">Upload Files</button>
+    <button class="submit-button" id="show-modal" @click="showModal = true">Upload Files</button>
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
@@ -44,7 +44,7 @@
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
                 </div>
-                <button class="modal-default-button" @click="showModal = false">OK</button>
+                <button class="submit-button" @click="showModal = false">OK</button>
               </slot>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default {
       // append files
       const files = this.$refs.files.files;
       this.uploadFiles = [...this.files, ...files];
-
+        // create object to validate client side
       this.files = [
         ...this.files,
         ..._.map(files, (file) => ({
@@ -102,7 +102,7 @@ export default {
     },
 
     validate(file) {
-      const MAX_SIZE = 200000;
+      const MAX_SIZE = 400000;
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
       if (file.size > MAX_SIZE) {
@@ -118,6 +118,7 @@ export default {
       let url = "http://localhost:8000/";
       const formData = new FormData();
 
+        // Validate each file to make sure no wrong fileformats gets sent to server
       _.forEach(this.uploadFiles, (file) => {
         if (this.validate(file) === "") {
           formData.append("files", file);
@@ -129,7 +130,6 @@ export default {
         this.message = "File successfully uploaded";
         this.files = [];
         this.uploadFiles = [];
-        this.error = false;
       } catch (err) {
         console.log(err);
         this.message = err.response.data.error;
@@ -142,9 +142,9 @@ export default {
 
 <style scoped>
 #file {
-  background-color: aqua;
+  
 }
-
+/** Modal (Popup) */
 .modal-mask {
   position: fixed;
   z-index: 9998;
