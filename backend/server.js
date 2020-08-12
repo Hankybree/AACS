@@ -18,6 +18,7 @@ let id = 0
 const wss = new WebSocketServer({ server: server })
 
 app.use('/auth', require('./routes/auth/'))
+app.use('/upload', require('./routes/uploads/'))
 
 app.use(bodyParser.json());
 app.use(cors());

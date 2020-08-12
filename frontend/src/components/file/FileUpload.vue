@@ -57,9 +57,19 @@ export default {
 
   methods: {
     selectFile() {
-      this.file = this.$refs.file.files[0];
-      this.error = false;
-      this.message = "";
+      const file = this.$refs.file.files[0];
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const MAX_SIZE = 200000
+      const tooLarge = file.size > MAX_SIZE
+
+      if (allowedTypes.includes(file.type) && !tooLarge) {
+        this.file = file;
+        this.error = false;
+        this.message = "";
+      } else {
+          this.error = true
+          this.message = 'Only images allowed'
+      }
     },
 
     async sendFile() {
@@ -73,7 +83,7 @@ export default {
         this.error = false;
       } catch (err) {
         console.log(err);
-        this.message = "Something went wrong";
+        this.message = err.response.data.error;
         this.error = true;
       }
     },
