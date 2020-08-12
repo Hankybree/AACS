@@ -6,6 +6,7 @@ const cors = require('cors')
 const bodyParser = require("body-parser");
 const app = express()
 const port = 8000
+require('dotenv-flow').config();
 
 
 const server = app.listen(port, () => {
@@ -17,8 +18,10 @@ let id = 0
 
 const wss = new WebSocketServer({ server: server })
 
-app.use('/auth', require('./routes/auth/'))
-
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
+
+
+app.use('/auth', require('./routes/auth/'))
+

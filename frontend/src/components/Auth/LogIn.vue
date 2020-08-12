@@ -4,8 +4,8 @@
 
     <!-- Login components -->
     <div id="login-components">
-      <label for="login-username" class="left-padding whiteColor">Username</label>
-      <input type="text" id="login-username" class="login-input" v-model="username" />
+      <label for="login-username" class="left-padding whiteColor">Usere awd awdname</label>
+      <input type="text" id="login-username" class="login-input" v-model="emailUsername" />
       <label for="login-password" class="left-padding whiteColor">Password</label>
       <input type="password" id="login-password" class="login-input" v-model="password" />
 
@@ -29,26 +29,28 @@ export default {
   name: 'LogIn',
   data() {
     return {
-      username: "",
+      emailUsername: "",
       password: "",
     }
   },
   methods: {
     loginButtonTapped(){
-      const credentials = { username: this.username, password: this.password }
-      console.log(credentials)
+      const credentials = { emailUsername: this.emailUsername, password: this.password }
 
-      //TODO: Handle login here
+
+
+
+
       let url = "http://localhost:8000/"
 
-      this.axios.post(url + 'login/', credentials)
+      this.axios.post(url + 'auth/login', credentials)
       .then(res => {
         let username = res.data.username
         let token = res.data.token
         this.$store.dispatch('login', { username, token })
       })
       .catch(err => {
-        console.log(err.response)
+        console.log(err)
       })
     },
     signUpButtonTapped(){
