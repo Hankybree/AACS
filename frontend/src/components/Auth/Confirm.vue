@@ -1,6 +1,7 @@
 <template>
   <div class="content">
     <h2>{{message}}</h2>
+    <h2>hinasiafngsa</h2>
   </div>
 </template>
 
@@ -8,7 +9,7 @@
 export default {
   name: "Confirm",
   created(){
-    let url = "http://localhost:8080/"
+    let url = "http://localhost:8000/"
 
     this.axios
     .post(url + "auth/confirm", {

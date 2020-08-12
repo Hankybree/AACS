@@ -136,8 +136,8 @@ router.post('/signup', (req, res, next) => {
     const confirmToken = uuid.v4()
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, confirmToken) 
-      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
+      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
             console.log(err);
@@ -147,8 +147,9 @@ router.post('/signup', (req, res, next) => {
           var mailOptions = {
             from: 'AACS <AACS@aviliax.com>',
             to: req.body.email,
-            subject: 'Bekräfta din e-post',
-            html: `<a href="${process.env.HOST}/auth/confirm/${confirmToken}">Bekräfta e-post</a>`
+            subject: 'Confirm your email',
+            html: ` Hello! Please <a href="${process.env.HOST}/auth/confirm/${confirmToken}">Confirm your email</a>
+            `
           }
 
           transporter.sendMail(mailOptions, function (error, info) {
@@ -176,7 +177,7 @@ function validateEmail(email) {
 
 router.post('/confirm', (req, res, next) => {
   mysqlConnection.query(
-    `SELECT confirmed FROM users WHERE confirmToken = ${mysqlConnection.escape(req.body.token)};`,
+    `SELECT confirmed FROM userdetails WHERE confirmToken = ${mysqlConnection.escape(req.body.token)};`,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -196,7 +197,7 @@ router.post('/confirm', (req, res, next) => {
       }
 
       mysqlConnection.query(
-        `UPDATE users SET confirmed = 1 WHERE confirmToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+        `UPDATE userdetails SET confirmed = 1 WHERE confirmToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();

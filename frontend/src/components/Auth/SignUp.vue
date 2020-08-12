@@ -51,6 +51,7 @@ export default {
     },
     signUpButtonTapped(){
         let url = "http://localhost:8000/"
+        
         const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
         console.log(credentials)
 

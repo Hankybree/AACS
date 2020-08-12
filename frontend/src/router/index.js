@@ -53,7 +53,7 @@ const router = new VueRouter({
   }, {
     name: "ConfirmView",
     component: ConfirmView,
-    path: '/auth/confirm/'
+    path: '/auth/confirm/:token'
   }]
 })
 

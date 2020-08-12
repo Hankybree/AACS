@@ -36,11 +36,7 @@ export default {
   methods: {
     loginButtonTapped(){
       const credentials = { emailUsername: this.emailUsername, password: this.password }
-
-
-
-
-
+      
       let url = "http://localhost:8000/"
 
       this.axios.post(url + 'auth/login', credentials)
