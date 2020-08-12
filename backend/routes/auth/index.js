@@ -22,7 +22,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
   }
 })
 
-
+/* Login */
 router.post('/login', (req, res, next) => {
   mysqlConnection.query(`SELECT * FROM userdetails WHERE email = ${mysqlConnection.escape(req.body.emailUsername)} OR username = ${mysqlConnection.escape(req.body.emailUsername)};`, (err, result) => {
 
@@ -75,7 +75,7 @@ router.post('/login', (req, res, next) => {
   );
 });
 
-
+/* Signup */
 router.post('/signup', (req, res, next) => {
 
     if (!validateEmail(req.body.email)) {
@@ -98,7 +98,7 @@ router.post('/signup', (req, res, next) => {
 
       if (result.length) {
         return res.status(409).send({
-          msg: 'Det finns redan ett konto med denna e-post!'
+          msg: 'This email already exists!'
         });
       }
     });
@@ -117,7 +117,7 @@ router.post('/signup', (req, res, next) => {
 
       if (result.length) {
         return res.status(409).send({
-          msg: 'Det finns redan ett konto med denna username!'
+          msg: 'This username already exists!'
         });
       }
     });
@@ -162,7 +162,7 @@ router.post('/signup', (req, res, next) => {
           });
 
           return res.status(201).send({
-            msg: 'Registrering lyckades! Kolla din e-post för ett bekräftelsemail'
+            msg: 'Registration succeded! Check your email for confirmation!'
           });
         });
 
@@ -187,13 +187,13 @@ router.post('/confirm', (req, res, next) => {
 
       if (!result.length) {
         return res.status(401).send({
-          msg: "Felaktig nyckel"
+          msg: "Invalid key"
         });
       }
 
       if (result[0].confirmed == 1) {
         return res.status(409).send({
-          msg: "E-post redan bekräftad"
+          msg: "Email already confirmed!"
         });
       }
 
@@ -206,7 +206,7 @@ router.post('/confirm', (req, res, next) => {
         });
 
       return res.status(200).send({
-        msg: 'E-post bekräftad!',
+        msg: 'Email already confirmed!',
       });
     });
 });
@@ -226,7 +226,7 @@ router.post('/forgot', (req, res, next) => {
 
       if (!result.length) {
         return res.status(200).send({
-          msg: "Vänligen kolla din e-post"
+          msg: "Please check your email"
         });
       }
 
@@ -238,8 +238,8 @@ router.post('/forgot', (req, res, next) => {
       var mailOptions = {
         from: 'AutoPlanner <AutoPlanner@aviliax.com>',
         to: req.body.email,
-        subject: 'Glömt lösenord',
-        html: `<a href="${process.env.HOST}/auth/forgot/${token}">Skapa nytt lösenord</a>`
+        subject: 'Forgot password?',
+        html: `<a href="${process.env.HOST}/auth/forgot/${token}">Create a new password</a>`
       }
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -251,7 +251,7 @@ router.post('/forgot', (req, res, next) => {
       });
 
       return res.status(200).send({
-        msg: 'Vänligen kolla din e-post',
+        msg: 'Please check your email',
       });
     }
     );
@@ -273,25 +273,25 @@ router.post('/forgot', (req, res, next) => {
 
           if (!result.length > 0) {
             return res.status(409).send({
-              msg: 'Lösenord redan uppdaterat',
+              msg: 'Password is already updated!',
             });
           }
 
           if (!req.body.repeatPass || req.body.newPass != req.body.repeatPass) {
             return res.status(400).send({
-              msg: 'Lösenorden matchar inte'
+              msg: 'Password does not match!'
             });
           }
 
           mysqlConnection.query(
-            `UPDATE users SET passwordHash = ${mysqlConnection.escape(hash)}, resetToken = '', confirmed = 1 WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+            `UPDATE userdetails SET password = ${mysqlConnection.escape(hash)}, resetToken = '', confirmed = 1 WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
               if (err) {
                 console.log(err);
                 return res.status(500).send();
               }
 
               return res.status(200).send({
-                msg: 'Lösenord ändrat!',
+                msg: 'Password is changed!',
               });
             });
         });
