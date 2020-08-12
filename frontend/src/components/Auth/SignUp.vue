@@ -21,11 +21,15 @@
         <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
       </div>
 
+      <p class="response-success-message">{{ successMessage }}</p>
+      <p class="response-error-message">{{ errorMessage }}</p>
+
       <!-- Login button -->
       <div id="login-components">
         <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
       </div>
 
+  
     </div>
   </div>
 </template>
@@ -38,7 +42,9 @@ export default {
       username: "",
       email: "",
       password: "",
-      repeatPassword: ""
+      repeatPassword: "",
+      errorMessage: "",
+      successMessage: ""
     }
   },
   methods: {
@@ -46,11 +52,20 @@ export default {
       this.$router.push({ name: "AuthView", params:{ page: "login" }})
     },
     signUpButtonTapped(){
-      //TODO: Add logic for fields
-      const credentials = { username: this.username, email: this.email, password: this.password }
-      console.log(credentials)
+        let url = "http://localhost:8000/"
 
-      //TODO: Handle signup here
+        const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
+        console.log(credentials)
+
+        this.axios
+        .post(url + "auth/signup/", credentials)
+        .then(res => {
+          this.successMessage = res.data.msg
+        })
+        .catch(err => {
+          this.errorMessage = err.response.data.msg
+        })
+      
     }
   }
 }
@@ -102,5 +117,17 @@ export default {
   background-color: transparent;
   border: 0px;
   font-size: 10pt;
+}
+
+/* Messages */
+.response-error-message{
+  color: red;
+  text-align: center;
+  margin-top: 10pt;
+}
+.response-success-message{
+  color: green;
+  text-align: center;
+  margin-top: 10pt;
 }
 </style>

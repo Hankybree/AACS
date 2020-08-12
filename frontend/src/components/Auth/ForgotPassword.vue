@@ -4,7 +4,6 @@
     
     <!-- Reset password components -->
     <div id="reset-password-components">
-
       <label for="reset-password-email" class="left-padding whiteColor">Email</label>
       <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
 
@@ -27,11 +26,34 @@ export default {
   },
   methods: {
     resetPasswordButtonTapped(){
-      //TODO: Add logic for fields
-      const credentials = { email: this.email }
-      console.log(credentials)
+      let isValid = this.checkValidation()
 
-      //TODO: Handle signup here
+      if(isValid){
+        let url = "http://localhost:8000/"
+
+        const credentials = { email: this.email }
+        this.axios
+        .post(url + "reset-password/", credentials)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      }
+    },
+    checkValidation(){
+      let alertMessage = "Please enter a valid email"
+
+      if(this.email.length != 0){
+        if(this.email.includes("@") && this.email.includes(".")){
+          return true
+        }else{
+          alert(alertMessage)
+        }
+      }else{
+        alert(alertMessage)
+      }
     }
   }
 }

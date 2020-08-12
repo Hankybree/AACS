@@ -22,15 +22,15 @@ router.post('/checkIfValidSession', (req, res, next) => {
   }
 })
 
-
+/* Login */
 router.post('/login', (req, res, next) => {
-  mysqlConnection.query(`SELECT * FROM users WHERE email = ${mysqlConnection.escape(req.body.email)};`, (err, result) => {
+  mysqlConnection.query(`SELECT * FROM userdetails WHERE email = ${mysqlConnection.escape(req.body.emailUsername)} OR username = ${mysqlConnection.escape(req.body.emailUsername)};`, (err, result) => {
 
     if (err) {
       console.log(err);
       return res.status(500).send();
     }
-
+  
     if (!result.length) {
       return res.status(401).send({
         msg: 'Felaktigt användarnamn eller lösenord'
@@ -42,11 +42,12 @@ router.post('/login', (req, res, next) => {
         msg: 'Please confirm your email address first!'
       });
     }
-    bcrypt.compare(req.body.password, result[0]['passwordHash'], (bErr, bResult) => {
+
+    bcrypt.compare(req.body.password, result[0]['password'], (bErr, bResult) => {
       if (bErr) {
         console.log(bErr);
         return res.status(401).send({
-          msg: 'Felaktigt användarnamn eller lösenord'
+          msg: 'Felaktigt lösenord'
         });
       }
       if (bResult) {
@@ -59,13 +60,13 @@ router.post('/login', (req, res, next) => {
         }
         );
         console.log("Logged in: " + result[0].email);
-        delete result[0].passwordHash
+        delete result[0].password
         return res.status(200).send({
           token,
           user: result[0]
         });
       }
-      return res.status(401).send({
+      return res.status(400).send({
         msg: 'Felaktigt användarnamn eller lösenord'
       });
     }
@@ -74,55 +75,82 @@ router.post('/login', (req, res, next) => {
   );
 });
 
-
-router.post('/register', (req, res, next) => {
-  mysqlConnection.query(`SELECT * FROM users WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
-
-    if (err) {
-      console.log(err);
-      return res.status(500).send();
-    }
-
-    if (result.length) {
-      return res.status(409).send({
-        msg: 'Det finns redan ett konto med denna e-post!'
-      });
-    }
+/* Signup */
+router.post('/signup', (req, res, next) => {
 
     if (!validateEmail(req.body.email)) {
       return res.status(400).send({
-        msg: 'Ange en giltig e-postadress'
+        msg: 'Enter a valid email'
       });
     }
-    if (!req.body.password || req.body.password.length < 7) {
+
+    if (!req.body.email) {
       return res.status(400).send({
-        msg: 'Ange ett lösenord med minst 7 tecken'
+        msg: 'Enter an email'
+      });
+    }
+
+    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+
+      if (result.length) {
+        return res.status(409).send({
+          msg: 'This email already exists!'
+        });
+      }
+    });
+
+    if (!req.body.username) {
+      return res.status(400).send({
+        msg: 'Enter an username'
+      });
+    }
+  
+    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+
+      if (result.length) {
+        return res.status(409).send({
+          msg: 'This username already exists!'
+        });
+      }
+    });
+
+    if (!req.body.password || req.body.password.length < 5) {
+      return res.status(400).send({
+        msg: 'Enter a password with atleast 6 characters'
       });
     }
 
     if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
       return res.status(400).send({
-        msg: 'Lösenorden matchar inte'
+        msg: 'Passwords does not match!'
       });
     }
 
     const confirmToken = uuid.v4()
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO users (id, email, passwordHash, confirmToken) 
-      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
+      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
           }
 
-
           var mailOptions = {
             from: 'AACS <AACS@aviliax.com>',
             to: req.body.email,
-            subject: 'Bekräfta din e-post',
-            html: `<a href="${process.env.HOST}/auth/confirm/${confirmToken}">Bekräfta e-post</a>`
+            subject: 'Confirm your email',
+            html: ` Hello! Please <a href="${process.env.HOST}/auth/confirm/${confirmToken}">Confirm your email</a>
+            `
           }
 
           transporter.sendMail(mailOptions, function (error, info) {
@@ -134,13 +162,12 @@ router.post('/register', (req, res, next) => {
           });
 
           return res.status(201).send({
-            msg: 'Registrering lyckades! Kolla din e-post för ett bekräftelsemail'
+            msg: 'Registration succeded! Check your email for confirmation!'
           });
         });
 
     });
-  }
-  );
+  
 });
 
 
@@ -151,7 +178,7 @@ function validateEmail(email) {
 
 router.post('/confirm', (req, res, next) => {
   mysqlConnection.query(
-    `SELECT confirmed FROM users WHERE confirmToken = ${mysqlConnection.escape(req.body.token)};`,
+    `SELECT confirmed FROM userdetails WHERE confirmToken = ${mysqlConnection.escape(req.body.token)};`,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -160,18 +187,18 @@ router.post('/confirm', (req, res, next) => {
 
       if (!result.length) {
         return res.status(401).send({
-          msg: "Felaktig nyckel"
+          msg: "Invalid key"
         });
       }
 
       if (result[0].confirmed == 1) {
         return res.status(409).send({
-          msg: "E-post redan bekräftad"
+          msg: "Email already confirmed!"
         });
       }
 
       mysqlConnection.query(
-        `UPDATE users SET confirmed = 1 WHERE confirmToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+        `UPDATE userdetails SET confirmed = 1 WHERE confirmToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
@@ -179,10 +206,8 @@ router.post('/confirm', (req, res, next) => {
         });
 
       return res.status(200).send({
-        msg: 'E-post bekräftad!',
+        msg: 'Email already confirmed!',
       });
-
-
     });
 });
 
@@ -201,7 +226,7 @@ router.post('/forgot', (req, res, next) => {
 
       if (!result.length) {
         return res.status(200).send({
-          msg: "Vänligen kolla din e-post"
+          msg: "Please check your email"
         });
       }
 
@@ -213,8 +238,8 @@ router.post('/forgot', (req, res, next) => {
       var mailOptions = {
         from: 'AutoPlanner <AutoPlanner@aviliax.com>',
         to: req.body.email,
-        subject: 'Glömt lösenord',
-        html: `<a href="${process.env.HOST}/auth/forgot/${token}">Skapa nytt lösenord</a>`
+        subject: 'Forgot password?',
+        html: `<a href="${process.env.HOST}/auth/forgot/${token}">Create a new password</a>`
       }
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -226,7 +251,7 @@ router.post('/forgot', (req, res, next) => {
       });
 
       return res.status(200).send({
-        msg: 'Vänligen kolla din e-post',
+        msg: 'Please check your email',
       });
     }
     );
@@ -248,25 +273,25 @@ router.post('/forgot', (req, res, next) => {
 
           if (!result.length > 0) {
             return res.status(409).send({
-              msg: 'Lösenord redan uppdaterat',
+              msg: 'Password is already updated!',
             });
           }
 
           if (!req.body.repeatPass || req.body.newPass != req.body.repeatPass) {
             return res.status(400).send({
-              msg: 'Lösenorden matchar inte'
+              msg: 'Password does not match!'
             });
           }
 
           mysqlConnection.query(
-            `UPDATE users SET passwordHash = ${mysqlConnection.escape(hash)}, resetToken = '', confirmed = 1 WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+            `UPDATE userdetails SET password = ${mysqlConnection.escape(hash)}, resetToken = '', confirmed = 1 WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
               if (err) {
                 console.log(err);
                 return res.status(500).send();
               }
 
               return res.status(200).send({
-                msg: 'Lösenord ändrat!',
+                msg: 'Password is changed!',
               });
             });
         });

@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+//Importing axios
+import axios from 'axios'
+import vueAxios from 'vue-axios'
+Vue.use(vueAxios, axios)
+
 // Custom scripts
 // import { actions } from './scripts/actions.js'
 
