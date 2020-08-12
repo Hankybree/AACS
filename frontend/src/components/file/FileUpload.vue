@@ -1,7 +1,6 @@
 <template>
   <div class="content">
     <button id="show-modal" @click="showModal = true">Upload Files</button>
-
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
@@ -28,6 +27,9 @@
 
             <div class="modal-footer">
               <slot name="footer">
+                <div v-if="message">
+                  <div class="upload-message">{{message}}</div>
+                </div>
                 <button class="modal-default-button" @click="showModal = false">OK</button>
               </slot>
             </div>
@@ -47,6 +49,8 @@ export default {
   data() {
     return {
       file: "",
+      error: false,
+      message: "",
       showModal: false,
     };
   },
@@ -54,6 +58,8 @@ export default {
   methods: {
     selectFile() {
       this.file = this.$refs.file.files[0];
+      this.error = false;
+      this.message = "";
     },
 
     async sendFile() {
@@ -62,8 +68,13 @@ export default {
 
       try {
         await axios.post("/upload", formData);
+        this.message = "File successfully uploaded";
+        this.file = "";
+        this.error = false;
       } catch (err) {
         console.log(err);
+        this.message = "Something went wrong";
+        this.error = true;
       }
     },
   },
@@ -142,6 +153,5 @@ export default {
 }
 
 .submit-button:hover {
-
 }
 </style>
