@@ -59,21 +59,21 @@ export default {
     selectFile() {
       const file = this.$refs.file.files[0];
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      const MAX_SIZE = 200000
-      const tooLarge = file.size > MAX_SIZE
+      const MAX_SIZE = 400000;
+      const tooLarge = file.size > MAX_SIZE;
 
       if (allowedTypes.includes(file.type) && !tooLarge) {
         this.file = file;
         this.error = false;
         this.message = "";
       } else {
-          this.error = true
-          this.message = 'Only images allowed'
+        this.error = true;
+        this.message = tooLarge ? `File to large. Max size of ${MAX_SIZE/1000}KB` : "Only images allowed";
       }
     },
 
     async sendFile() {
-      let url = "http://localhost:8000/"
+      let url = "http://localhost:8000/";
       const formData = new FormData();
       formData.append("file", this.file);
 
