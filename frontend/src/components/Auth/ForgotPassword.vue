@@ -4,7 +4,7 @@
     
     <!-- Reset password components -->
     <div id="reset-password-components">
-      <label for="reset-password-email" class="left-padding whiteColor">Email</label>
+      <label for="reset-password-email" class="whiteColor">Email</label>
       <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
 
       <!-- Reset password button -->
@@ -66,14 +66,18 @@ export default {
   margin: auto;
   text-align: left;
 }
-.left-padding{
-  padding-left: 10pt;
+
+#reset-password-components label {
+  padding-bottom: 5px;
+  display: block;
 }
+
+
 .reset-password-input{
   width: 100%;
-  height: 40pt;
+  padding: 12px;
   box-sizing: border-box;
-  font-size: 15pt;
+  font-size: 12pt;
   margin-bottom: 10pt;
   border-radius: 7px;
   border: 0px;

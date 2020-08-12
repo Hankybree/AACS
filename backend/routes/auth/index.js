@@ -90,61 +90,52 @@ router.post('/signup', (req, res, next) => {
       });
     }
 
-    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
+    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)}) 
+    OR LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
       if (err) {
         console.log(err);
         return res.status(500).send();
       }
 
-      if (result.length) {
+      if (result[0].email == req.body.email) {
         return res.status(409).send({
           msg: 'This email already exists!'
         });
-      }
-    });
-
-    if (!req.body.username) {
-      return res.status(400).send({
-        msg: 'Enter an username'
-      });
-    }
-  
-    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send();
-      }
-
-      if (result.length) {
+      } else if (result[0].username == req.body.username) {
         return res.status(409).send({
           msg: 'This username already exists!'
         });
       }
-    });
-
-    if (!req.body.password || req.body.password.length < 5) {
-      return res.status(400).send({
-        msg: 'Enter a password with atleast 6 characters'
-      });
-    }
-
-    if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
-      return res.status(400).send({
-        msg: 'Passwords does not match!'
-      });
-    }
-
-    const confirmToken = uuid.v4()
-
-    bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
-      VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
+      
+      if (!req.body.username) {
+        return res.status(400).send({
+          msg: 'Enter an username'
+        });
+      }
+      
+      if (!req.body.password || req.body.password.length < 5) {
+        return res.status(400).send({
+          msg: 'Enter a password with atleast 6 characters'
+        });
+      }
+      
+      if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
+        return res.status(400).send({
+          msg: 'Passwords does not match!'
+        });
+      }
+      
+      const confirmToken = uuid.v4()
+      
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        mysqlConnection.query(`INSERT INTO userdetails (id, email, password, username, confirmToken) 
+        VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(req.body.username)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
           }
-
+          
           var mailOptions = {
             from: 'AACS <AACS@aviliax.com>',
             to: req.body.email,
@@ -152,7 +143,7 @@ router.post('/signup', (req, res, next) => {
             html: ` Hello! Please <a href="${process.env.HOST}/auth/confirm/${confirmToken}">Confirm your email</a>
             `
           }
-
+          
           transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
               console.log(error);
@@ -160,12 +151,13 @@ router.post('/signup', (req, res, next) => {
               console.log('Email sent: ' + info.response);
             }
           });
-
+          
           return res.status(201).send({
             msg: 'Registration succeded! Check your email for confirmation!'
           });
-
         });
+        
+      });
     });
 });
 
