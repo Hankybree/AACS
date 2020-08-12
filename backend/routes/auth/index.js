@@ -164,10 +164,9 @@ router.post('/signup', (req, res, next) => {
           return res.status(201).send({
             msg: 'Registration succeded! Check your email for confirmation!'
           });
-        });
 
+        });
     });
-  
 });
 
 
