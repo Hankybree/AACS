@@ -25,8 +25,8 @@ const upload = multer({
     }
 })
 
-router.post('/upload', upload.single('file'), (req, res, next) => {
-
+router.post('/upload', upload.array('files'), (req, res, next) => {
+    res.json({ files: req.files})
 })
 // Runs when callback returns error
 router.use(function (err, req, res, next) {
