@@ -20,12 +20,14 @@
       <div id="button-components">
         <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
       </div>
-
+      <p>{{ successMessage }}</p>
+      <p>{{ errorMessage }}</p>
       <!-- Login button -->
       <div id="login-components">
         <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
       </div>
 
+  
     </div>
   </div>
 </template>
@@ -38,7 +40,9 @@ export default {
       username: "",
       email: "",
       password: "",
-      repeatPassword: ""
+      repeatPassword: "",
+      errorMessage: "",
+      successMessage: ""
     }
   },
   methods: {
@@ -46,24 +50,22 @@ export default {
       this.$router.push({ name: "AuthView", params:{ page: "login" }})
     },
     signUpButtonTapped(){
-      let isValid = this.checkValidation()
+   
 
-      if(isValid){
+
         let url = "http://localhost:8000/"
-        const credentials = { username: this.username, email: this.email, password: this.password }
+        const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
         console.log(credentials)
 
         this.axios
-        .post(url + "register/", credentials)
+        .post(url + "auth/signup/", credentials)
         .then(res => {
-          console.log(res.data.message)
+          this.successMessage = res.data.msg
         })
         .catch(err => {
-          console.log(err)
-          //TODO: Fix this.
-          alert("Username or Email is already in use!")
+          this.errorMessage = err.response.data.msg
         })
-      }
+      
     }
   }
 }

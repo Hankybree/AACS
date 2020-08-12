@@ -24,7 +24,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
 
 
 router.post('/login', (req, res, next) => {
-  mysqlConnection.query(`SELECT * FROM users WHERE email = ${mysqlConnection.escape(req.body.email)};`, (err, result) => {
+  mysqlConnection.query(`SELECT * FROM userdetails WHERE email = ${mysqlConnection.escape(req.body.emailUsername)} OR username = ${mysqlConnection.escape(req.body.emailUsername)};`, (err, result) => {
 
     if (err) {
       console.log(err);
@@ -75,25 +75,52 @@ router.post('/login', (req, res, next) => {
 });
 
 
-router.post('/register', (req, res, next) => {
-  mysqlConnection.query(`SELECT * FROM usersdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
-
-    if (err) {
-      console.log(err);
-      return res.status(500).send();
-    }
-
-    if (result.length) {
-      return res.status(409).send({
-        msg: 'Det finns redan ett konto med denna e-post!'
-      });
-    }
+router.post('/signup', (req, res, next) => {
 
     if (!validateEmail(req.body.email)) {
       return res.status(400).send({
         msg: 'Enter a valid email'
       });
     }
+
+    if (!req.body.email) {
+      return res.status(400).send({
+        msg: 'Enter an email'
+      });
+    }
+
+    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+
+      if (result.length) {
+        return res.status(409).send({
+          msg: 'Det finns redan ett konto med denna e-post!'
+        });
+      }
+    });
+
+    if (!req.body.username) {
+      return res.status(400).send({
+        msg: 'Enter an username'
+      });
+    }
+  
+    mysqlConnection.query(`SELECT * FROM userdetails WHERE LOWER(username) = LOWER(${mysqlConnection.escape(req.body.username)});`, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+
+      if (result.length) {
+        return res.status(409).send({
+          msg: 'Det finns redan ett konto med denna username!'
+        });
+      }
+    });
+
     if (!req.body.password || req.body.password.length < 5) {
       return res.status(400).send({
         msg: 'Enter a password with atleast 6 characters'
@@ -109,7 +136,7 @@ router.post('/register', (req, res, next) => {
     const confirmToken = uuid.v4()
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO userdetails (id, email, passwordHash, confirmToken) 
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, password, confirmToken) 
       VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
@@ -138,8 +165,7 @@ router.post('/register', (req, res, next) => {
         });
 
     });
-  }
-  );
+  
 });
 
 
