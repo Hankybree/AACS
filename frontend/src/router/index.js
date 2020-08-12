@@ -17,6 +17,7 @@ import ImageView from '../views/ImageView'
 import ProfileView from '../views/ProfileView'
 import PurchaseView from '../views/PurchaseView'
 import OfflineView from '../views/OfflineView'
+import ConfirmView from '../components/Auth/Confirm'
 
 //Usage
 Vue.use(VueRouter)
@@ -49,6 +50,10 @@ const router = new VueRouter({
     name: "OfflineView",
     component: OfflineView, 
     path: '/offline'
+  }, {
+    name: "ConfirmView",
+    component: ConfirmView,
+    path: '/auth/confirm/'
   }]
 })
 
