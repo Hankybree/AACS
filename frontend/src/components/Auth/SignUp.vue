@@ -46,9 +46,6 @@ export default {
       this.$router.push({ name: "AuthView", params:{ page: "login" }})
     },
     signUpButtonTapped(){
-      let isValid = this.checkValidation()
-
-      if(isValid){
         let url = "http://localhost:8000/"
         const credentials = { username: this.username, email: this.email, password: this.password }
         console.log(credentials)
@@ -59,11 +56,8 @@ export default {
           console.log(res.data.message)
         })
         .catch(err => {
-          console.log(err)
-          //TODO: Fix this.
-          alert("Username or Email is already in use!")
+          console.log(err.res.data.message)
         })
-      }
     }
   }
 }

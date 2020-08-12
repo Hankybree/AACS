@@ -180,8 +180,6 @@ router.post('/confirm', (req, res, next) => {
       return res.status(200).send({
         msg: 'E-post bekräftad!',
       });
-
-
     });
 });
 
