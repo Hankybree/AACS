@@ -20,8 +20,10 @@
       <div id="button-components">
         <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
       </div>
-      <p>{{ successMessage }}</p>
-      <p>{{ errorMessage }}</p>
+
+      <p class="response-success-message">{{ successMessage }}</p>
+      <p class="response-error-message">{{ errorMessage }}</p>
+
       <!-- Login button -->
       <div id="login-components">
         <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
@@ -51,7 +53,7 @@ export default {
     },
     signUpButtonTapped(){
         let url = "http://localhost:8000/"
-        
+
         const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
         console.log(credentials)
 
@@ -115,5 +117,17 @@ export default {
   background-color: transparent;
   border: 0px;
   font-size: 10pt;
+}
+
+/* Messages */
+.response-error-message{
+  color: red;
+  text-align: center;
+  margin-top: 10pt;
+}
+.response-success-message{
+  color: green;
+  text-align: center;
+  margin-top: 10pt;
 }
 </style>
