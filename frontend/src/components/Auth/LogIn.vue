@@ -39,6 +39,17 @@ export default {
       console.log(credentials)
 
       //TODO: Handle login here
+      let url = "http://localhost:8000/"
+
+      this.axios.post(url + 'login/', credentials)
+      .then(res => {
+        let username = res.data.username
+        let token = res.data.token
+        this.$store.dispatch('login', { username, token })
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
     },
     signUpButtonTapped(){
       this.$router.push({ name: "AuthView", params:{ page: "signup" }})

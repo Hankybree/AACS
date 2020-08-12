@@ -76,7 +76,7 @@ router.post('/login', (req, res, next) => {
 
 
 router.post('/register', (req, res, next) => {
-  mysqlConnection.query(`SELECT * FROM users WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
+  mysqlConnection.query(`SELECT * FROM usersdetails WHERE LOWER(email) = LOWER(${mysqlConnection.escape(req.body.email)});`, (err, result) => {
 
     if (err) {
       console.log(err);
@@ -91,32 +91,31 @@ router.post('/register', (req, res, next) => {
 
     if (!validateEmail(req.body.email)) {
       return res.status(400).send({
-        msg: 'Ange en giltig e-postadress'
+        msg: 'Enter a valid email'
       });
     }
-    if (!req.body.password || req.body.password.length < 7) {
+    if (!req.body.password || req.body.password.length < 5) {
       return res.status(400).send({
-        msg: 'Ange ett lösenord med minst 7 tecken'
+        msg: 'Enter a password with atleast 6 characters'
       });
     }
 
     if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
       return res.status(400).send({
-        msg: 'Lösenorden matchar inte'
+        msg: 'Passwords does not match!'
       });
     }
 
     const confirmToken = uuid.v4()
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
-      mysqlConnection.query(`INSERT INTO users (id, email, passwordHash, confirmToken) 
+      mysqlConnection.query(`INSERT INTO userdetails (id, email, passwordHash, confirmToken) 
       VALUES (${mysqlConnection.escape(uuid.v4())}, ${mysqlConnection.escape(req.body.email)}, ${mysqlConnection.escape(hash)}, ${mysqlConnection.escape(confirmToken)})`,
         (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
           }
-
 
           var mailOptions = {
             from: 'AACS <AACS@aviliax.com>',
