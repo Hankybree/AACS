@@ -14,8 +14,15 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <label for="file"></label>
-                    <input multiple type="file" id="file" ref="files" @change="selectFile" />
+                    <label for="file">Choose files..</label>
+                    <input
+                      multiple
+                      type="file"
+                      id="file"
+                      class="inputfile"
+                      ref="files"
+                      @change="selectFile"
+                    />
                   </div>
                   <!-- Iterate through and how files added to files array -->
                   <div class="field">
@@ -74,9 +81,9 @@ export default {
   methods: {
     selectFile() {
       const files = this.$refs.files.files;
-      // append files
+      // append files to array
       this.uploadFiles = [...this.files, ...files];
-        // create object to validate client side
+      // create object to validate client side
       this.files = [
         ...this.files,
         ..._.map(files, (file) => ({
@@ -118,7 +125,7 @@ export default {
       let url = "http://localhost:8000/";
       const formData = new FormData();
 
-        // Validate each file to make sure no wrong fileformats gets sent to server
+      // Validate each file to make sure no wrong fileformats gets sent to server
       _.forEach(this.uploadFiles, (file) => {
         if (this.validate(file) === "") {
           formData.append("files", file);
@@ -141,8 +148,29 @@ export default {
 </script>
 
 <style scoped>
-#file {
-  
+/** Input is "hidden" so that label can be used to style as a button instead..
+    Will add upload icon to label later.*/
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+label {
+  font-size: 1.25em;
+  font-weight: 700;
+  color: white;
+  background-color: black;
+  display: inline-block;
+  cursor: pointer;
+  padding: 1em;
+}
+
+label:hover {
+  background-color: navy;
 }
 /** Modal (Popup) */
 .modal-mask {
