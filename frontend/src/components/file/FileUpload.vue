@@ -36,10 +36,12 @@
                         {{file.name}}
                         <span v-if="file.invalidMessage">{{file.invalidMessage}}</span>
                         <!-- Delete specific file from upload-->
-                        <button
-                          class="delete-btn"
-                          @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
-                        >X</button>
+                        <span class="delete">
+                          <button
+                            class="delete-btn"
+                            @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
+                          >X</button>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -139,7 +141,7 @@ export default {
       const formData = new FormData();
 
       // Validate each file to make sure no wrong fileformats gets sent to server. Run validate and append to formData if OK!
-      _.forEach(this.uploadFiles, file => {
+      _.forEach(this.uploadFiles, (file) => {
         if (this.validate(file) === "") {
           formData.append("files", file);
         }
@@ -147,6 +149,7 @@ export default {
 
       try {
         await axios.post(url + "fileuploads/upload/", formData);
+        console.log("HEJEJEJEJEJEEJEJEJEJEJEJE");
         this.message = "File successfully uploaded";
         this.success = true;
         this.files = [];
@@ -155,7 +158,7 @@ export default {
         console.log(err);
         this.message = err.response.data.error;
         this.error = true;
-      }
+      } 
     },
   },
 };
@@ -275,6 +278,10 @@ label:hover {
   background-color: #f05011;
   border: none;
   color: white;
+}
+
+.delete {
+  text-align: end;
 }
 
 /** Success icon animation */

@@ -33,3 +33,6 @@ uploads
 
 # MySQL
 *credentials.js
+
+#Files
+uploadedfiles
