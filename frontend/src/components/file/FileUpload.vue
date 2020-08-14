@@ -13,7 +13,7 @@
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
             </div>
-             <!-- Body-->
+            <!-- Body-->
             <div class="modal-body">
               <div class="form-container">
                 <!-- Submit which allows user to upload file from local disc -->
@@ -58,7 +58,7 @@
             <div class="modal-footer">
               <slot name="footer">
                 <div class="status-icon">
-                  <sweetalert-icon icon="success" />
+                  <sweetalert-icon v-if="success" icon="success" />
                 </div>
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
@@ -84,6 +84,7 @@ export default {
       files: [],
       uploadFiles: [],
       error: false,
+      success: false,
       message: "",
       showModal: false,
     };
@@ -122,13 +123,14 @@ export default {
     validate(file) {
       const MAX_SIZE = 400000;
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
       }
 
       if (!allowedTypes.includes(file.type)) {
         return "Not an image file";
+      } else {
+        return "";
       }
     },
 
@@ -136,8 +138,8 @@ export default {
       let url = "http://localhost:8000/";
       const formData = new FormData();
 
-      // Validate each file to make sure no wrong fileformats gets sent to server
-      _.forEach(this.uploadFiles, (file) => {
+      // Validate each file to make sure no wrong fileformats gets sent to server. Run validate and append to formData if OK!
+      _.forEach(this.uploadFiles, file => {
         if (this.validate(file) === "") {
           formData.append("files", file);
         }
@@ -146,6 +148,7 @@ export default {
       try {
         await axios.post(url + "fileuploads/upload/", formData);
         this.message = "File successfully uploaded";
+        this.success = true;
         this.files = [];
         this.uploadFiles = [];
       } catch (err) {

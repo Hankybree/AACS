@@ -26,8 +26,9 @@ const upload = multer({
 })
 
 router.post('/upload', upload.array('files'), (req, res, next) => {
-    // res.json({ files: req.files})
+    // res.json({ files: req.files[0]})
     res.json({ test: 'successfully posted' })
+    console.log('test' + req.files[0].mimetype)
 })
 // Runs when callback returns error
 router.use(function (err, req, res, next) {
