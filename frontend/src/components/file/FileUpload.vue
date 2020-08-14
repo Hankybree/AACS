@@ -19,7 +19,7 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <label for="file">Choose files..</label>
+                    <label for="file"><font-awesome-icon :icon="['fas', 'upload']" /> Choose files..</label>
                     <input
                       multiple
                       type="file"
