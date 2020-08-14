@@ -6,9 +6,14 @@
         <div class="modal-wrapper">
           <div class="modal-container">
             <div class="modal-header">
+              <!-- Close button-->
+              <div class="closemodal-button">
+                <button class="closemodal-button" @click="showModal = false">X</button>
+              </div>
+              <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
             </div>
-
+             <!-- Body-->
             <div class="modal-body">
               <div class="form-container">
                 <!-- Submit which allows user to upload file from local disc -->
@@ -24,7 +29,7 @@
                       @change="selectFile"
                     />
                   </div>
-                  <!-- Iterate through and how files added to files array -->
+                  <!-- Iterate through and show files added to files array -->
                   <div class="field">
                     <div v-for="(file, index) in files" :key="index">
                       <div>
@@ -46,12 +51,18 @@
               </div>
             </div>
 
+            <!-- -----------------------
+      Animate succes icon - can be one of: "success", "warning", "info", "error" and "loading" 
+            --------------------------->
+
             <div class="modal-footer">
               <slot name="footer">
+                <div class="status-icon">
+                  <sweetalert-icon icon="success" />
+                </div>
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
                 </div>
-                <button class="submit-button" @click="showModal = false">OK</button>
               </slot>
             </div>
           </div>
@@ -244,11 +255,28 @@ label:hover {
 .submit-button:hover {
 }
 
+.closemodal-button {
+  text-align: start;
+  background-color: transparent;
+  color: black;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  border-style: none;
+  cursor: pointer;
+}
+
 .delete-btn {
   border-radius: 50%;
   padding: 1em;
   background-color: #f05011;
   border: none;
   color: white;
+}
+
+/** Success icon animation */
+
+.status-icon {
+  margin-left: 3em;
 }
 </style>

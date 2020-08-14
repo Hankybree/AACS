@@ -6,6 +6,10 @@ import axios from 'axios'
 import vueAxios from 'vue-axios'
 Vue.use(vueAxios, axios)
 
+//Importing vue-sweetalerts
+import SweetAlertIcons from 'vue-sweetalert-icons';
+Vue.use(SweetAlertIcons);
+
 // Custom scripts
 // import { actions } from './scripts/actions.js'
 
