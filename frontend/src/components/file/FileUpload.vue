@@ -107,19 +107,6 @@ export default {
           invalidMessage: this.validate(file),
         })),
       ];
-
-      //   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-      //   const MAX_SIZE = 400000;
-      //   const tooLarge = file.size > MAX_SIZE;
-
-      //   if (allowedTypes.includes(file.type) && !tooLarge) {
-      //     this.file = file;
-      //     this.error = false;
-      //     this.message = "";
-      //   } else {
-      //     this.error = true;
-      //     this.message = tooLarge ? `File to large. Max size of ${MAX_SIZE/1000}KB` : "Only images allowed";
-      //   }
     },
 
     validate(file) {
@@ -146,7 +133,7 @@ export default {
           formData.append("files", file);
         }
       });
-
+  
       try {
         await axios.post(url + "fileuploads/upload/", formData);
         console.log("HEJEJEJEJEJEEJEJEJEJEJEJE");
@@ -154,10 +141,10 @@ export default {
         this.success = true;
         this.files = [];
         this.uploadFiles = [];
-      } catch (err) {
-        console.log(err);
-        this.message = err.response.data.error;
-        this.error = true;
+        } catch (err) {
+          console.log(err);
+          this.message = err.response.data.error;
+          this.error = true;
       } 
     },
   },
@@ -166,7 +153,7 @@ export default {
 
 <style scoped>
 /** Input is "hidden" so that label can be used to style as a button instead..
-    Will add upload icon to label later.*/
+  */
 .inputfile {
   width: 0.1px;
   height: 0.1px;
@@ -259,7 +246,8 @@ label:hover {
 }
 
 .submit-button:hover {
-}
+  /** Do some stuff */
+  }
 
 .closemodal-button {
   text-align: start;
