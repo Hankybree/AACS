@@ -56,4 +56,20 @@ export default {
   border: 0px;
   font-size: 15pt;
 }
+
+/deep/ .errorMessage {
+  text-align: center;
+  border: 1px solid rgba(200, 0, 0, 0.6);
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 10pt;
+}
+
+/deep/ .successMessage {
+  text-align: center;
+  border: 1px solid rgba(8, 146, 15, 0.6);
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 10pt;
+}
 </style>

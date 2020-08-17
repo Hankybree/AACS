@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    {{ this.$store.state }}
+    <!-- {{ this.$store.state }} -->
     <router-view></router-view>
 
     <FileUpload />
@@ -18,6 +18,10 @@ export default {
 </script>
 
 <style>
+* {
+  outline: none;
+}
+
 body, html{
   background-image: url("./assets/tempBg.png");
   margin: 0;
@@ -31,7 +35,7 @@ body, html{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: white;
 }
 .content {
   width: 100%;
