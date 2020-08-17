@@ -33,7 +33,7 @@ const router = new VueRouter({
   }, {
     name: "AuthView",
     component: AuthView, 
-    path: '/auth/:page' 
+    path: '/auth/:page/:token?' 
   }, { 
     name: "ProfileView",
     component: ProfileView, 

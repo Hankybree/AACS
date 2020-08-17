@@ -4,8 +4,6 @@ const multer = require('multer')
 const cors = require('cors')
 router.use(cors());
 
-
-
 // Filter to these filetypes
 const fileFilter = function (req, file, cb) {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
@@ -38,6 +36,7 @@ router.post('/upload', upload.array('files'), (req, res, next) => {
 
     console.log('test' + req.files[0].mimetype)
 })
+
 // Runs when callback returns error
 router.use(function (err, req, res, next) {
 

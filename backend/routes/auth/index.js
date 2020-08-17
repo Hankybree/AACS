@@ -27,7 +27,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
   }
 })
 
-/* Login */
+// Login
 router.post('/login', (req, res, next) => {
 
   mysqlConnection.query(`SELECT * FROM userdetails WHERE email = ${mysqlConnection.escape(req.body.emailUsername)} OR username = ${mysqlConnection.escape(req.body.emailUsername)};`, (err, result) => {
@@ -81,7 +81,7 @@ router.post('/login', (req, res, next) => {
   );
 });
 
-/* Signup */
+// Signup
 router.post('/signup', (req, res, next) => {
     
   console.log(req.body.email + " <--")
@@ -172,15 +172,16 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
-
+//Validate email
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 }
 
+//Confirm email
 router.post('/confirm', (req, res, next) => {
   mysqlConnection.query(
-    `SELECT confirmed FROM userdetails WHERE confirmToken = ${mysqlConnection.escape(req.body.token)};`,
+    `SELECT confirmed FROM userdetails WHERE authToken = ${mysqlConnection.escape(req.body.token)};`,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -200,7 +201,7 @@ router.post('/confirm', (req, res, next) => {
       }
 
       mysqlConnection.query(
-        `UPDATE userdetails SET confirmed = 1 WHERE confirmToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+        `UPDATE userdetails SET confirmed = 1 WHERE authToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
@@ -213,7 +214,7 @@ router.post('/confirm', (req, res, next) => {
     });
 });
 
-
+//Forgot password
 router.post('/forgot', (req, res, next) => {
 
   if (!req.body.changingPass) {
@@ -265,7 +266,7 @@ router.post('/forgot', (req, res, next) => {
       }
 
       mysqlConnection.query(
-        `SELECT resetToken FROM users WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
+        `SELECT resetToken FROM userdetails WHERE resetToken = ${mysqlConnection.escape(req.body.token)}`, (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send();
@@ -299,6 +300,7 @@ router.post('/forgot', (req, res, next) => {
   }
 });
 
+//Reset password
 router.post('/reset', (req, res, next) => {
 
   mysqlConnection.query(`SELECT * FROM users WHERE id = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
