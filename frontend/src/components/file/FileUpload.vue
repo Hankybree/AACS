@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button class="submit-button" id="show-modal" @click="showModal = true">Upload Files</button>
+    <button class="open-upload-button" id="show-modal" @click="showModal = true">Upload Files</button>
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
@@ -8,7 +8,7 @@
             <div class="modal-header">
               <!-- Close button-->
               <div class="closemodal-button">
-                <button class="closemodal-button" @click="showModal = false">X</button>
+                <button class="closemodal-button" @click="closeModal">X</button>
               </div>
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
@@ -19,7 +19,9 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <label for="file"><font-awesome-icon :icon="['fas', 'upload']" /> Choose files..</label>
+                    <label for="file">
+                      <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
+                    </label>
                     <input
                       multiple
                       type="file"
@@ -30,24 +32,27 @@
                     />
                   </div>
                   <!-- Iterate through and show files added to files array -->
-                  <div class="field">
-                    <div v-for="(file, index) in files" :key="index">
-                      <div>
-                        {{file.name}}
-                        <span v-if="file.invalidMessage">{{file.invalidMessage}}</span>
-                        <!-- Delete specific file from upload-->
-                        <span class="delete">
-                          <button
-                            class="delete-btn"
-                            @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
-                          >X</button>
-                        </span>
+                  <div class="preview-container">
+                    <div class="row">
+                      <div v-for="(file, index) in files" :key="index">
+                        <div class="preview">
+                          <img class="preview-img" :src="file.URL" alt />
+                          <!-- Delete specific file from upload-->
+                          <span class="delete">
+                            <button
+                              class="delete-btn"
+                              @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
+                            >X</button>
+                          </span>
+                          <!-- {{file.name}} -->
+                          <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div class="field">
-                    <button class="submit-button">Upload</button>
+                    <button class="submit-button" v-if="this.files.length">Upload images</button>
                   </div>
                 </form>
               </div>
@@ -93,7 +98,16 @@ export default {
   },
 
   methods: {
+    closeModal() {
+      this.showModal = false;
+      this.success = false;
+      this.message = "";
+    },
+
     selectFile() {
+      this.success = false;
+      this.message = "";
+
       const files = this.$refs.files.files;
       // append files to array
       this.uploadFiles = [...this.files, ...files];
@@ -105,6 +119,7 @@ export default {
           size: file.size,
           type: file.type,
           invalidMessage: this.validate(file),
+          URL: URL.createObjectURL(file), // Create URL for preview of image
         })),
       ];
     },
@@ -133,19 +148,18 @@ export default {
           formData.append("files", file);
         }
       });
-  
+
       try {
         await axios.post(url + "fileuploads/upload/", formData);
-        console.log("HEJEJEJEJEJEEJEJEJEJEJEJE");
         this.message = "File successfully uploaded";
         this.success = true;
         this.files = [];
         this.uploadFiles = [];
-        } catch (err) {
-          console.log(err);
-          this.message = err.response.data.error;
-          this.error = true;
-      } 
+      } catch (err) {
+        console.log(err);
+        this.message = err;
+        this.error = true;
+      }
     },
   },
 };
@@ -234,7 +248,7 @@ label:hover {
 
 /** Buttons */
 
-.submit-button {
+.open-upload-button {
   background-color: #102eb1b4;
   color: white;
   font-weight: 500;
@@ -245,9 +259,21 @@ label:hover {
   cursor: pointer;
 }
 
+.submit-button {
+  background-color: #102eb1b4;
+  color: white;
+  font-weight: 500;
+  padding: 0.5em 0.9em;
+  margin-top: 0.5em;
+  text-transform: uppercase;
+  
+  border-style: none;
+  cursor: pointer;
+}
+
 .submit-button:hover {
   /** Do some stuff */
-  }
+}
 
 .closemodal-button {
   text-align: start;
@@ -262,10 +288,13 @@ label:hover {
 
 .delete-btn {
   border-radius: 50%;
-  padding: 1em;
-  background-color: #f05011;
-  border: none;
-  color: white;
+  padding: 0.25em 0.53em;
+  background-color: white;
+  color: rgb(77, 70, 70);
+  border-style: solid;
+  margin-left: -1em;
+  margin-top: -1em;
+  cursor: pointer;
 }
 
 .delete {
@@ -276,5 +305,33 @@ label:hover {
 
 .status-icon {
   margin-left: 3em;
+}
+
+/**preview image */
+.preview {
+  margin-top: 0.5em;
+}
+
+.preview-img {
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+}
+
+.preview-container {
+  padding: 2em;
+  height: 5em;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.fileerror {
+  margin-left: -10em;
+  display: inline;
 }
 </style>
