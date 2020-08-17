@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken');
 const express = require('express')
 const uuid = require('uuid')
 const router = express.Router()
+const bodyParser = require("body-parser");
+
+const cors = require('cors')
+router.use(cors());
+router.use(bodyParser.json())
 
 const mysqlConnection = require('../../mysql')
 const transporter = require('../../mailer')
@@ -24,6 +29,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
 
 /* Login */
 router.post('/login', (req, res, next) => {
+
   mysqlConnection.query(`SELECT * FROM userdetails WHERE email = ${mysqlConnection.escape(req.body.emailUsername)} OR username = ${mysqlConnection.escape(req.body.emailUsername)};`, (err, result) => {
 
     if (err) {

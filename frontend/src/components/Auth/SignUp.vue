@@ -29,7 +29,6 @@
         <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
       </div>
 
-  
     </div>
   </div>
 </template>

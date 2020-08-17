@@ -64,8 +64,6 @@ export default {
 
 <style scoped>
 /* Login components */
-
-
 #login-components{
   width: 80%;
   margin: auto;
