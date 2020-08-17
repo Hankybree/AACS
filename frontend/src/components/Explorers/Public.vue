@@ -1,15 +1,19 @@
 <template>
   <div class="content">
     <input type="button" @click="getImages()" />
+    <input type="button" @click="reDraw" />
     <div
-      masonry="containerId"
-      transition-duration="0.3s"
+      v-masonry
+      transition-duration="3s"
       item-selector=".item"
-      class="grid"
-      :key="index"
-      v-for="(image, index) in images"
+      class="masonry-container"
     >
-      <div masonry-tile class="grid-item">
+      <div
+        v-masonry-tile
+        class="item"
+        :key="index"
+        v-for="(image, index) in images"
+      >
         <img :src="image.previewURL" alt="no image" />
       </div>
     </div>
@@ -17,6 +21,11 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  //import {VueMasonryPlugin} from '../../node_modules/vue-masonry/src/masonry.plugin';
+  import { VueMasonryPlugin } from 'vue-masonry'
+
+  Vue.use(VueMasonryPlugin)
   // import masonry from 'masonry-layout '
   export default {
     // Created() {
@@ -41,16 +50,21 @@
             console.log(result)
             this.images = result.hits
           })
+      },
+      reDraw() {
+        this.$redrawVueMasonry('.masonry-container')
       }
     }
   }
 </script>
 
 <style scoped>
-  .grid-item {
-    float: left;
-    width: 80px;
-    height: 60px;
-    border: 2px solid hsla(0, 0%, 0%, 0.5);
+  .item {
+    width: 200px;
+  }
+  .masonry-container {
+    background-color: aliceblue;
+    width: 60%;
+    margin: 0 auto;
   }
 </style>

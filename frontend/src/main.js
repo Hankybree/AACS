@@ -4,8 +4,7 @@ import App from './App.vue'
 //Importing axios
 import axios from 'axios'
 import vueAxios from 'vue-axios'
-import masonry from 'masonry-layout'
-Vue.use(vueAxios, axios, masonry)
+Vue.use(vueAxios, axios)
 
 // Custom scripts
 // import { actions } from './scripts/actions.js'
