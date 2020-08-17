@@ -178,17 +178,17 @@ export default {
 }
 
 label {
-  font-size: 1.25em;
+  font-size: 1.15em;
   font-weight: 700;
   color: white;
-  background-color: black;
+  background-color: #2c3e50;
   display: inline-block;
   cursor: pointer;
   padding: 1em;
 }
 
 label:hover {
-  background-color: navy;
+  background-color: rgb(10, 10, 39);
 }
 /** Modal (Popup) */
 .modal-mask {
@@ -272,7 +272,7 @@ label:hover {
 }
 
 .submit-button:hover {
-  /** Do some stuff */
+  background-color: #2c3e50;
 }
 
 .closemodal-button {
@@ -321,6 +321,8 @@ label:hover {
 .preview-container {
   padding: 2em;
   height: 5em;
+  /** Had some bugs with the inline-block when changing size of browser-window. */
+  display: inline-block;
   overflow: auto;
 }
 
@@ -333,5 +335,11 @@ label:hover {
 .fileerror {
   margin-left: -10em;
   display: inline;
+}
+
+/** Bypass default margins */
+.status-icon {
+  margin-top: -4.1em;
+  margin-bottom: -2em;
 }
 </style>
