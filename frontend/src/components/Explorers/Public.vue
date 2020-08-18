@@ -15,7 +15,11 @@
           :key="index"
           v-for="(image, index) in images"
         >
-          <img :src="image.previewURL" alt="no image" />
+          <img
+            :src="image.previewURL"
+            alt="no image"
+            @click="getImage(index)"
+          />
         </div>
       </div>
     </div>
@@ -37,6 +41,7 @@
     data() {
       return {
         images: [],
+        imageId: 0,
         gutter: 10
       }
     },
@@ -53,6 +58,10 @@
             console.log(result)
             this.images = result.hits
           })
+      },
+      getImage(index) {
+        this.imageId = this.images[index].id
+        console.log(this.imageId)
       },
       reDraw() {
         this.$redrawVueMasonry('.grid')
