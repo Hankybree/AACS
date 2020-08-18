@@ -2,7 +2,7 @@
   <div class="content">
         
     <!-- Reset password components -->
-    <div class="reset-password-components" v-if="!this.token">
+    <div class="reset-password-components" v-if="!hasToken">
       <h1 class="whiteColor">Forgot password</h1>
 
       <label for="reset-password-email" class="whiteColor">Email</label>
@@ -10,16 +10,13 @@
 
       <!-- Reset password button -->
       <div id="button-components">
-        <input class="reset-password-button" type="button" value="Reset password" @click="resetPasswordButtonTapped"/>
+        <input class="reset-password-button" type="button" value="Reset password" @click="forgot"/>
       </div>
     </div>
 
     <!-- Change password components -->
-    <div class="reset-password-components"  v-if="this.token">
+    <div class="reset-password-components"  v-if="hasToken">
       <h1 class="whiteColor">Change password</h1>
-
-      <label for="forgot-prev-pass" class="whiteColor">Previous password</label>
-      <input type="password" id="forgot-prev-pass" class="reset-password-input" v-model="oldPassword" />
       
       <label for="forgot-new-pass" class="whiteColor">New password</label>
       <input type="password" id="forgot-new-pass" class="reset-password-input" v-model="newPassword" />
@@ -29,10 +26,12 @@
 
       <!-- Change password button -->
       <div id="button-components">
-        <input class="reset-password-button" type="button" value="Change password" @click="resetPasswordButtonTapped"/>
+        <input class="reset-password-button" type="button" value="Change password" @click="createNewPass"/>
       </div>
     </div>
 
+    <p>{{errorMessage}}</p>
+    <p>{{successMessage}}</p>
   </div>
 </template>
 
@@ -42,60 +41,60 @@ export default {
   data() {
     return {
       email: "",
-      token: "",
-      oldPassword: "",
-      newPassword: "",
-      repeatPassword: ""
+      repeatPassword: '',
+      newPassword: '',
+      errorMessage: "",
+      successMessage: "",
+    }
+  },
+  computed: {
+    hasToken() {
+      if (this.$route.params.token) {
+        return true
+      }
+      return false
     }
   },
   methods: {
-    resetPasswordButtonTapped(){
-      let url = "http://localhost:8000/"
-      var urlPath = ""
-      var credentials = {}
+    forgot() {
+      this.errorMessage = null;
+      let url = 'http://localhost:8000/'
 
-      //Check if token is valid
-      if(this.token){
-          credentials = { oldPassword: this.oldPassword, newPassword: this.newPassword, repeatPassword: this.repeatPassword }
-          urlPath = "change-password/"
-      }
-      else{
-        let isValid = this.checkValidation()
-
-        if(isValid){
-          credentials = { email: this.email }
-          urlPath = "forgot-password/"
-        }
-      }
-
-      //Send request to server
-      this.axios
-      .post(url + urlPath, credentials)
+      this.axios.post(url+'auth/forgot', {
+        email: this.email,
+      })
       .then(res => {
-        console.log(res)
+        this.successMessage = res.data.msg
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response);
+        this.errorMessage = err.response.data.msg
       })
-
+     
     },
-    checkValidation(){
-      let alertMessage = "Please enter a valid email"
+    createNewPass() {
+      this.errorMessage = null;
+      let url = 'http://localhost:8000/'
 
-      if(this.email.length != 0){
-        if(this.email.includes("@") && this.email.includes(".")){
-          return true
-        }else{
-          alert(alertMessage)
-        }
-      }else{
-        alert(alertMessage)
-      }
-    }
+      this.axios.post(url+'auth/forgot', {
+        token: this.$route.params.token,
+        changingPass: true,
+        repeatPassword: this.repeatPassword,
+        newPassword: this.newPassword
+      })
+      .then(res => {
+        this.successMessage = res.data.msg
+        setTimeout(() => {
+          this.$router.push({ name: "AuthView", params: { page: 'login' } })
+        }, 1500);
+      })
+      .catch(err => {
+        console.log(err.response);
+        this.errorMessage = err.response.data.msg
+      })
+    },
   },
-  created(){
-    this.token = this.$route.params.token
-  }
+
 }
 </script>
 

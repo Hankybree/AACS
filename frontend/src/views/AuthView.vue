@@ -9,6 +9,7 @@
     <Login v-if="page === 'login'"/>
     <Signup v-if="page === 'signup'" />
     <ForgotPassword v-if="page === 'forgot'" />
+    <Confirm v-if="page === 'confirm'" />
 
   </div>
 </template>
@@ -17,13 +18,15 @@
 import Login from '../components/Auth/LogIn'
 import Signup from '../components/Auth/SignUp'
 import ForgotPassword from '../components/Auth/ForgotPassword'
+import Confirm from '../components/Auth/Confirm'
 
 export default {
   name: 'AuthView',
   components: {
     Login,
     Signup,
-    ForgotPassword
+    ForgotPassword,
+    Confirm
   },
   created() {
     if (this.$store.getters.isLoggedIn) {
