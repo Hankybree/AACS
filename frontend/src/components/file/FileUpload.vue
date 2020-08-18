@@ -8,7 +8,7 @@
             <div class="modal-header">
               <!-- Close button-->
               <div class="closemodal-button">
-                <button class="closemodal-button" @click="closeModal">X</button>
+                <button class="closemodal-button" @click="closeModal"><font-awesome-icon :icon="['fas', 'times']" /></button>
               </div>
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
@@ -45,7 +45,7 @@
                             <button
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
-                            >X</button>
+                            ><font-awesome-icon :icon="['fas', 'times']" /></button>
                           </span>
                           <!-- {{file.name}} -->
                           <!-- <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span> -->
@@ -337,6 +337,10 @@ label:hover {
   cursor: pointer;
 }
 
+.closemodal-button:hover {
+  color: #060635;
+}
+
 .delete-btn {
   border-radius: 50%;
   padding: 0.25em 0.53em;
@@ -346,6 +350,14 @@ label:hover {
   margin-left: -1em;
   margin-top: -1em;
   cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: rgba(255, 0, 0, 0.74);
+  color: white;
+  border-color: white;
+  transition: 0.2s ease;
 }
 
 .delete {
