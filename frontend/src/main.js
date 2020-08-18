@@ -6,6 +6,18 @@ import axios from 'axios'
 import vueAxios from 'vue-axios'
 Vue.use(vueAxios, axios)
 
+//Importing vue-sweetalerts
+import SweetAlertIcons from 'vue-sweetalert-icons';
+Vue.use(SweetAlertIcons);
+
+//Importing font-awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faUpload)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Custom scripts
 // import { actions } from './scripts/actions.js'
 

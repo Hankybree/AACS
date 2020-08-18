@@ -4,16 +4,16 @@
 
     <!-- Sign up components -->
     <div id="register-components">
-      <label for="sign-up-username" class="left-padding whiteColor">Username</label>
+      <label for="sign-up-username" class="whiteColor">Username</label>
       <input type="text" id="sign-up-username" class="sign-up-input" v-model="username" />
 
-      <label for="sign-up-email" class="left-padding whiteColor">Email</label>
+      <label for="sign-up-email" class="whiteColor">Email</label>
       <input type="text" id="sign-up-email" class="sign-up-input" v-model="email" />
 
-      <label for="sign-up-password" class="left-padding whiteColor">Password</label>
+      <label for="sign-up-password" class="whiteColor">Password</label>
       <input type="password" id="sign-up-password" class="sign-up-input" v-model="password" />
 
-      <label for="repeat-sign-up-password" class="left-padding whiteColor">Repeat password</label>
+      <label for="repeat-sign-up-password" class="whiteColor">Repeat password</label>
       <input type="password" id="repeat-sign-up-password" class="sign-up-input" v-model="repeatPassword" />
 
       <!-- Sign up button -->
@@ -21,15 +21,14 @@
         <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
       </div>
 
-      <p class="response-success-message">{{ successMessage }}</p>
-      <p class="response-error-message">{{ errorMessage }}</p>
+      <p v-if="successMessage" class="successMessage">{{ successMessage }}</p>
+      <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
 
       <!-- Login button -->
       <div id="login-components">
         <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
       </div>
 
-  
     </div>
   </div>
 </template>
@@ -78,18 +77,29 @@ export default {
   margin: auto;
   text-align: left;
 }
-.left-padding{
-  padding-left: 10pt;
+
+
+#register-components label {
+  padding-bottom: 5px;
+  padding-left: 15px;
+  display: block;
 }
+
 .sign-up-input{
   width: 100%;
-  height: 40pt;
+  padding: 12px;
   box-sizing: border-box;
-  font-size: 15pt;
+  font-size: 12pt;
   margin-bottom: 10pt;
   border-radius: 7px;
   border: 0px;
 }
+
+#register-components label {
+  padding-bottom: 5px;
+  display: block;
+}
+
 
 /* Button components */
 #button-components{
@@ -119,15 +129,4 @@ export default {
   font-size: 10pt;
 }
 
-/* Messages */
-.response-error-message{
-  color: red;
-  text-align: center;
-  margin-top: 10pt;
-}
-.response-success-message{
-  color: green;
-  text-align: center;
-  margin-top: 10pt;
-}
 </style>

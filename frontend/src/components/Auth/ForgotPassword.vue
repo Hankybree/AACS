@@ -1,18 +1,37 @@
 <template>
   <div class="content">
-    <h1 class="whiteColor">Forgot password</h1>
-    
+        
     <!-- Reset password components -->
-    <div id="reset-password-components">
-      <label for="reset-password-email" class="left-padding whiteColor">Email</label>
+    <div class="reset-password-components" v-if="!hasToken">
+      <h1 class="whiteColor">Forgot password</h1>
+
+      <label for="reset-password-email" class="whiteColor">Email</label>
       <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
 
       <!-- Reset password button -->
       <div id="button-components">
-        <input class="reset-password-button" type="button" value="Reset password" @click="resetPasswordButtonTapped"/>
+        <input class="reset-password-button" type="button" value="Reset password" @click="forgot"/>
       </div>
     </div>
 
+    <!-- Change password components -->
+    <div class="reset-password-components"  v-if="hasToken">
+      <h1 class="whiteColor">Change password</h1>
+      
+      <label for="forgot-new-pass" class="whiteColor">New password</label>
+      <input type="password" id="forgot-new-pass" class="reset-password-input" v-model="newPassword" />
+
+      <label for="forgot-repeat-pass" class="whiteColor">Repeat password</label>
+      <input type="password" id="forgot-repeat-pass" class="reset-password-input" v-model="repeatPassword" />
+
+      <!-- Change password button -->
+      <div id="button-components">
+        <input class="reset-password-button" type="button" value="Change password" @click="createNewPass"/>
+      </div>
+    </div>
+
+    <p>{{errorMessage}}</p>
+    <p>{{successMessage}}</p>
   </div>
 </template>
 
@@ -22,58 +41,82 @@ export default {
   data() {
     return {
       email: "",
+      repeatPassword: '',
+      newPassword: '',
+      errorMessage: "",
+      successMessage: "",
+    }
+  },
+  computed: {
+    hasToken() {
+      if (this.$route.params.token) {
+        return true
+      }
+      return false
     }
   },
   methods: {
-    resetPasswordButtonTapped(){
-      let isValid = this.checkValidation()
+    forgot() {
+      this.errorMessage = null;
+      let url = 'http://localhost:8000/'
 
-      if(isValid){
-        let url = "http://localhost:8000/"
-
-        const credentials = { email: this.email }
-        this.axios
-        .post(url + "reset-password/", credentials)
-        .then(res => {
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      }
+      this.axios.post(url+'auth/forgot', {
+        email: this.email,
+      })
+      .then(res => {
+        this.successMessage = res.data.msg
+      })
+      .catch(err => {
+        console.log(err.response);
+        this.errorMessage = err.response.data.msg
+      })
+     
     },
-    checkValidation(){
-      let alertMessage = "Please enter a valid email"
+    createNewPass() {
+      this.errorMessage = null;
+      let url = 'http://localhost:8000/'
 
-      if(this.email.length != 0){
-        if(this.email.includes("@") && this.email.includes(".")){
-          return true
-        }else{
-          alert(alertMessage)
-        }
-      }else{
-        alert(alertMessage)
-      }
-    }
-  }
+      this.axios.post(url+'auth/forgot', {
+        token: this.$route.params.token,
+        changingPass: true,
+        repeatPassword: this.repeatPassword,
+        newPassword: this.newPassword
+      })
+      .then(res => {
+        this.successMessage = res.data.msg
+        setTimeout(() => {
+          this.$router.push({ name: "AuthView", params: { page: 'login' } })
+        }, 1500);
+      })
+      .catch(err => {
+        console.log(err.response);
+        this.errorMessage = err.response.data.msg
+      })
+    },
+  },
+
 }
 </script>
 
 <style scoped>
 /* Sign up components */
-#reset-password-components{
+.reset-password-components{
   width: 80%;
   margin: auto;
   text-align: left;
 }
-.left-padding{
-  padding-left: 10pt;
+
+.reset-password-components label {
+  padding-bottom: 5px;
+  padding-left: 15px;
+  display: block;
 }
+
 .reset-password-input{
   width: 100%;
-  height: 40pt;
+  padding: 12px;
   box-sizing: border-box;
-  font-size: 15pt;
+  font-size: 12pt;
   margin-bottom: 10pt;
   border-radius: 7px;
   border: 0px;

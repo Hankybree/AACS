@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
+const cors = require('cors')
+router.use(cors());
 
 // Filter to these filetypes
 const fileFilter = function (req, file, cb) {
@@ -26,11 +28,18 @@ const upload = multer({
 })
 
 router.post('/upload', upload.array('files'), (req, res, next) => {
-    // res.json({ files: req.files})
-    res.json({ test: 'successfully posted' })
+    // res.json({ files: req.files[0]})
+    
+        res.status(200).send(JSON.stringify({
+            msg: 'Lyckades!'
+        })) 
+
+    console.log('test' + req.files[0].mimetype)
 })
+
 // Runs when callback returns error
 router.use(function (err, req, res, next) {
+
     if (err.code === 'LIMIT_FILE_TYPES') {
         res.status(422).json({ error: 'Only images allowed' })
         return
