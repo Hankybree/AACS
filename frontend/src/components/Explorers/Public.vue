@@ -16,6 +16,7 @@
           v-for="(image, index) in images"
         >
           <img
+            class="image"
             :src="image.previewURL"
             alt="no image"
             @click="getImage(index)"
@@ -75,13 +76,16 @@
   .item {
     background-color: green;
   }
+  /* .image {
+    width: 20vw;
+  } */
   .masonry-container {
     margin: 0 auto;
     margin-left: 6%;
     margin-top: 2%;
   }
   .masonry-container-div {
-    width: 75%;
+    width: 80%;
     height: 100%;
     display: inline-block;
     margin: 5px;

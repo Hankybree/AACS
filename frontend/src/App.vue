@@ -14,6 +14,15 @@
   import Public from './components/Explorers/Public.vue'
 
   export default {
+    created() {
+      let socket = new WebSocket('ws://localhost:8000')
+      socket.onopen = () => {
+        socket.send('Hello server')
+      }
+      socket.onmessage = (message) => {
+        console.log(message.data)
+      }
+    },
     name: 'App',
     components: { FileUpload, Public }
   }
