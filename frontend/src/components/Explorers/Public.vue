@@ -1,15 +1,16 @@
 <template>
   <div class="content">
-    <input type="button" @click="getImages()" />
-    <input type="button" @click="reDraw" />
+    <input type="button" @click="reDraw()" />
     <div
       v-masonry
-      transition-duration="3s"
+      transition-duration="1s"
       item-selector=".item"
+      gutter="7"
       class="masonry-container"
     >
       <div
         v-masonry-tile
+        column-width="10px"
         class="item"
         :key="index"
         v-for="(image, index) in images"
@@ -22,19 +23,20 @@
 
 <script>
   import Vue from 'vue'
-  //import {VueMasonryPlugin} from '../../node_modules/vue-masonry/src/masonry.plugin';
+
   import { VueMasonryPlugin } from 'vue-masonry'
 
   Vue.use(VueMasonryPlugin)
-  // import masonry from 'masonry-layout '
+
   export default {
-    // Created() {
-    //   this.getImages()
-    // },
+    created() {
+      this.getImages()
+    },
     name: 'Public',
     data() {
       return {
-        images: []
+        images: [],
+        gutter: 10
       }
     },
     methods: {
@@ -52,19 +54,17 @@
           })
       },
       reDraw() {
-        this.$redrawVueMasonry('.masonry-container')
+        this.$redrawVueMasonry('.grid')
       }
     }
   }
 </script>
 
 <style scoped>
+  /* item = image container (inte själva bilden alltså) */
   .item {
-    width: 200px;
   }
   .masonry-container {
-    background-color: aliceblue;
-    width: 60%;
     margin: 0 auto;
   }
 </style>
