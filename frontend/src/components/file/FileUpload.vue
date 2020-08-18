@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <button class="submit-button" id="show-modal" @click="showModal = true">Upload Files</button>
+    <button class="open-upload-button" id="show-modal" @click="showModal = true">Upload Files</button>
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
@@ -8,7 +8,7 @@
             <div class="modal-header">
               <!-- Close button-->
               <div class="closemodal-button">
-                <button class="closemodal-button" @click="showModal = false">X</button>
+                <button class="closemodal-button" @click="closeModal"><font-awesome-icon :icon="['fas', 'times']" /></button>
               </div>
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
@@ -19,7 +19,10 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <label for="file"><font-awesome-icon :icon="['fas', 'upload']" /> Choose files..</label>
+                    <label for="file">
+                      <font-awesome-icon :icon="['fas', 'upload']" /> Choose files..
+                    </label>
+                    <button class="submit-button1" v-if="this.files.length" @click="closePreview"> <font-awesome-icon :icon="['fas', 'paper-plane']" /> </button>
                     <input
                       multiple
                       type="file"
@@ -30,24 +33,33 @@
                     />
                   </div>
                   <!-- Iterate through and show files added to files array -->
-                  <div class="field">
-                    <div v-for="(file, index) in files" :key="index">
-                      <div>
-                        {{file.name}}
-                        <span v-if="file.invalidMessage">{{file.invalidMessage}}</span>
-                        <!-- Delete specific file from upload-->
-                        <span class="delete">
-                          <button
-                            class="delete-btn"
-                            @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
-                          >X</button>
-                        </span>
+                  <div class="preview-container" :style="togglePreview">
+                    <div class="row">
+                      <div v-for="(file, index) in files" :key="index">
+                        <div class="preview">
+                          <div class="preview-img" v-if="file.invalidMessage" style="background-color:red; display: inline-block"></div>
+                          <img class="preview-img" :src="file.URL" alt v-if="!file.invalidMessage"/>
+                          
+                          <!-- Delete specific file from upload-->
+                          <span class="delete">
+                            <button
+                              class="delete-btn"
+                              @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
+                            ><font-awesome-icon :icon="['fas', 'times']" /></button>
+                          </span>
+                          <!-- {{file.name}} -->
+                          <!-- <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span> -->
+                        </div>
                       </div>
                     </div>
                   </div>
-
+                  <div class="status-icon">
+                  <sweetalert-icon v-if="success" icon="success" />
+                  <sweetalert-icon v-if="error" icon="error" />
+                </div>
                   <div class="field">
-                    <button class="submit-button">Upload</button>
+                    <button class="submit-button" v-if="this.files.length && error" @click="closePreview">Try again</button>
+                    
                   </div>
                 </form>
               </div>
@@ -59,9 +71,7 @@
 
             <div class="modal-footer">
               <slot name="footer">
-                <div class="status-icon">
-                  <sweetalert-icon v-if="success" icon="success" />
-                </div>
+                
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
                 </div>
@@ -89,11 +99,23 @@ export default {
       success: false,
       message: "",
       showModal: false,
+      previewStatus: false
     };
   },
 
   methods: {
+    closeModal() {
+      this.showModal = false;
+      this.success = false;
+      this.error = false;
+      this.message = "";
+    },
+
     selectFile() {
+      this.previewStatus = false;
+      this.success = false;
+      this.message = "";
+
       const files = this.$refs.files.files;
       // append files to array
       this.uploadFiles = [...this.files, ...files];
@@ -105,6 +127,7 @@ export default {
           size: file.size,
           type: file.type,
           invalidMessage: this.validate(file),
+          URL: URL.createObjectURL(file), // Create URL for preview of image
         })),
       ];
     },
@@ -114,6 +137,7 @@ export default {
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
+        // Add error msg saying one or more files are unvalid
       }
 
       if (!allowedTypes.includes(file.type)) {
@@ -133,21 +157,36 @@ export default {
           formData.append("files", file);
         }
       });
-  
+
       try {
         await axios.post(url + "fileuploads/upload/", formData);
-        console.log("HEJEJEJEJEJEEJEJEJEJEJEJE");
-        this.message = "File successfully uploaded";
+        this.message = "File(s) successfully uploaded!";
         this.success = true;
         this.files = [];
         this.uploadFiles = [];
-        } catch (err) {
-          console.log(err);
-          this.message = err.response.data.error;
-          this.error = true;
-      } 
+      } catch (err) {
+        console.log(err);
+        this.message = err;
+        this.error = true;
+        this.previewStatus = false;
+      }
     },
+    closePreview() {
+      this.previewStatus = true
+    }
   },
+  computed: {
+    togglePreview() {
+      if(this.previewStatus) {
+        return {
+          display: 'none'
+        }
+      }
+      else {
+        return {}
+      }
+    }
+  }
 };
 </script>
 
@@ -164,17 +203,17 @@ export default {
 }
 
 label {
-  font-size: 1.25em;
+  font-size: 1.15em;
   font-weight: 700;
   color: white;
-  background-color: black;
+  background-color: #0a0a27;
   display: inline-block;
   cursor: pointer;
   padding: 1em;
 }
 
 label:hover {
-  background-color: navy;
+  background-color: #060635;
 }
 /** Modal (Popup) */
 .modal-mask {
@@ -234,7 +273,7 @@ label:hover {
 
 /** Buttons */
 
-.submit-button {
+.open-upload-button {
   background-color: #102eb1b4;
   color: white;
   font-weight: 500;
@@ -245,9 +284,47 @@ label:hover {
   cursor: pointer;
 }
 
+.submit-button {
+  background-color: #102eb1b4;
+  color: white;
+  font-weight: 500;
+  padding: 0.5em 0.9em;
+  margin-top: 2em;
+  text-transform: uppercase;
+  
+  border-style: none;
+  cursor: pointer;
+}
+
+.submit-button1 {
+  border-end-end-radius: 10%;
+  border-start-end-radius: 10%;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #0b58a5;
+  background-color: white;
+  border-color: #0a0a27;
+  border-width: 0.5px;
+  display: inline-block;
+  cursor: pointer;
+  padding: 1em;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-button1:hover {
+  background-color: #0b58a5;
+  color: white;
+  padding-top: 1em;
+  padding-left: 2em;
+  transition: 0.3s ease;
+  border-style: none;
+  padding-bottom: 1.04em;
+}
+
 .submit-button:hover {
-  /** Do some stuff */
-  }
+  background-color: #2c3e50;
+}
 
 .closemodal-button {
   text-align: start;
@@ -260,12 +337,27 @@ label:hover {
   cursor: pointer;
 }
 
+.closemodal-button:hover {
+  color: #060635;
+}
+
 .delete-btn {
   border-radius: 50%;
-  padding: 1em;
-  background-color: #f05011;
-  border: none;
+  padding: 0.25em 0.53em;
+  background-color: white;
+  color: rgb(77, 70, 70);
+  border-style: solid;
+  margin-left: -1em;
+  margin-top: -1em;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: rgba(255, 0, 0, 0.74);
   color: white;
+  border-color: white;
+  transition: 0.2s ease;
 }
 
 .delete {
@@ -276,5 +368,48 @@ label:hover {
 
 .status-icon {
   margin-left: 3em;
+}
+
+/**preview image */
+.preview {
+  margin-top: 0.5em;
+}
+
+.preview-img {
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+}
+
+.preview-img-err {
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  background-color: rgba(243, 6, 6, 0.438);
+  z-index: 200;
+}
+
+.preview-container {
+  padding: 2em;
+  height: 5em;
+  /** Had some bugs with the inline-block when changing size of browser-window. */
+  display: inline-block;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.fileerror {
+  margin-left: -10em;
+  display: inline;
+}
+
+/** Bypass default margins */
+.status-icon {
+  margin-bottom: -2em;
 }
 </style>

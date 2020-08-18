@@ -12,10 +12,10 @@ Vue.use(SweetAlertIcons);
 
 //Importing font-awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faUpload, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faUpload)
+library.add(faUpload, faPaperPlane, faTimes)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Custom scripts
