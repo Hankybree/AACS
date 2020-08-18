@@ -1,21 +1,22 @@
 <template>
   <div class="content">
-    <input type="button" @click="reDraw()" />
-    <div
-      v-masonry
-      transition-duration="1s"
-      item-selector=".item"
-      gutter="7"
-      class="masonry-container"
-    >
+    <div class="masonry-container-div">
       <div
-        v-masonry-tile
-        column-width="10px"
-        class="item"
-        :key="index"
-        v-for="(image, index) in images"
+        v-masonry
+        transition-duration="1s"
+        item-selector=".item"
+        gutter="7"
+        class="masonry-container"
       >
-        <img :src="image.previewURL" alt="no image" />
+        <div
+          v-masonry-tile
+          column-width="10px"
+          class="item"
+          :key="index"
+          v-for="(image, index) in images"
+        >
+          <img :src="image.previewURL" alt="no image" />
+        </div>
       </div>
     </div>
   </div>
@@ -63,8 +64,19 @@
 <style scoped>
   /* item = image container (inte själva bilden alltså) */
   .item {
+    background-color: green;
   }
   .masonry-container {
     margin: 0 auto;
+    margin-left: 6%;
+    margin-top: 2%;
+  }
+  .masonry-container-div {
+    width: 75%;
+    height: 100%;
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    border: chocolate solid 5px;
   }
 </style>
