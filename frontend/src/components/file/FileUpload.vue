@@ -20,7 +20,7 @@
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
                     <label for="file">
-                      <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
+                      <font-awesome-icon :icon="['fas', 'upload']" /> Choose files..
                     </label>
                     <input
                       multiple
@@ -32,11 +32,13 @@
                     />
                   </div>
                   <!-- Iterate through and show files added to files array -->
-                  <div class="preview-container">
+                  <div class="preview-container" :style="togglePreview">
                     <div class="row">
                       <div v-for="(file, index) in files" :key="index">
                         <div class="preview">
-                          <img class="preview-img" :src="file.URL" alt />
+                          <div class="preview-img" v-if="file.invalidMessage" style="background-color:red; display: inline-block"></div>
+                          <img class="preview-img" :src="file.URL" alt v-if="!file.invalidMessage"/>
+                          
                           <!-- Delete specific file from upload-->
                           <span class="delete">
                             <button
@@ -45,14 +47,14 @@
                             >X</button>
                           </span>
                           <!-- {{file.name}} -->
-                          <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span>
+                          <!-- <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span> -->
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div class="field">
-                    <button class="submit-button" v-if="this.files.length">Upload images</button>
+                    <button class="submit-button" v-if="this.files.length && !error" @click="closePreview">Upload images</button>
                   </div>
                 </form>
               </div>
@@ -66,6 +68,7 @@
               <slot name="footer">
                 <div class="status-icon">
                   <sweetalert-icon v-if="success" icon="success" />
+                  <sweetalert-icon v-if="error" icon="error" />
                 </div>
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
@@ -94,6 +97,7 @@ export default {
       success: false,
       message: "",
       showModal: false,
+      previewStatus: false
     };
   },
 
@@ -101,10 +105,12 @@ export default {
     closeModal() {
       this.showModal = false;
       this.success = false;
+      this.error = false;
       this.message = "";
     },
 
     selectFile() {
+      this.previewStatus = false;
       this.success = false;
       this.message = "";
 
@@ -129,6 +135,7 @@ export default {
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
+        // Add error msg saying one or more files are unvalid
       }
 
       if (!allowedTypes.includes(file.type)) {
@@ -159,9 +166,25 @@ export default {
         console.log(err);
         this.message = err;
         this.error = true;
+        this.previewStatus = false;
       }
     },
+    closePreview() {
+      this.previewStatus = true
+    }
   },
+  computed: {
+    togglePreview() {
+      if(this.previewStatus) {
+        return {
+          display: 'none'
+        }
+      }
+      else {
+        return {}
+      }
+    }
+  }
 };
 </script>
 
@@ -318,6 +341,14 @@ label:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
+.preview-img-err {
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  background-color: rgba(243, 6, 6, 0.438);
+  z-index: 200;
+}
+
 .preview-container {
   padding: 2em;
   height: 5em;
@@ -339,7 +370,6 @@ label:hover {
 
 /** Bypass default margins */
 .status-icon {
-  margin-top: -4.1em;
   margin-bottom: -2em;
 }
 </style>
