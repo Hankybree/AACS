@@ -1,0 +1,26 @@
+{
+  "name": "AACS",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd frontend/ && npm run serve\" \"cd backend/ && nodemon server.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hankybree/AACS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hankybree/AACS/issues"
+  },
+  "homepage": "https://github.com/Hankybree/AACS#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/vue-fontawesome": "^0.1.10",
+    "concurrently": "^5.3.0"
+  }
+}

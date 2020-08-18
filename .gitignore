@@ -29,3 +29,10 @@ pnpm-debug.log*
 *.sqlite
 *.sqlite-journal
 uploads
+
+
+# MySQL
+*credentials.js
+
+#Files
+uploadedfiles
