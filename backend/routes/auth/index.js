@@ -130,7 +130,7 @@ router.post('/signup', (req, res, next) => {
       });
     }
     
-    if (!req.body.repeatPasswordword || req.body.password != req.body.repeatPasswordword) {
+    if (!req.body.repeatPassword || req.body.password != req.body.repeatPassword) {
       return res.status(400).send({
         msg: 'Passwords does not match!'
       });
@@ -205,11 +205,11 @@ router.post('/confirm', (req, res, next) => {
             console.log(err);
             return res.status(500).send();
           }
+          return res.status(200).send({
+            msg: 'Email confirmed!',
+          });
         });
 
-      return res.status(200).send({
-        msg: 'Email already confirmed!',
-      });
     });
 });
 
