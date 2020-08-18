@@ -22,6 +22,7 @@
                     <label for="file">
                       <font-awesome-icon :icon="['fas', 'upload']" /> Choose files..
                     </label>
+                    <button class="submit-button1" v-if="this.files.length" @click="closePreview"> <font-awesome-icon :icon="['fas', 'paper-plane']" /> </button>
                     <input
                       multiple
                       type="file"
@@ -52,9 +53,13 @@
                       </div>
                     </div>
                   </div>
-
+                  <div class="status-icon">
+                  <sweetalert-icon v-if="success" icon="success" />
+                  <sweetalert-icon v-if="error" icon="error" />
+                </div>
                   <div class="field">
-                    <button class="submit-button" v-if="this.files.length && !error" @click="closePreview">Upload images</button>
+                    <button class="submit-button" v-if="this.files.length && error" @click="closePreview">Try again</button>
+                    
                   </div>
                 </form>
               </div>
@@ -66,10 +71,7 @@
 
             <div class="modal-footer">
               <slot name="footer">
-                <div class="status-icon">
-                  <sweetalert-icon v-if="success" icon="success" />
-                  <sweetalert-icon v-if="error" icon="error" />
-                </div>
+                
                 <div v-if="message">
                   <div class="upload-message">{{message}}</div>
                 </div>
@@ -158,7 +160,7 @@ export default {
 
       try {
         await axios.post(url + "fileuploads/upload/", formData);
-        this.message = "File successfully uploaded";
+        this.message = "File(s) successfully uploaded!";
         this.success = true;
         this.files = [];
         this.uploadFiles = [];
@@ -204,14 +206,14 @@ label {
   font-size: 1.15em;
   font-weight: 700;
   color: white;
-  background-color: #2c3e50;
+  background-color: #0a0a27;
   display: inline-block;
   cursor: pointer;
   padding: 1em;
 }
 
 label:hover {
-  background-color: rgb(10, 10, 39);
+  background-color: #060635;
 }
 /** Modal (Popup) */
 .modal-mask {
@@ -287,11 +289,37 @@ label:hover {
   color: white;
   font-weight: 500;
   padding: 0.5em 0.9em;
-  margin-top: 0.5em;
+  margin-top: 2em;
   text-transform: uppercase;
   
   border-style: none;
   cursor: pointer;
+}
+
+.submit-button1 {
+  border-end-end-radius: 10%;
+  border-start-end-radius: 10%;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #0b58a5;
+  background-color: white;
+  border-color: #0a0a27;
+  border-width: 0.5px;
+  display: inline-block;
+  cursor: pointer;
+  padding: 1em;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-button1:hover {
+  background-color: #0b58a5;
+  color: white;
+  padding-top: 1em;
+  padding-left: 2em;
+  transition: 0.3s ease;
+  border-style: none;
+  padding-bottom: 1.04em;
 }
 
 .submit-button:hover {
