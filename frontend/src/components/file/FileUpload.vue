@@ -22,7 +22,7 @@
                     <label for="file">
                       <font-awesome-icon :icon="['fas', 'upload']" /> Choose files..
                     </label>
-                    <button class="submit-button1" v-if="this.files.length" @click="closePreview"> <font-awesome-icon :icon="['fas', 'paper-plane']" /> </button>
+                    <button class="submit-button1" v-if="this.files.length && !this.error" @click="closePreview"><font-awesome-icon :icon="['fas', 'paper-plane']" /> </button>
                     <input
                       multiple
                       type="file"
@@ -58,7 +58,7 @@
                   <sweetalert-icon v-if="error" icon="error" />
                 </div>
                   <div class="field">
-                    <button class="submit-button" v-if="this.files.length && error" @click="closePreview">Try again</button>
+                    <button class="submit-button" v-if="this.files.length && error" @click="tryAgainButton">Try again</button>
                     
                   </div>
                 </form>
@@ -72,11 +72,16 @@
             <div class="modal-footer">
               <slot name="footer">
                 
-                <div v-if="message">
-                  <div class="upload-message">{{message}}</div>
+                <div v-if="message && success">
+                  <div class="upload-message-success">{{message}}</div>
                 </div>
+                <div v-if="message && error">
+                  <div class="upload-message-error">{{message}}</div>
+                </div>
+
               </slot>
             </div>
+            
           </div>
         </div>
       </div>
@@ -132,12 +137,12 @@ export default {
       ];
     },
 
+    //Create error message if not valid
     validate(file) {
-      const MAX_SIZE = 400000;
+      const MAX_SIZE = 200000;
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
-        // Add error msg saying one or more files are unvalid
       }
 
       if (!allowedTypes.includes(file.type)) {
@@ -147,25 +152,33 @@ export default {
       }
     },
 
+    //Send files to multer
     async sendFile() {
       let url = "http://localhost:8000/";
       const formData = new FormData();
 
-      // Validate each file to make sure no wrong fileformats gets sent to server. Run validate and append to formData if OK!
+      // Append all data for validation check in back-end
       _.forEach(this.uploadFiles, (file) => {
-        if (this.validate(file) === "") {
-          formData.append("files", file);
-        }
+        formData.append("files", file)
       });
 
       try {
-        await axios.post(url + "fileuploads/upload/", formData);
-        this.message = "File(s) successfully uploaded!";
-        this.success = true;
-        this.files = [];
-        this.uploadFiles = [];
+        await axios.post(url + "fileuploads/upload/", formData)
+        .then(res => {
+          //Succeded uploading
+          this.message = res.data.msg
+          this.success = true;
+          this.files = [];
+          this.uploadFiles = [];
+        })
+        .catch(err => {
+          //Invalid file size or filetype
+          this.message = err.response.data.error;
+          this.error = true;
+          this.previewStatus = false;
+        })
       } catch (err) {
-        console.log(err);
+        //Network error
         this.message = err;
         this.error = true;
         this.previewStatus = false;
@@ -173,6 +186,14 @@ export default {
     },
     closePreview() {
       this.previewStatus = true
+    },
+    //Removing errors, deleting invalid files and clearing messages
+    tryAgainButton(){
+      this.previewStatus = false
+      this.error = false
+      this.files = []
+      this.uploadFiles = []
+      this.message = ""
     }
   },
   computed: {
@@ -210,6 +231,7 @@ label {
   display: inline-block;
   cursor: pointer;
   padding: 1em;
+  border-bottom: 0.5px solid #0a0a27;
 }
 
 label:hover {
@@ -291,7 +313,6 @@ label:hover {
   padding: 0.5em 0.9em;
   margin-top: 2em;
   text-transform: uppercase;
-  
   border-style: none;
   cursor: pointer;
 }
@@ -306,8 +327,8 @@ label:hover {
   border-color: #0a0a27;
   border-width: 0.5px;
   display: inline-block;
-  cursor: pointer;
   padding: 1em;
+  box-sizing: border-box;
   cursor: pointer;
   transition: 0.3s ease;
 }
@@ -315,11 +336,10 @@ label:hover {
 .submit-button1:hover {
   background-color: #0b58a5;
   color: white;
-  padding-top: 1em;
-  padding-left: 2em;
+  border-color: #0b58a5;
+  border-width: 0.5px; 
+  box-sizing: border-box;
   transition: 0.3s ease;
-  border-style: none;
-  padding-bottom: 1.04em;
 }
 
 .submit-button:hover {
@@ -411,5 +431,12 @@ label:hover {
 /** Bypass default margins */
 .status-icon {
   margin-bottom: -2em;
+}
+
+.upload-message-error{
+  color: red;
+}
+.upload-message-success{
+  color: green;
 }
 </style>
