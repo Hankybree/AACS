@@ -21,7 +21,7 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <label for="file">
+                    <div class="upload-container"><label for="file">
                       <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
                     </label>
                     <button
@@ -30,7 +30,7 @@
                       @click="closePreview"
                     >
                       <font-awesome-icon :icon="['fas', 'paper-plane']" />
-                    </button>
+                    </button></div>
                     <input
                       multiple
                       type="file"
@@ -250,7 +250,7 @@ label {
   display: inline-block;
   cursor: pointer;
   padding: 1em;
-  border-bottom: 0.5px solid #0a0a27;
+  border-top: 0.1px solid #0a0a27;
 }
 
 label:hover {
@@ -344,9 +344,10 @@ label:hover {
   color: #0b58a5;
   background-color: white;
   border-color: #0a0a27;
-  border-width: 0.5px;
+  border-width: 0.1px;
   display: inline-block;
   padding: 1em;
+  padding: -0.5px;
   box-sizing: border-box;
   cursor: pointer;
   transition: 0.3s ease;
