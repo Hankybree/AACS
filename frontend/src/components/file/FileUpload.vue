@@ -37,7 +37,7 @@
                     <div class="row">
                       <div v-for="(file, index) in files" :key="index">
                         <div class="preview">
-                          <div class="preview-img" v-if="file.invalidMessage" style="background-color:red; display: inline-block"></div>
+                          <div class="preview-img-err" v-if="file.invalidMessage" style="display: inline-block"> </div>
                           <img class="preview-img" :src="file.URL" alt v-if="!file.invalidMessage"/>
                           
                           <!-- Delete specific file from upload-->
@@ -56,6 +56,8 @@
                   <div class="status-icon">
                   <sweetalert-icon v-if="success" icon="success" />
                   <sweetalert-icon v-if="error" icon="error" />
+                  <sweetalert-icon v-if="loading" icon="loading" />
+                  
                 </div>
                   <div class="field">
                     <button class="submit-button" v-if="this.files.length && error" @click="tryAgainButton">Try again</button>
@@ -104,7 +106,8 @@ export default {
       success: false,
       message: "",
       showModal: false,
-      previewStatus: false
+      previewStatus: false,
+      loading: false
     };
   },
 
@@ -163,10 +166,12 @@ export default {
       });
 
       try {
+        this.loading = true;
         await axios.post(url + "fileuploads/upload/", formData)
         .then(res => {
           //Succeded uploading
           this.message = res.data.msg
+          this.loading = false;
           this.success = true;
           this.files = [];
           this.uploadFiles = [];
@@ -174,12 +179,14 @@ export default {
         .catch(err => {
           //Invalid file size or filetype
           this.message = err.response.data.error;
+          this.loading = false;
           this.error = true;
           this.previewStatus = false;
         })
       } catch (err) {
         //Network error
         this.message = err;
+        this.loading = false;
         this.error = true;
         this.previewStatus = false;
       }
@@ -337,6 +344,7 @@ label:hover {
   background-color: #0b58a5;
   color: white;
   border-color: #0b58a5;
+  padding-left: 2em;
   border-width: 0.5px; 
   box-sizing: border-box;
   transition: 0.3s ease;
@@ -405,8 +413,14 @@ label:hover {
   width: 80px;
   height: 80px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  background-color: rgba(243, 6, 6, 0.438);
+  background-image: url(../../assets/exclamation-solid.svg);
+  background-repeat: no-repeat;
+  background-size: 1em;
+  background-position-x: 2em;
+  background-position-y: 1em;
+  background-color:rgba(255, 0, 0, 0.363);
   z-index: 200;
+  text-align: center;
 }
 
 .preview-container {
@@ -439,4 +453,5 @@ label:hover {
 .upload-message-success{
   color: green;
 }
+
 </style>
