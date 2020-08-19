@@ -8,7 +8,9 @@
             <div class="modal-header">
               <!-- Close button-->
               <div class="closemodal-button">
-                <button class="closemodal-button" @click="closeModal"><font-awesome-icon :icon="['fas', 'times']" /></button>
+                <button class="closemodal-button" @click="closeModal">
+                  <font-awesome-icon :icon="['fas', 'times']" />
+                </button>
               </div>
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
@@ -20,9 +22,15 @@
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
                     <label for="file">
-                      <font-awesome-icon :icon="['fas', 'upload']" /> Choose files..
+                      <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
                     </label>
-                    <button class="submit-button1" v-if="this.files.length && !this.error" @click="closePreview"><font-awesome-icon :icon="['fas', 'paper-plane']" /> </button>
+                    <button
+                      class="submit-button1"
+                      v-if="this.files.length && !this.error"
+                      @click="closePreview"
+                    >
+                      <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                    </button>
                     <input
                       multiple
                       type="file"
@@ -37,15 +45,21 @@
                     <div class="row">
                       <div v-for="(file, index) in files" :key="index">
                         <div class="preview">
-                          <div class="preview-img-err" v-if="file.invalidMessage" style="display: inline-block"> </div>
-                          <img class="preview-img" :src="file.URL" alt v-if="!file.invalidMessage"/>
-                          
+                          <div
+                            class="preview-img-err"
+                            v-if="file.invalidMessage"
+                            style="display: inline-block"
+                          ></div>
+                          <img class="preview-img" :src="file.URL" alt v-if="!file.invalidMessage" />
+
                           <!-- Delete specific file from upload-->
                           <span class="delete">
                             <button
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
-                            ><font-awesome-icon :icon="['fas', 'times']" /></button>
+                            >
+                              <font-awesome-icon :icon="['fas', 'times']" />
+                            </button>
                           </span>
                           <!-- {{file.name}} -->
                           <!-- <span class="file-error" v-if="file.invalidMessage" style="color:red">{{file.invalidMessage}}</span> -->
@@ -54,14 +68,16 @@
                     </div>
                   </div>
                   <div class="status-icon">
-                  <sweetalert-icon v-if="success" icon="success" />
-                  <sweetalert-icon v-if="error" icon="error" />
-                  <sweetalert-icon v-if="loading" icon="loading" />
-                  
-                </div>
+                    <sweetalert-icon v-if="success" icon="success" />
+                    <sweetalert-icon v-if="error" icon="error" />
+                    <sweetalert-icon v-if="loading" icon="loading" />
+                  </div>
                   <div class="field">
-                    <button class="submit-button" v-if="this.files.length && error" @click="tryAgainButton">Try again</button>
-                    
+                    <button
+                      class="submit-button"
+                      v-if="this.files.length && error"
+                      @click="tryAgainButton"
+                    >Try again</button>
                   </div>
                 </form>
               </div>
@@ -73,17 +89,14 @@
 
             <div class="modal-footer">
               <slot name="footer">
-                
                 <div v-if="message && success">
                   <div class="upload-message-success">{{message}}</div>
                 </div>
                 <div v-if="message && error">
                   <div class="upload-message-error">{{message}}</div>
                 </div>
-
               </slot>
             </div>
-            
           </div>
         </div>
       </div>
@@ -107,7 +120,7 @@ export default {
       message: "",
       showModal: false,
       previewStatus: false,
-      loading: false
+      loading: false,
     };
   },
 
@@ -162,59 +175,58 @@ export default {
 
       // Append all data for validation check in back-end
       _.forEach(this.uploadFiles, (file) => {
-        formData.append("files", file)
+        formData.append("files", file);
       });
 
-      try {
-        this.loading = true;
-        await axios.post(url + "fileuploads/upload/", formData)
-        .then(res => {
+      this.loading = true;
+
+      await axios
+        .post(url + "fileuploads/upload/", formData)
+        .then((res) => {
           //Succeded uploading
-          this.message = res.data.msg
+          this.message = res.data.msg;
           this.loading = false;
           this.success = true;
           this.files = [];
           this.uploadFiles = [];
         })
-        .catch(err => {
+        .catch((err) => {
           //Invalid file size or filetype
-          this.message = err.response.data.error;
+          if (err.response) {
+            this.message = err.response.data.error;
+          } else {
+            // Network error
+            this.message = err;
+          }
+          
           this.loading = false;
           this.error = true;
           this.previewStatus = false;
-        })
-      } catch (err) {
-        //Network error
-        this.message = err;
-        this.loading = false;
-        this.error = true;
-        this.previewStatus = false;
-      }
+        });
     },
     closePreview() {
-      this.previewStatus = true
+      this.previewStatus = true;
     },
     //Removing errors, deleting invalid files and clearing messages
-    tryAgainButton(){
-      this.previewStatus = false
-      this.error = false
-      this.files = []
-      this.uploadFiles = []
-      this.message = ""
-    }
+    tryAgainButton() {
+      this.previewStatus = false;
+      this.error = false;
+      this.files = [];
+      this.uploadFiles = [];
+      this.message = "";
+    },
   },
   computed: {
     togglePreview() {
-      if(this.previewStatus) {
+      if (this.previewStatus) {
         return {
-          display: 'none'
-        }
+          display: "none",
+        };
+      } else {
+        return {};
       }
-      else {
-        return {}
-      }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -345,7 +357,7 @@ label:hover {
   color: white;
   border-color: #0b58a5;
   padding-left: 2em;
-  border-width: 0.5px; 
+  border-width: 0.5px;
   box-sizing: border-box;
   transition: 0.3s ease;
 }
@@ -418,7 +430,7 @@ label:hover {
   background-size: 1em;
   background-position-x: 2em;
   background-position-y: 1em;
-  background-color:rgba(255, 0, 0, 0.363);
+  background-color: rgba(255, 0, 0, 0.363);
   z-index: 200;
   text-align: center;
 }
@@ -447,11 +459,10 @@ label:hover {
   margin-bottom: -2em;
 }
 
-.upload-message-error{
+.upload-message-error {
   color: red;
 }
-.upload-message-success{
+.upload-message-success {
   color: green;
 }
-
 </style>
