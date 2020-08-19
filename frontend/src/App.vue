@@ -15,6 +15,8 @@
 
   export default {
     created() {
+      
+      // Testar så att sockets funkar
       let socket = new WebSocket('ws://localhost:8000')
       socket.onopen = () => {
         socket.send('Hello server')
@@ -22,6 +24,7 @@
       socket.onmessage = (message) => {
         console.log(message.data)
       }
+      // Slut test
     },
     name: 'App',
     components: { FileUpload, Public }

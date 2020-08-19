@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const cors = require('cors')
+const uuid = require('uuid')
 const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
@@ -13,142 +14,139 @@ const wss = new WebSocketServer({ server: server })
 
 wss.on('connection', (socket, request) => {
 
-    socket.send('Hello client')
+  console.log(request.socket.remoteAddress + ' has connected')
+  console.log('Clients conntected: ' + wss.clients.size)
 
-    socket.onmessage = (message) => {
-      console.log(message.data)
-    }
+  clients.push(socket)
 
-    // console.log(request.socket.remoteAddress + ' has connected')
-    // console.log('Clients conntected: ' + wss.clients.size)
+  // Testar så att sockets funkar
+  socket.send('Hello client')
+  // Slut test
 
-    // clients.push(socket)
+  socket.onmessage = (message) => {
+    console.log(message.data)
+    // let data = JSON.parse(message.data)
+    // console.log(data)
 
-    // socket.onmessage = (message) => {
-    //     let data = JSON.parse(message.data)
-    //     console.log(data)
-
-    //     if (data.status === 1) {
-    //         console.log(data.msg)
-    //     } else if (data.status === 2) {
-    //         like(data, 2, data.currentPage)
-    //     } else if (data.status === 3) {
-    //         comment(data, 3, data.currentPage)
-    //     } else if (data.status === 4) {
-    //         deleteComment(data, 4, data.currentPage)
-    //     }
+    // if (data.status === 1) {
+    //     console.log(data.msg)
+    // } else if (data.status === 2) {
+    //     like(data, 2)
+    // } else if (data.status === 3) {
+    //     comment(data, 3)
+    // } else if (data.status === 4) {
+    //     deleteComment(data, 4)
     // }
+  }
 
-    // socket.onclose = () => {
+  socket.onclose = () => {
 
-    //     console.log(request.socket.remoteAddress + ' has disconnected')
-    //     console.log('Clients conntected: ' + wss.clients.size)
+    console.log(request.socket.remoteAddress + ' has disconnected')
+    console.log('Clients conntected: ' + wss.clients.size)
 
-    //     // Remove socket from client list
-    //     clients.splice(clients.indexOf(socket), 1)
+    // Remove socket from client list
+    clients.splice(clients.indexOf(socket), 1)
 
-    //     // Close socket
-    //     socket.close()
-    // }
+    // Close socket
+    socket.close()
+  }
 })
 
 router.get('/images', (req, res) => {
 
   getImages(req.get('CurrentPage'))
-      .then((images) => {
-          res.send(JSON.stringify({ status: 1, data: images }))
-      })
+    .then((images) => {
+      res.send(JSON.stringify({ status: 1, data: images }))
+    })
 })
-
-function sendData(socket, status, currentPage) {
-
-  getImages(currentPage)
-      .then((images) => {
-          socket.send(JSON.stringify({ status: status, data: images }))
-      })
-}
 
 function getImages(currentPage) {
 
   return new Promise((resolve, reject) => {
-      database.all('SELECT * FROM images ORDER BY imageId DESC LIMIT 5 OFFSET ?', [currentPage * 5])
-      .then((images) => {
 
-          database.all('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId')
-              .then((imageData) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY imageId DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
+      if (err) throw err
 
-                  for (let i = 0; i < images.length; i++) {
+      mysqlConnection.query('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId', (err, imageData) => {
+        if (err) throw err
 
-                      let likes = []
-                      let comments = []
+        for (let i = 0; i < images.length; i++) {
 
-                      for (let j = 0; j < imageData.length; j++) {
+          let likes = []
+          let comments = []
 
-                          if (imageData[j].likeImageId === images[i].imageId && !likes.includes(imageData[j].likeUserId)) {
-                              likes.push(imageData[j].likeUserId)
-                          }
+          for (let j = 0; j < imageData.length; j++) {
 
-                          if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
-                              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage })
-                          }
-                      }
+            if (imageData[j].likeImageId === images[i].imageId && !likes.includes(imageData[j].likeUserId)) {
+              likes.push(imageData[j].likeUserId)
+            }
 
-                      images[i].likes = likes
-                      images[i].comments = comments
-                  }
+            if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
+              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage })
+            }
+          }
 
-                  resolve(images)
-              })
+          images[i].likes = likes
+          images[i].comments = comments.sort((a, b) => a.commentId - b.commentId)
+        }
+
+        resolve(images)
       })
+    })
   })
 }
 
-function like(data, status, currentPage) {
+function like(data, status) {
 
-  //mysqlConnection.query('SELECT * FROM likes WHERE likeImageId=?', [data.likeImageId])
-  database.all('SELECT * FROM likes WHERE likeImageId=?', [data.likeImageId])
-      .then((likes) => {
+  mysqlConnection.query('SELECT * FROM likes WHERE likeImageId=?', [data.likeImageId], (err, likes) => {
+    if (err) throw err
 
-          if (likes) {
-              console.log(likes)
-          }
+    let likeData = { status: status, likeImageId: data.likeImageId, likeUserId: data.likeUserId }
 
-          if (likes !== undefined && likes.some(like => like.likeUserId === data.likeUserId)) {
-              database.run('DELETE FROM likes WHERE (likeUserId=? AND likeImageId=?)', [data.likeUserId, data.likeImageId])
-                  .then(() => {
-                      clients.forEach((client) => {
-                          sendData(client, status, currentPage)
-                      })
-                  })
-          } else {
-              database.run('INSERT INTO likes (likeImageId, likeUserId) VALUES (?, ?)', [data.likeImageId, data.likeUserId])
-                  .then(() => {
-                      clients.forEach((client) => {
-                          sendData(client, status, currentPage)
-                      })
-                  })
-          }
+    if (likes !== undefined && likes.some(like => like.likeUserId === data.likeUserId)) {
+      mysqlConnection.query('DELETE FROM likes WHERE (likeUserId=? AND likeImageId=?)', [data.likeUserId, data.likeImageId], (err) => {
+        if (err) throw err
+
+        clients.forEach((client) => {
+          likeData.isLiking = false
+          client.send(JSON.stringify(likeData))
+        })
       })
+    } else {
+      mysqlConnection.query('INSERT INTO likes (likeImageId, likeUserId) VALUES (?, ?)', [data.likeImageId, data.likeUserId], (err) => {
+        if (err) throw err
+
+        clients.forEach((client) => {
+          likeData.isLiking = true
+          client.send(JSON.stringify(likeData))
+        })
+      })
+    }
+  })
 }
 
-function comment(data, status, currentPage) {
+function comment(data, status) {
 
-  database.run('INSERT INTO comments (commentImageId, commentUserId, commentMessage) VALUES (?, ?, ?)', [data.commentImageId, data.commentUserId, data.commentMessage])
-      .then(() => {
-          clients.forEach((client) => {
-              sendData(client, status, currentPage)
-          })
-      })
+  const token = uuid.v4()
+
+  mysqlConnection.query('INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage) VALUES (?, ?, ?, ?)', [token, data.commentImageId, data.commentUserId, data.commentMessage], (err) => {
+    if (err) throw err
+
+    clients.forEach((client) => {
+      client.send(JSON.stringify({ status: status, commentId: token, commentImageId: data.commentImageId, commentUserId: data.commentUserId, commentMessage: data.commentMessage }))
+    })
+  })
 }
 
-function deleteComment(data, status, currentPage) {
+function deleteComment(data, status) {
 
-  database.run('DELETE FROM comments WHERE (commentId=?)', [data.commentId])
-      .then(() => {
-          clients.forEach((client) => {
-              sendData(client, status, currentPage)
-          })
-      })
+  mysqlConnection.query('DELETE FROM comments WHERE (commentId=?)', [data.commentId], (err) => {
+    if (err) throw err
+
+    clients.forEach((client) => {
+      client.send(JSON.stringify({ status: status, imageId: data.imageId, commentId: data.commentId }))
+    })
+  })
 }
 
 module.exports = router
