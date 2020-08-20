@@ -4,6 +4,8 @@
     <!-- {{ this.$store.state }} -->
     <router-view></router-view>
 
+    <AuthView />
+
     <FileUpload />
     <!-- <Public /> -->
     <TestImages />
@@ -14,6 +16,7 @@
   import FileUpload from './components/file/FileUpload.vue'
   // import Public from './components/Explorers/Public.vue'
   import TestImages from './components/Explorers/TestImages.vue'
+  import AuthView from './views/AuthView'
 
   export default {
     // created() {
@@ -36,7 +39,7 @@
         })
     },
     name: 'App',
-    components: { FileUpload, TestImages }
+    components: { FileUpload, TestImages, AuthView }
   }
 </script>
 

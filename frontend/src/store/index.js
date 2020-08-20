@@ -14,7 +14,10 @@ let state = {
   token: '',
   user: {},
   isLoggedIn: false,
-  images: []
+  socket: null,
+  images: [],
+  currentPage: 0,
+  message: ''
 };
 
 
@@ -36,6 +39,22 @@ const mutations = {
   },
   setImages(state, newImages) {
     state.images = newImages
+  },
+  setSocket(state, newSocket) {
+    state.socket = newSocket
+  },
+  appendImages(state, newImages) {
+    newImages.forEach(newImage => {
+      if(!state.images.some(image => image.imageId === newImage.imageId)) {
+        state.images.push(newImage)
+      }
+    })
+  },
+  setMessage(state, newMessage) {
+    state.message = newMessage
+  },
+  setCurrentPage(state, newCurrentPage) {
+    state.currentPage = newCurrentPage
   }
 }
 
@@ -77,6 +96,20 @@ const actions = {
       router.push({ name: 'Trips' })
     }
   },
+  // METHODS FOR HANDLING OUTGOING SOCKET DATA
+  connect(context) {
+    client.connect(context)
+  },
+  like: (context, imageId) => {
+    context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.userId }))
+  },
+  comment: (context, imageId) => {
+    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.userId, commentMessage: context.state.message, currentPage: context.state.currentPage }))
+    context.commit('setMessage', '')
+  },
+  deleteComment(context, data) {
+    context.state.socket.send(JSON.stringify({ status: 4, imageId: data.imageId, commentId: data.commentId }))
+  }
 }
 
 
