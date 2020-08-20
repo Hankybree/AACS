@@ -29,10 +29,12 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
+axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App),
   router,
   store
 }).$mount('#app')

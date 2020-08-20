@@ -1,4 +1,3 @@
-const WebSocketServer = require('ws').Server
 const express = require('express')
 const mysqlConnection = require('./mysql')
 const bcrypt = require('bcryptjs')
@@ -8,16 +7,13 @@ const app = express()
 const port = 8000
 require('dotenv-flow').config();
 
-
 const server = app.listen(port, () => {
     console.log('Listening on port: ' + port)
 })
 
-let clients = []
-let id = 0
+module.exports = server
 
-const wss = new WebSocketServer({ server: server })
-
+app.use('/images', require('./routes/images'))
 app.use('/auth', require('./routes/auth/'))
 app.use('/fileuploads', require('./routes/fileuploads/'))
 

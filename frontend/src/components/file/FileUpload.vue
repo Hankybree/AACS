@@ -155,8 +155,8 @@ export default {
 
     //Create error message if not valid
     validate(file) {
-      const MAX_SIZE = 200000;
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const MAX_SIZE = 1000 * 1000 * 5;
+      const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
       }
@@ -181,7 +181,7 @@ export default {
       this.loading = true;
 
       await axios
-        .post(url + "fileuploads/upload/", formData)
+        .post(url + "fileuploads/", formData)
         .then((res) => {
           //Succeded uploading
           this.message = res.data.msg;

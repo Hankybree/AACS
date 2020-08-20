@@ -17,6 +17,7 @@
     "secure-ls": "^1.2.6",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
+    "vue-masonry": "^0.11.8",
     "vue-router": "^3.4.2",
     "vue-sweetalert-icons": "^4.3.0",
     "vuex": "^3.5.1",

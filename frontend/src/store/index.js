@@ -14,6 +14,7 @@ let state = {
   token: '',
   user: {},
   isLoggedIn: false,
+  images: []
 };
 
 
@@ -32,6 +33,9 @@ const mutations = {
   },
   RESET: state => {
     Object.assign(state, getDefaultState());
+  },
+  setImages(state, newImages) {
+    state.images = newImages
   }
 }
 
