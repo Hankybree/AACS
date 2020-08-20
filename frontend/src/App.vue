@@ -6,12 +6,12 @@
 
     <FileUpload />
     <!-- <Public /> -->
-    <input type="button" value="Log out" @click="logout">
+    
   </div>
 </template>
 
 <script>
-  import FileUpload from './components/file/FileUpload.vue'
+  
   // import Public from './components/Explorers/Public.vue'
 
   export default {
@@ -23,13 +23,7 @@
           console.log(result)
         })
     },
-    name: 'App',
-    components: { FileUpload },
-    methods: {
-      logout() {
-        this.$store.dispatch('logout')
-      }
-    }
+    name: 'App'
   }
 </script>
 

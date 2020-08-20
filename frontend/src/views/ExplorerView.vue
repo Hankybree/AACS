@@ -6,14 +6,19 @@
 
     <button @click="toggleFeed">FEED</button>
     <button @click="toggleGrid">Masonry</button>
+
     <!-- TEMP -->
-    <!-- <router-link :to="{ name: 'AuthView', params: { page: 'login' }}"><span class="whiteColor">Login</span></router-link> -->
+    <FileUpload />
+
+    <input type="button" value="Log out" @click="$store.dispatch('logout')">
+    <!-- END TEMP -->
   </div>
 </template>
 
 <script>
   import Feed from '../components/Explorers/Feed'
   import Public from '../components/Explorers/Public'
+  import FileUpload from '../components/file/FileUpload'
 
   export default {
     beforeCreate() {
@@ -27,7 +32,7 @@
       this.getImages()
     },
     name: 'ExplorerView',
-    components: { Feed, Public },
+    components: { Feed, Public, FileUpload },
     data() {
       return {
         showFeed: false,
