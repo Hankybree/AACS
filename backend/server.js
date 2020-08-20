@@ -13,7 +13,7 @@ const server = app.listen(port, () => {
 
 module.exports = server
 
-app.use('/socket', require('./routes/socket/'))
+app.use('/images', require('./routes/images'))
 app.use('/auth', require('./routes/auth/'))
 app.use('/fileuploads', require('./routes/fileuploads/'))
 

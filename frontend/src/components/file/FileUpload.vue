@@ -178,10 +178,6 @@ export default {
         formData.append("files", file);
       });
 
-      formData.append("userId", this.$store.state.user.id)
-
-      console.log(formData.userId)
-
       this.loading = true;
 
       await axios
