@@ -6,6 +6,7 @@ import router from './../router';
 import createPersistedState from 'vuex-persistedstate';
 import SecureLS from "secure-ls";
 var ls = new SecureLS({ encodingType: 'rc4', isCompression: false, encryptionSecret: 'r89RnWwJUuudXPSwaJyCdvSv7zVJ5G4ajKwBGbqAZr3mx7JQ4mX' });
+import { client } from '../scripts/client.js'
 
 Vue.use(Vuex);
 
