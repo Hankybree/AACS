@@ -4,32 +4,17 @@
     <!-- {{ this.$store.state }} -->
     <router-view></router-view>
 
-    <AuthView />
-
     <FileUpload />
     <!-- <Public /> -->
-    <TestImages />
+    <input type="button" value="Log out" @click="logout">
   </div>
 </template>
 
 <script>
   import FileUpload from './components/file/FileUpload.vue'
   // import Public from './components/Explorers/Public.vue'
-  import TestImages from './components/Explorers/TestImages.vue'
-  import AuthView from './views/AuthView'
 
   export default {
-    // created() {
-    // Testar så att sockets funkar
-    // let socket = new WebSocket('ws://localhost:8000')
-    // socket.onopen = () => {
-    //   socket.send('Hello server')
-    // }
-    // socket.onmessage = (message) => {
-    //   console.log(message.data)
-    // }
-    // Slut test
-    // },
     created() {
       fetch('http://localhost:8000/fileuploads/')
         .then((response) => response.json())
@@ -39,7 +24,12 @@
         })
     },
     name: 'App',
-    components: { FileUpload, TestImages, AuthView }
+    components: { FileUpload },
+    methods: {
+      logout() {
+        this.$store.dispatch('logout')
+      }
+    }
   }
 </script>
 

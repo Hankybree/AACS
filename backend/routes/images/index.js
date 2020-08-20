@@ -52,7 +52,7 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.get('/images', (req, res) => {
+router.get('/', (req, res) => {
 
   getImages(req.get('CurrentPage'))
     .then((images) => {

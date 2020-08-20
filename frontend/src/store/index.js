@@ -87,14 +87,14 @@ const actions = {
     commit('SET_TOKEN', token);
     commit('SET_USER', user);
     commit('SET_IS_LOGGED_IN', true)
-    router.push({ name: 'ExplorerView' })
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    router.push({ name: 'ExplorerView' })
   },
   logout: ({ commit }) => {
     commit('RESET', '');
     commit('SET_IS_LOGGED_IN', false)
     if (router.currentRoute.name !== 'Trips') {
-      router.push({ name: 'Trips' })
+      router.push({ name: 'AuthView', params: { page: 'login'} })
     }
   },
   // METHODS FOR HANDLING OUTGOING SOCKET DATA

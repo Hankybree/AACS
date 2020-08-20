@@ -1,11 +1,6 @@
 <template>
   <div class="content bgColor">
 
-    <!-- Temp  -->
-    <div id="nav">
-      <input type="button" @click="goBack" value="X" class="goBackButton whiteColor"/>
-    </div>
-
     <Login v-if="page === 'login'"/>
     <Signup v-if="page === 'signup'" />
     <ForgotPassword v-if="page === 'forgot'" />
@@ -31,11 +26,6 @@ export default {
   created() {
     if (this.$store.getters.isLoggedIn) {
       this.$router.push({ name: "ExplorerView" })
-    }
-  },
-  methods:{
-    goBack(){
-      this.$router.push({name: "ExplorerView"})
     }
   },
   computed:{
