@@ -42,7 +42,7 @@
         this.showFeed = false
       },
       getImages() {
-        fetch('http://localhost:8500/images', {
+        fetch('http://localhost:8000/images/images', {
           headers: {
             CurrentPage: this.$store.state.currentPage
           },
