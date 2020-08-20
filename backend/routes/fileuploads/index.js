@@ -4,6 +4,7 @@ const multer = require('multer')
 const cors = require('cors');
 const mysqlConnection = require('../../mysql');
 const uuid = require('uuid')
+const middleware = require('../../middleware/authuser.js')
 
 router.use(cors());
 router.use(express.json())
@@ -31,16 +32,14 @@ const upload = multer({
     }
 })
 
-router.post('/', upload.array("files"), (req, res, next) => {
-
-    // Kolla så att användare är inloggad och om userId är giltigt
+router.post('/', upload.array("files"), middleware.verifyUser, (req, res, next) => {
 
     if (req.files) {
         req.files.forEach(file => {
             let imagePath = 'http://localhost:8000/fileuploads/' + file.path
             let token = uuid.v4()
 
-            mysqlConnection.query('INSERT INTO images (imageId, imagePath, imageUserId) VALUES (?, ?, ?)', [token, imagePath, req.body.userId], (err) => {
+            mysqlConnection.query('INSERT INTO images (imageId, imagePath, imageUserId) VALUES (?, ?, ?)', [token, imagePath, req.decoded.userId], (err) => {
                 if (err) throw err
                 console.log('Databasar')
 
