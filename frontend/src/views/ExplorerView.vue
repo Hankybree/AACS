@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <!-- Söka efter publika bilder -->
-    <Feed v-if="showFeed" />
+    <Feed v-if="$store.state.showFeed" />
     <Public v-else />
     <!-- TEMP -->
     <FileUpload />
@@ -37,17 +37,16 @@
     components: { Feed, Public, FileUpload },
     data() {
       return {
-        showFeed: false,
         loading: false,
         currentPage: 0
       }
     },
     methods: {
       toggleFeed() {
-        this.showFeed = true
+        this.$store.commit('setShowFeed', true)
       },
       toggleGrid() {
-        this.showFeed = false
+        this.$store.commit('setShowFeed', false)
       },
       getImages() {
         fetch('http://localhost:8000/images/', {
@@ -58,7 +57,11 @@
         })
           .then((response) => response.json())
           .then((result) => {
-            this.$store.commit('appendImages', result.data)
+            if (this.currentPage === 0) {
+              this.$store.commit('setImages', result.data)
+            } else {
+              this.$store.commit('appendImages', result.data)
+            }
             this.loading = false
             console.log(result)
           })
