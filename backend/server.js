@@ -13,9 +13,9 @@ const server = app.listen(port, () => {
 
 module.exports = server
 
-app.use('/images', require('./routes/images'))
-app.use('/auth', require('./routes/auth/'))
-app.use('/fileuploads', require('./routes/fileuploads/'))
+app.use('/api/images', require('./routes/images'))
+app.use('/api/auth', require('./routes/auth/'))
+app.use('/api/fileuploads', require('./routes/fileuploads/'))
 
 app.use(bodyParser.json());
 app.use(cors());

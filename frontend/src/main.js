@@ -29,6 +29,13 @@ import store from './store'
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
 
+
+if (process.env.NODE_ENV == "development") {
+  axios.defaults.baseURL = 'http://localhost:8000/api/'
+} else {
+  axios.defaults.baseURL = 'https://picnet.aviliax.com/api/'
+}
+
 Vue.config.productionTip = false
 
 let vueApp = new Vue({
