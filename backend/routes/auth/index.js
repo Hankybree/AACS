@@ -148,7 +148,7 @@ router.post('/signup', (req, res, next) => {
         }
         console.log(`${process.env.HOST}/auth/confirm/${token}`);
         var mailOptions = {
-          from: 'AACS <AACS@aviliax.com>',
+          from: 'PicNet <PicNet@aviliax.com>',
           to: req.body.email,
           subject: 'Confirm your email',
           html: `Hello! Please <a href="http://${process.env.HOST}/auth/confirm/${token}">Confirm your email</a>`
@@ -236,7 +236,7 @@ router.post('/forgot', (req, res, next) => {
       );
 
       var mailOptions = {
-        from: 'AACS <AACS@aviliax.com>',
+        from: 'PicNet <PicNet@aviliax.com>',
         to: req.body.email,
         subject: 'Forgot password?',
         html: `<a href="http://${process.env.HOST}/auth/forgot/${token}">Create a new password</a>`
