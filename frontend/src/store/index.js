@@ -17,7 +17,6 @@ let state = {
   isLoggedIn: false,
   socket: null,
   images: [],
-  currentPage: 0,
   message: ''
 };
 
@@ -53,9 +52,6 @@ const mutations = {
   },
   setMessage(state, newMessage) {
     state.message = newMessage
-  },
-  setCurrentPage(state, newCurrentPage) {
-    state.currentPage = newCurrentPage
   }
 }
 

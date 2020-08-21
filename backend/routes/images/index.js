@@ -60,7 +60,7 @@ function getImages(currentPage) {
 
   return new Promise((resolve) => {
 
-    mysqlConnection.query('SELECT * FROM images ORDER BY imageId DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
       if (err) throw err
 
       mysqlConnection.query('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId', (err, imageData) => {

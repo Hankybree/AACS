@@ -6,7 +6,7 @@
     <!-- TEMP -->
     <FileUpload />
 
-    <input type="button" value="Log out" @click="$store.dispatch('logout')">
+    <input type="button" value="Log out" @click="$store.dispatch('logout')" />
     <!-- END TEMP -->
     <div class="imagedisplay-buttons-container">
       <span>
@@ -38,7 +38,8 @@
     data() {
       return {
         showFeed: false,
-        loading: false
+        loading: false,
+        currentPage: 0
       }
     },
     methods: {
@@ -51,7 +52,7 @@
       getImages() {
         fetch('http://localhost:8000/images/', {
           headers: {
-            'CurrentPage': this.$store.state.currentPage
+            CurrentPage: this.currentPage
           },
           method: 'GET'
         })
@@ -68,10 +69,7 @@
           !this.loading
         ) {
           this.loading = true
-          this.$store.commit(
-            'setCurrentPage',
-            this.$store.state.currentPage + 1
-          )
+          this.currentPage++
           this.getImages()
         }
       }
@@ -80,21 +78,21 @@
 </script>
 
 <style scoped>
-.imagedisplay-buttons-container {
-  width: 100%;
-  background-color: grey;
-  position: fixed;
-  bottom: 0;
-}
+  .imagedisplay-buttons-container {
+    width: 100%;
+    background-color: grey;
+    position: fixed;
+    bottom: 0;
+  }
 
-/*  BUTTON ATTRIBUTES */  
+  /*  BUTTON ATTRIBUTES */
 
-.buttons {
-  width: 40%;
-  height: 3em;
-}
+  .buttons {
+    width: 40%;
+    height: 3em;
+  }
 
-.feedbutton {
- background-color: blue;
-}
+  .feedbutton {
+    background-color: blue;
+  }
 </style>
