@@ -5,8 +5,10 @@ const uuid = require('uuid')
 const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
+const bodyParser = require("body-parser");
 
 router.use(cors())
+router.use(bodyParser.json())
 
 let clients = []
 
@@ -148,5 +150,23 @@ function deleteComment(data, status) {
     })
   })
 }
+
+router.post('/countImages', (req, res) => {
+  mysqlConnection.query(`SELECT COUNT(*) AS count FROM images WHERE imageUserId = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
+    if(err){
+      return res.status(504).send({
+        message: "Check your network connection!"
+      })
+    }
+
+    // console.log(result[0].count)
+    if(result.length){
+      return res.status(200).send({
+        count: result[0].count
+      })
+    }
+
+  })
+})
 
 module.exports = router

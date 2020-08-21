@@ -1,15 +1,172 @@
 <template>
   <div class="content">
+    <!-- Profile Interface -->
+    <div class="profile-interface">
+      <!-- Profile Image -->
+      <div class="profile-image-container">
+        <div class="profile-image"></div>
+      </div>
+      <!-- Profile details -->
+      <div class="profile-details">
+        <p class="profile-text">{{this.$store.state.user.username}}</p>
+        <p class="profile-text">{{this.$store.state.user.email}}</p>
+        <p class="profile-text uploads">Uploads: {{countedImages}}</p>
+      </div>
+    </div>
+    <!-- Settings -->
+    <div class="settings-container">
+      <button class="settings-button white" @click="changePassword">Change password</button>
+      <button class="settings-button red" @click="logout">Logout</button>
+    </div>
+
+
     <!-- Bläddra bland privata bilder -->
+    <div class="image-grid-wrapper">
+      <div class="column">
+
+        <!-- TEMP IMAGES > Load from database here -->
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ProfileView'
+  name: 'ProfileView',
+  data(){
+    return{
+      countedImages: 0
+    }
+  },
+  created(){
+    const credentials = { userId: this.$store.state.user.id }
+    let url = "http://localhost:8000/"
+
+    this.axios.post(url + "images/countImages", credentials)
+    .then(res => {
+      this.countedImages = res.data.count
+    })
+    .catch(err => {
+      console.log(err.response.data.message)
+    })
+  },
+  methods:{
+    changePassword(){
+      //Handle change password here
+      console.log("Change password")
+    },
+    logout(){
+      //Handle logout here
+      this.$store.dispatch("logout")
+
+      //Push back to AuthView
+      this.$router.push({ name: "AuthView", params:{ page: "login" }})
+    }
+  }
 }
 </script>
 
 <style scoped>
+.column{
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  justify-content: center;
+}
+.grid-image{
+  width: 32%;
+  height: 100pt;
+  margin: 1px;
+  background-color: black;
+}
+.image-grid-wrapper{
+  margin: 10px auto;
+}
+.profile-details{
+  width: 80%;
+  display: flex; 
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+.profile-image{
+  width: 50px;
+  height: 50px;
+  background-image: url('../assets/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.profile-image-container{
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-interface{
+  width: 100%;
+  height: 50pt;
+  background-color:transparent;
+  display: flex;
+  flex-direction: row;
+}
+.profile-text{
+  margin: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.red{
+  background-color: tomato;
+}
+.settings-button{
+  width: 80%;
+  border-radius: 10px;
+  height: 30pt;
+  margin-top: 5pt;
+  border: 0px;
+  font-weight: 600;
+}
+.settings-container{
+  width: 100%;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid white;
+}
+.uploads{
+  display: flex;
+  font-size: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.white{
+  background-color: white;
+}
 
 </style>

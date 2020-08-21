@@ -57,7 +57,7 @@ export default {
         console.log(credentials)
 
         this.axios
-        .post(url + "auth/signup/", credentials)
+        .post(url + "auth/signup", credentials)
         .then(res => {
           this.successMessage = res.data.msg
         })
