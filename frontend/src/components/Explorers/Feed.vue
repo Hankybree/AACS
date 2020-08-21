@@ -64,7 +64,7 @@ hr {
 
 .image {
   width: 95%;
-  max-width: 30em;
+  max-width: 30em;  
 }
 
 .commentlikes-container {
