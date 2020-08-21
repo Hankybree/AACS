@@ -45,11 +45,11 @@ let vueApp = new Vue({
 })
 
 function secureCheck() {
-  let url = 'http://localhost:8000/auth/'
+
 
   if (store.state.token) {
     axios
-    .post(url + 'checkIfValidSession/')
+    .post('auth/checkIfValidSession/')
     .then(response => {
       const user = {
         email: response.data.email,

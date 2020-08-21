@@ -170,7 +170,7 @@ export default {
 
     //Send files to multer
     async sendFile() {
-      let url = "http://localhost:8000/";
+    
       const formData = new FormData();
 
       // Append all data for validation check in back-end
@@ -181,7 +181,7 @@ export default {
       this.loading = true;
 
       await axios
-        .post(url + "fileuploads/", formData)
+        .post("fileuploads/", formData)
         .then((res) => {
           //Succeded uploading
           this.message = res.data.msg;
