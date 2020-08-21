@@ -58,7 +58,11 @@
         })
           .then((response) => response.json())
           .then((result) => {
-            this.$store.commit('appendImages', result.data)
+            if (this.currentPage === 0) {
+              this.$store.commit('setImages', result.data)
+            } else {
+              this.$store.commit('appendImages', result.data)
+            }
             this.loading = false
             console.log(result)
           })
