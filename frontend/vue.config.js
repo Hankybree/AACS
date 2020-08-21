@@ -9,12 +9,5 @@ module.exports = {
     },
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
-    workboxOptions: {
-      runtimeCaching: [
-        {
-          handler: 'NetworkFirst',
-        }
-      ]
-    }
   }
 };
