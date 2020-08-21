@@ -19,24 +19,20 @@ wss.on('connection', (socket, request) => {
 
   clients.push(socket)
 
-  // Testar så att sockets funkar
-  socket.send('Hello client')
-  // Slut test
-
   socket.onmessage = (message) => {
-    console.log(message.data)
-    // let data = JSON.parse(message.data)
-    // console.log(data)
+  
+    let data = JSON.parse(message.data)
+    console.log(data)
 
-    // if (data.status === 1) {
-    //     console.log(data.msg)
-    // } else if (data.status === 2) {
-    //     like(data, 2)
-    // } else if (data.status === 3) {
-    //     comment(data, 3)
-    // } else if (data.status === 4) {
-    //     deleteComment(data, 4)
-    // }
+    if (data.status === 1) {
+        console.log(data.msg)
+    } else if (data.status === 2) {
+        like(data, 2)
+    } else if (data.status === 3) {
+        comment(data, 3)
+    } else if (data.status === 4) {
+        deleteComment(data, 4)
+    }
   }
 
   socket.onclose = () => {
@@ -52,7 +48,7 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.get('/images', (req, res) => {
+router.get('/', (req, res) => {
 
   getImages(req.get('CurrentPage'))
     .then((images) => {
@@ -62,9 +58,9 @@ router.get('/images', (req, res) => {
 
 function getImages(currentPage) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
 
-    mysqlConnection.query('SELECT * FROM images ORDER BY imageId DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
       if (err) throw err
 
       mysqlConnection.query('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId', (err, imageData) => {
