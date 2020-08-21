@@ -1,11 +1,11 @@
 const express = require('express')
-const mysqlConnection = require('./mysql')
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
 const bodyParser = require("body-parser");
 const app = express()
 const port = 8000
 require('dotenv-flow').config();
+const mysqlConnection = require('./mysql')
 
 const server = app.listen(port, () => {
     console.log('Listening on port: ' + port)
