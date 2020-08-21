@@ -38,10 +38,9 @@ export const client = {
       context.commit('setLike', data)
   },
   comment(context, data) {
-      context.state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+      context.commit('setComment', data)
   },
   deleteComment(context, data) {
-      let commentArray = context.state.images.find(image => image.imageId === data.imageId).comments
-      commentArray.splice(commentArray.indexOf(commentArray.find(comment => comment.commentId === data.commentId)), 1)
+      context.commit('deleteComment', data)
   }
 }

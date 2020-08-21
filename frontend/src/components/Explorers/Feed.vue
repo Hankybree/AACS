@@ -8,19 +8,24 @@
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
-            <button class="likebutton button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+            <button v-if="!image.likes.includes($store.state.user.id)" class="likebutton button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+            <button v-else class="likebutton-pressed button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
           </div>
-          <form action>
-            <input type="text" placeholder="comment..." />
-            <button class="sendbutton button"><font-awesome-icon :icon="['fas', 'paper-plane']" /></button>
-          </form>
+          
+          <input v-model="message" placeholder="comment..." />
+          <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)"><font-awesome-icon :icon="['fas', 'paper-plane']" /></button>
+          
   
           <div class="comments">
-            <button @click="showComments" class="show-comment-button button">{{showCommentsbtnmsg}}</button>
+            <button v-if="!commentsVisible" @click="showComments" class="show-comment-button button">View all {{image.comments.length}} comments</button>
+            <button v-else @click="showComments" class="show-comment-button button">Hide comments</button>
             <div v-if="commentsVisible" class="comment-container">
-              <div class="user">Frank:</div>
-              <div class="comment">This is a pretty photo!</div>
-              <hr/>
+              <div :key="index" v-for="(comment, index) in image.comments">
+                <div class="user">{{ comment.commentUserId }}</div>
+                <div class="comment">{{ comment.commentMessage }}</div>
+                <button @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})">Delete comment</button>
+                <hr/>
+              </div>
             </div>
           </div>
         </div>
@@ -33,18 +38,12 @@
 export default {
   data() {
     return {
-      commentsVisible: false,
-      showCommentsbtnmsg: 'view all 69 comments'
+      commentsVisible: false
     }
   },
   methods: {
     showComments() {
       this.commentsVisible = !this.commentsVisible
-      if(this.commentsVisible) {
-        this.showCommentsbtnmsg = 'hide comments'
-      } else {
-        this.showCommentsbtnmsg = 'view all 69 comments' 
-      }
     }
   },
   computed: {
@@ -54,6 +53,14 @@ export default {
         },
         set(newImages) {
             this.$store.commit('setImages', newImages)
+        }
+    },
+    message: {
+        get() {
+            return this.$store.state.message
+        },
+        set(newMessage) {
+            this.$store.commit('setMessage', newMessage)
         }
     }
   },
@@ -102,7 +109,9 @@ hr {
   color: white;
   cursor: pointer;
 }
-
+.likebutton-pressed {
+  color: orange;
+}
 .likebutton:hover {
   color: orange;
 }

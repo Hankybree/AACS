@@ -45,7 +45,7 @@ const mutations = {
   },
   appendImages(state, newImages) {
     newImages.forEach(newImage => {
-      if(!state.images.some(image => image.imageId === newImage.imageId)) {
+      if (!state.images.some(image => image.imageId === newImage.imageId)) {
         state.images.push(newImage)
       }
     })
@@ -56,10 +56,17 @@ const mutations = {
   setLike(state, data) {
     if (data.isLiking) {
       state.images.find(image => image.imageId === data.likeImageId).likes.push(data.likeUserId)
-  } else {
+    } else {
       let likeArray = state.images.find(image => image.imageId === data.likeImageId).likes
       likeArray.splice(likeArray.indexOf(data.likeUserId), 1)
-  }
+    }
+  },
+  setComment(state, data) {
+    state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+  },
+  deleteComment(state, data) {
+    let commentArray = state.images.find(image => image.imageId === data.imageId).comments
+      commentArray.splice(commentArray.indexOf(commentArray.find(comment => comment.commentId === data.commentId)), 1)
   }
 }
 
@@ -98,7 +105,7 @@ const actions = {
     commit('RESET', '');
     commit('SET_IS_LOGGED_IN', false)
     if (router.currentRoute.name !== 'Trips') {
-      router.push({ name: 'AuthView', params: { page: 'login'} })
+      router.push({ name: 'AuthView', params: { page: 'login' } })
     }
   },
   // METHODS FOR HANDLING OUTGOING SOCKET DATA
@@ -109,7 +116,7 @@ const actions = {
     context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
   },
   comment: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.userId, commentMessage: context.state.message, currentPage: context.state.currentPage }))
+    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.user.id, commentMessage: context.state.message }))
     context.commit('setMessage', '')
   },
   deleteComment(context, data) {
