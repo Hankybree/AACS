@@ -19,10 +19,6 @@ wss.on('connection', (socket, request) => {
 
   clients.push(socket)
 
-  // Testar så att sockets funkar
-  socket.send('Hello client')
-  // Slut test
-
   socket.onmessage = (message) => {
     console.log(message.data)
     // let data = JSON.parse(message.data)
@@ -62,7 +58,7 @@ router.get('/', (req, res) => {
 
 function getImages(currentPage) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
 
     mysqlConnection.query('SELECT * FROM images ORDER BY imageId DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
       if (err) throw err

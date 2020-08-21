@@ -67,10 +67,10 @@ router.beforeEach(async (to, from, next) => {
   // Tack ESLINT!!!!!!
   console.log(from)
   
-  const test = await hasPermission()
-  console.log(test)
+  const permission = await hasPermission()
+
   if (to.meta.requiresAuth) {
-    if (test) {
+    if (permission) {
       
       next()
     } else {
@@ -85,11 +85,9 @@ function hasPermission() {
 
   return new Promise((resolve) => {
     Axios.post('http://localhost:8000/auth/checkIfValidSession')
-    .then((res) => {
-      console.log(res)
+    .then(() => {
       resolve(true)
-    }).catch((err) => {
-      console.log(err)
+    }).catch(() => {
       resolve(false)
     })
   })

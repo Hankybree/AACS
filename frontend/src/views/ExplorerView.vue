@@ -3,15 +3,17 @@
     <!-- Söka efter publika bilder -->
     <Feed v-if="showFeed" />
     <Public v-else />
-
-    <button @click="toggleFeed">FEED</button>
-    <button @click="toggleGrid">Masonry</button>
-
     <!-- TEMP -->
     <FileUpload />
 
     <input type="button" value="Log out" @click="$store.dispatch('logout')">
     <!-- END TEMP -->
+    <div class="imagedisplay-buttons-container">
+      <span>
+        <button class="buttons feedbutton" @click="toggleFeed">FEED</button>
+        <button class="buttons" @click="toggleGrid">Masonry</button>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -47,9 +49,9 @@
         this.showFeed = false
       },
       getImages() {
-        fetch('http://localhost:8000/images/images', {
+        fetch('http://localhost:8000/images/', {
           headers: {
-            CurrentPage: this.$store.state.currentPage
+            'CurrentPage': this.$store.state.currentPage
           },
           method: 'GET'
         })
@@ -77,4 +79,22 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+.imagedisplay-buttons-container {
+  width: 100%;
+  background-color: grey;
+  position: fixed;
+  bottom: 0;
+}
+
+/*  BUTTON ATTRIBUTES */  
+
+.buttons {
+  width: 40%;
+  height: 3em;
+}
+
+.feedbutton {
+ background-color: blue;
+}
+</style>
