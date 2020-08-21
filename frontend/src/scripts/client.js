@@ -35,12 +35,7 @@ export const client = {
   },
   // METHODS FOR HANDLING INCOMING SOCKET DATA
   like(context, data) {
-      if (data.isLiking) {
-          context.state.images.find(image => image.imageId === data.likeImageId).likes.push(data.likeUserId)
-      } else {
-          let likeArray = context.state.images.find(image => image.imageId === data.likeImageId).likes
-          likeArray.splice(likeArray.indexOf(data.likeUserId), 1)
-      }
+      context.commit('setLike', data)
   },
   comment(context, data) {
       context.state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })

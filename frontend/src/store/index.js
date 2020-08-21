@@ -52,6 +52,14 @@ const mutations = {
   },
   setMessage(state, newMessage) {
     state.message = newMessage
+  },
+  setLike(state, data) {
+    if (data.isLiking) {
+      state.images.find(image => image.imageId === data.likeImageId).likes.push(data.likeUserId)
+  } else {
+      let likeArray = state.images.find(image => image.imageId === data.likeImageId).likes
+      likeArray.splice(likeArray.indexOf(data.likeUserId), 1)
+  }
   }
 }
 
@@ -98,7 +106,7 @@ const actions = {
     client.connect(context)
   },
   like: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.userId }))
+    context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
   },
   comment: (context, imageId) => {
     context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.userId, commentMessage: context.state.message, currentPage: context.state.currentPage }))

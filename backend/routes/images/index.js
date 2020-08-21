@@ -20,19 +20,19 @@ wss.on('connection', (socket, request) => {
   clients.push(socket)
 
   socket.onmessage = (message) => {
-    console.log(message.data)
-    // let data = JSON.parse(message.data)
-    // console.log(data)
+  
+    let data = JSON.parse(message.data)
+    console.log(data)
 
-    // if (data.status === 1) {
-    //     console.log(data.msg)
-    // } else if (data.status === 2) {
-    //     like(data, 2)
-    // } else if (data.status === 3) {
-    //     comment(data, 3)
-    // } else if (data.status === 4) {
-    //     deleteComment(data, 4)
-    // }
+    if (data.status === 1) {
+        console.log(data.msg)
+    } else if (data.status === 2) {
+        like(data, 2)
+    } else if (data.status === 3) {
+        comment(data, 3)
+    } else if (data.status === 4) {
+        deleteComment(data, 4)
+    }
   }
 
   socket.onclose = () => {

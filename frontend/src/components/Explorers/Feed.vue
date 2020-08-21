@@ -1,25 +1,27 @@
 <template>
   <div class="content">
     <div>FEED</div>
-    <div class="image-container">
-      <img class="image" src="../../assets/logo.png" alt />
-      <div class="author">author: Frank666</div>
-      <div class="commentlikes-container">
-        <div class="likes">
-          <span>69 spocks</span>
-          <button class="likebutton button"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
-        </div>
-        <form action>
-          <input type="text" placeholder="comment..." />
-          <button class="sendbutton button"><font-awesome-icon :icon="['fas', 'paper-plane']" /></button>
-        </form>
-
-        <div class="comments">
-          <button @click="showComments" class="show-comment-button button">{{showCommentsbtnmsg}}</button>
-          <div v-if="commentsVisible" class="comment-container">
-            <div class="user">Frank:</div>
-            <div class="comment">This is a pretty photo!</div>
-            <hr/>
+    <div :key="index" v-for="(image, index) in images">
+      <div class="image-container">
+        <img class="image" :src="image.imagePath" alt />
+        <div class="author">author: Frank666</div>
+        <div class="commentlikes-container">
+          <div class="likes">
+            <span>{{ image.likes.length }} spocks</span>
+            <button class="likebutton button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+          </div>
+          <form action>
+            <input type="text" placeholder="comment..." />
+            <button class="sendbutton button"><font-awesome-icon :icon="['fas', 'paper-plane']" /></button>
+          </form>
+  
+          <div class="comments">
+            <button @click="showComments" class="show-comment-button button">{{showCommentsbtnmsg}}</button>
+            <div v-if="commentsVisible" class="comment-container">
+              <div class="user">Frank:</div>
+              <div class="comment">This is a pretty photo!</div>
+              <hr/>
+            </div>
           </div>
         </div>
       </div>
@@ -43,6 +45,16 @@ export default {
       } else {
         this.showCommentsbtnmsg = 'view all 69 comments' 
       }
+    }
+  },
+  computed: {
+    images: {
+        get() {
+            return this.$store.state.images
+        },
+        set(newImages) {
+            this.$store.commit('setImages', newImages)
+        }
     }
   },
   name: "Feed",
