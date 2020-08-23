@@ -38,7 +38,8 @@
 export default {
   data() {
     return {
-      commentsVisible: false
+      commentsVisible: false,
+      test: 'test'
     }
   },
   methods: {
