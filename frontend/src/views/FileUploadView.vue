@@ -20,16 +20,18 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <div class="upload-container"><label for="file">
-                      <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
-                    </label>
-                    <button
-                      class="submit-button1"
-                      v-if="this.files.length && !this.error"
-                      @click="closePreview"
-                    >
-                      <font-awesome-icon :icon="['fas', 'paper-plane']" />
-                    </button></div>
+                    <div class="upload-container">
+                      <label for="file">
+                        <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
+                      </label>
+                      <button
+                        class="submit-button1"
+                        v-if="this.files.length && !this.error"
+                        @click="closePreview"
+                      >
+                        <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                      </button>
+                    </div>
                     <input
                       multiple
                       type="file"
@@ -155,7 +157,12 @@ export default {
     //Create error message if not valid
     validate(file) {
       const MAX_SIZE = 1000 * 1000 * 5;
-      const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+      const allowedTypes = [
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+      ];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
       }
@@ -169,7 +176,6 @@ export default {
 
     //Send files to multer
     async sendFile() {
-    
       const formData = new FormData();
 
       // Append all data for validation check in back-end
@@ -178,7 +184,7 @@ export default {
       });
 
       this.loading = true;
-
+      const _this = this
       await axios
         .post("fileuploads/", formData)
         .then((res) => {
@@ -188,6 +194,14 @@ export default {
           this.success = true;
           this.files = [];
           this.uploadFiles = [];
+
+          var millisecondsToWait = 1000;
+
+          setTimeout(function () {
+            console.log('NU HARE GÅTT EN STUND')
+            this.showModal = false
+            _this.$router.push({ name: 'ProfileView' })
+          }, millisecondsToWait);
         })
         .catch((err) => {
           //Invalid file size or filetype
@@ -197,7 +211,7 @@ export default {
             // Network error
             this.message = err;
           }
-          
+
           this.loading = false;
           this.error = true;
           this.previewStatus = false;
