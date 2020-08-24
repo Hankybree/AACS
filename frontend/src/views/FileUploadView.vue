@@ -5,12 +5,7 @@
         <div class="modal-wrapper">
           <div class="modal-container">
             <div class="modal-header">
-              <!-- Close button-->
-              <div class="closemodal-button">
-                <button class="closemodal-button" @click="closeModal">
-                  <font-awesome-icon :icon="['fas', 'times']" />
-                </button>
-              </div>
+             
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
             </div>
@@ -276,7 +271,7 @@ label:hover {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 94.2%;
   background-color: #00000080;
   display: table;
   transition: opacity 0.3s ease;
