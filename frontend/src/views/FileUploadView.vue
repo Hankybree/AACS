@@ -58,7 +58,7 @@
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
                             >
-                              <font-awesome-icon :icon="['fas', 'times']" />
+                              <font-awesome-icon :icon="['far', 'fa-images']" />
                             </button>
                           </span>
                           <!-- {{file.name}} -->
@@ -170,7 +170,7 @@ export default {
 
     //Send files to multer
     async sendFile() {
-      let url = "http://localhost:8000/";
+    
       const formData = new FormData();
 
       // Append all data for validation check in back-end
@@ -181,7 +181,7 @@ export default {
       this.loading = true;
 
       await axios
-        .post(url + "fileuploads/", formData)
+        .post("fileuploads/", formData)
         .then((res) => {
           //Succeded uploading
           this.message = res.data.msg;
@@ -426,7 +426,7 @@ label:hover {
   width: 80px;
   height: 80px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  background-image: url(../../assets/exclamation-solid.svg);
+  background-image: url(../assets/exclamation-solid.svg);
   background-repeat: no-repeat;
   background-size: 1em;
   background-position-x: 2em;
