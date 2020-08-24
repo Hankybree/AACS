@@ -58,7 +58,7 @@
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
                             >
-                              <font-awesome-icon :icon="['fas', 'times']" />
+                              <font-awesome-icon :icon="['far', 'fa-images']" />
                             </button>
                           </span>
                           <!-- {{file.name}} -->
@@ -426,7 +426,7 @@ label:hover {
   width: 80px;
   height: 80px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  background-image: url(../../assets/exclamation-solid.svg);
+  background-image: url(../assets/exclamation-solid.svg);
   background-repeat: no-repeat;
   background-size: 1em;
   background-position-x: 2em;

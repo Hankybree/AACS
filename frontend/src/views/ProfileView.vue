@@ -86,7 +86,7 @@ export default {
   width: 32%;
   height: 100pt;
   margin: 1px;
-  background-color: black;
+  border: 1px solid black;
 }
 .image{
   width: 100%;

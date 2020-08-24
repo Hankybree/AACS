@@ -5,8 +5,13 @@ const uuid = require('uuid')
 const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
+<<<<<<< HEAD
 const bodyParser = require("body-parser");
 
+=======
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+>>>>>>> d4dc9d359deaf2f8806c6043854b405df7ea15c3
 router.use(cors())
 router.use(bodyParser.json())
 
@@ -50,11 +55,10 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.get('/', (req, res) => {
-
-  getImages(req.get('CurrentPage'))
+router.post('/', (req, res) => {
+  getImages(req.body.currentPage)
     .then((images) => {
-      res.send(JSON.stringify({ status: 1, data: images }))
+      res.send(JSON.stringify(images))
     })
 })
 
