@@ -17,7 +17,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(
       token,
-      '2EA067686AB9E32ECA9424DBB1A597DEGJKNRJGK3GO58CECAAE4539E09074BF3A8526A92BF1'
+      process.env.JWT_SECRET
     );
     res.status(200).send(decoded)
   } catch (err) {
@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) => {
           email: result[0].email,
           userId: result[0].id
         },
-          '2EA067686AB9E32ECA9424DBB1A597DEGJKNRJGK3GO58CECAAE4539E09074BF3A8526A92BF1', {
+          process.env.JWT_SECRET, {
           expiresIn: '7d'
         }
         );

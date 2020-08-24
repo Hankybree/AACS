@@ -6,6 +6,7 @@ import router from './../router';
 import createPersistedState from 'vuex-persistedstate';
 import SecureLS from "secure-ls";
 var ls = new SecureLS({ encodingType: 'rc4', isCompression: false, encryptionSecret: 'r89RnWwJUuudXPSwaJyCdvSv7zVJ5G4ajKwBGbqAZr3mx7JQ4mX' });
+import { client } from '../scripts/client.js'
 
 Vue.use(Vuex);
 
@@ -14,7 +15,10 @@ let state = {
   token: '',
   user: {},
   isLoggedIn: false,
-  images: []
+  socket: null,
+  images: [],
+  message: '',
+  showFeed: false
 };
 
 
@@ -36,6 +40,37 @@ const mutations = {
   },
   setImages(state, newImages) {
     state.images = newImages
+  },
+  setSocket(state, newSocket) {
+    state.socket = newSocket
+  },
+  appendImages(state, newImages) {
+    newImages.forEach(newImage => {
+      if (!state.images.some(image => image.imageId === newImage.imageId)) {
+        state.images.push(newImage)
+      }
+    })
+  },
+  setMessage(state, newMessage) {
+    state.message = newMessage
+  },
+  setShowFeed(state, newShowFeed) {
+    state.showFeed = newShowFeed
+  },
+  setLike(state, data) {
+    if (data.isLiking) {
+      state.images.find(image => image.imageId === data.likeImageId).likes.push(data.likeUserId)
+    } else {
+      let likeArray = state.images.find(image => image.imageId === data.likeImageId).likes
+      likeArray.splice(likeArray.indexOf(data.likeUserId), 1)
+    }
+  },
+  setComment(state, data) {
+    state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+  },
+  deleteComment(state, data) {
+    let commentArray = state.images.find(image => image.imageId === data.imageId).comments
+      commentArray.splice(commentArray.indexOf(commentArray.find(comment => comment.commentId === data.commentId)), 1)
   }
 }
 
@@ -67,16 +102,30 @@ const actions = {
     commit('SET_TOKEN', token);
     commit('SET_USER', user);
     commit('SET_IS_LOGGED_IN', true)
-    router.push({ name: 'ExplorerView' })
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    router.push({ name: 'ExplorerView' })
   },
   logout: ({ commit }) => {
     commit('RESET', '');
     commit('SET_IS_LOGGED_IN', false)
     if (router.currentRoute.name !== 'Trips') {
-      router.push({ name: 'Trips' })
+      router.push({ name: 'AuthView', params: { page: 'login' } })
     }
   },
+  // METHODS FOR HANDLING OUTGOING SOCKET DATA
+  connect(context) {
+    client.connect(context)
+  },
+  like: (context, imageId) => {
+    context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
+  },
+  comment: (context, imageId) => {
+    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.user.id, commentMessage: context.state.message }))
+    context.commit('setMessage', '')
+  },
+  deleteComment(context, data) {
+    context.state.socket.send(JSON.stringify({ status: 4, imageId: data.imageId, commentId: data.commentId }))
+  }
 }
 
 
