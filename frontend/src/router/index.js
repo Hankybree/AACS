@@ -9,6 +9,7 @@ import Vue from 'vue'
 //Libraries
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+import Axios from 'axios'
 
 // Views
 import AuthView from '../views/AuthView'
@@ -17,6 +18,8 @@ import ImageView from '../views/ImageView'
 import ProfileView from '../views/ProfileView'
 import PurchaseView from '../views/PurchaseView'
 import OfflineView from '../views/OfflineView'
+
+//import store from '../store'
 
 //Usage
 Vue.use(VueRouter)
@@ -29,7 +32,10 @@ const router = new VueRouter({
     {
       name: "ExplorerView",
       component: ExplorerView,
-      path: '/'
+      path: '/',
+      meta: { 
+        requiresAuth: true
+      }
     }, {
       name: "AuthView",
       component: AuthView,
@@ -57,23 +63,35 @@ const router = new VueRouter({
   ]
 })
 
+router.beforeEach(async (to, from, next) => {
+  // Tack ESLINT!!!!!!
+  console.log(from)
+  
+  const permission = await hasPermission()
 
-//Store
-import Store from '../store'
-
-router.beforeEach((to, from, next) => {
-  if(to.meta.requiresAuth){
-    if(Store.state.isLoggedIn){
+  if (to.meta.requiresAuth) {
+    if (permission) {
+      
       next()
     } else {
-      router.push({ name: "ExplorerView"})
+      next({ name: 'AuthView', params: { page: 'login'}, replace: true })
     }
-  }
-  else{
+  } else {
     next()
   }
 })
 
+function hasPermission() {
+
+  return new Promise((resolve) => {
+    Axios.post('auth/checkIfValidSession')
+    .then(() => {
+      resolve(true)
+    }).catch(() => {
+      resolve(false)
+    })
+  })
+}
 
 //Export the router
 export default router

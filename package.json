@@ -1,22 +1,23 @@
 {
-  "name": "AACS",
+  "name": "PicNet",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd frontend/ && npm run serve\" \"cd backend/ && nodemon server.js\""
+    "dev": "concurrently \"cd frontend/ && npm run serve\" \"cd backend/ && nodemon server.js\"",
+    "deploy": "docker-compose build && docker-compose push"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hankybree/AACS.git"
+    "url": "git+https://github.com/Hankybree/PicNet.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Hankybree/AACS/issues"
+    "url": "https://github.com/Hankybree/PicNet/issues"
   },
-  "homepage": "https://github.com/Hankybree/AACS#readme",
+  "homepage": "https://github.com/Hankybree/PicNet#readme",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",

@@ -39,9 +39,9 @@ export default {
     loginButtonTapped(){
       const credentials = { emailUsername: this.emailUsername, password: this.password }
       
-      let url = "http://localhost:8000/"
 
-      this.axios.post(url + 'auth/login', credentials)
+
+      this.axios.post('auth/login', credentials)
       .then(res => {
         let user = res.data.user
         let token = res.data.token

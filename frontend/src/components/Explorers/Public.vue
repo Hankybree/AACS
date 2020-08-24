@@ -56,7 +56,7 @@
         })
           .then((response) => response.json())
           .then((result) => {
-            console.log(result)
+            // console.log(result)
             this.images = result.hits
           })
       },

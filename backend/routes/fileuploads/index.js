@@ -53,14 +53,6 @@ router.post('/', upload.array("files"), middleware.verifyUser, (req, res, next) 
     }
 })
 
-router.get('/', (req, res) => {
-    mysqlConnection.query('SELECT * FROM images', (err, images) => {
-        if (err) throw err
-
-        res.send(JSON.stringify({ msg: 'Här har du dina bilder', data: images }))
-    })
-})
-
 // Runs when callback returns error
 router.use(function (err, req, res, next) {
     //File type is invalid
