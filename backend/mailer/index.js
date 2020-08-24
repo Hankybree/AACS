@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 
-const credentials = require('./credentials');
 
 
 const transporter = nodemailer.createTransport({
@@ -8,8 +7,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: credentials.user,
-    pass: credentials.password
+    user: process.env.MAILER_USER,
+    pass: process.env.MAILER_PASS
   }
 });
 

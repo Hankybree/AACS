@@ -58,9 +58,9 @@ export default {
   methods: {
     forgot() {
       this.errorMessage = null;
-      let url = 'http://localhost:8000/'
+   
 
-      this.axios.post(url+'auth/forgot', {
+      this.axios.post('auth/forgot', {
         email: this.email,
       })
       .then(res => {
@@ -74,9 +74,9 @@ export default {
     },
     createNewPass() {
       this.errorMessage = null;
-      let url = 'http://localhost:8000/'
+  
 
-      this.axios.post(url+'auth/forgot', {
+      this.axios.post('auth/forgot', {
         token: this.$route.params.token,
         changingPass: true,
         repeatPassword: this.repeatPassword,

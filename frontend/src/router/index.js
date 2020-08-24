@@ -84,7 +84,7 @@ router.beforeEach(async (to, from, next) => {
 function hasPermission() {
 
   return new Promise((resolve) => {
-    Axios.post('http://localhost:8000/auth/checkIfValidSession')
+    Axios.post('auth/checkIfValidSession')
     .then(() => {
       resolve(true)
     }).catch(() => {
