@@ -14,11 +14,11 @@ import Axios from 'axios'
 // Views
 import AuthView from '../views/AuthView'
 import ExplorerView from '../views/ExplorerView'
+import FeedView from '../views/FeedView'
 import ImageView from '../views/ImageView'
 import ProfileView from '../views/ProfileView'
 import PurchaseView from '../views/PurchaseView'
 import OfflineView from '../views/OfflineView'
-
 //import store from '../store'
 
 //Usage
@@ -32,49 +32,60 @@ const router = new VueRouter({
     {
       name: "ExplorerView",
       component: ExplorerView,
-      path: '/',
-      meta: { 
+      path: '/explorer',
+      meta: {
         requiresAuth: true
       }
-    }, {
+    }, 
+    {
+      name: "FeedView",
+      component: FeedView,
+      path: '/feed',
+      meta: {
+        requiresAuth: true
+      }
+    }, 
+    {
       name: "AuthView",
       component: AuthView,
       path: '/auth/:page/:token?'
-    }, {
+    }, 
+    {
       name: "ProfileView",
       component: ProfileView,
       path: '/profile',
       meta: {
         requiresAuth: true
       }
-    }, {
+    }, 
+    {
       name: "ImageView",
       component: ImageView,
       path: '/:id'
-    }, {
+    },
+    {
       name: "PurchaseView",
       component: PurchaseView,
       path: '/purchase'
-    }, {
+    },
+    {
       name: "OfflineView",
       component: OfflineView,
       path: '/offline'
-    }
+    },
   ]
 })
 
 router.beforeEach(async (to, from, next) => {
-  // Tack ESLINT!!!!!!
-  console.log(from)
-  
+
   const permission = await hasPermission()
 
   if (to.meta.requiresAuth) {
     if (permission) {
-      
+
       next()
     } else {
-      next({ name: 'AuthView', params: { page: 'login'}, replace: true })
+      next({ name: 'AuthView', params: { page: 'login' }, replace: true })
     }
   } else {
     next()
@@ -85,11 +96,11 @@ function hasPermission() {
 
   return new Promise((resolve) => {
     Axios.post('auth/checkIfValidSession')
-    .then(() => {
-      resolve(true)
-    }).catch(() => {
-      resolve(false)
-    })
+      .then(() => {
+        resolve(true)
+      }).catch(() => {
+        resolve(false)
+      })
   })
 }
 

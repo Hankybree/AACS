@@ -58,7 +58,7 @@
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
                             >
-                              <font-awesome-icon :icon="['fas', 'times']" />
+                              <font-awesome-icon :icon="['far', 'fa-images']" />
                             </button>
                           </span>
                           <!-- {{file.name}} -->

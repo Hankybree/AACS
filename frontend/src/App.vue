@@ -1,12 +1,24 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <div class="navbar" v-if="isLoggedIn">
+      <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
+      <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
+      <router-link to="/foo"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
+      <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
+      <router-link to="/profile"><font-awesome-icon :icon="['fas', 'user']" /></router-link>
+    </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'App'
+    name: 'App',
+    computed: {
+      isLoggedIn() {
+        return this.$store.getters.isLoggedIn
+      }
+    }
   }
 </script>
 
@@ -35,5 +47,21 @@
     width: 100%;
     margin: 0;
     padding: 0;
+  }
+
+  .navbar {
+    background: white;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    display: flex;
+  }
+
+  .navbar a {
+    display: inline-flex;
+    color: black;
+    font-size: 20pt;
+    padding: 10px 0;
+    margin: auto;
   }
 </style>

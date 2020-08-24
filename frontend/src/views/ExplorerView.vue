@@ -1,24 +1,17 @@
 <template>
   <div class="content">
     <!-- Söka efter publika bilder -->
-    <Feed v-if="$store.state.showFeed" />
-    <Public v-else />
+    <Public />
     <!-- TEMP -->
     <FileUpload />
 
     <input type="button" value="Log out" @click="$store.dispatch('logout')" />
     <!-- END TEMP -->
-    <div class="imagedisplay-buttons-container">
-      <span>
-        <button class="buttons feedbutton" @click="toggleFeed">FEED</button>
-        <button class="buttons" @click="toggleGrid">Masonry</button>
-      </span>
-    </div>
+
   </div>
 </template>
 
 <script>
-  import Feed from '../components/Explorers/Feed'
   import Public from '../components/Explorers/Public'
   import FileUpload from '../components/file/FileUpload'
 
@@ -34,7 +27,7 @@
       this.getImages()
     },
     name: 'ExplorerView',
-    components: { Feed, Public, FileUpload },
+    components: { Public, FileUpload },
     data() {
       return {
         loading: false,
@@ -42,12 +35,6 @@
       }
     },
     methods: {
-      toggleFeed() {
-        this.$store.commit('setShowFeed', true)
-      },
-      toggleGrid() {
-        this.$store.commit('setShowFeed', false)
-      },
       getImages() {
         fetch('http://localhost:8000/images/', {
           headers: {
