@@ -17,7 +17,7 @@ router.post('/checkIfValidSession', (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(
       token,
-      '2EA067686AB9E32ECA9424DBB1A597DEGJKNRJGK3GO58CECAAE4539E09074BF3A8526A92BF1'
+      process.env.JWT_SECRET
     );
     res.status(200).send(decoded)
   } catch (err) {
@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) => {
           email: result[0].email,
           userId: result[0].id
         },
-          '2EA067686AB9E32ECA9424DBB1A597DEGJKNRJGK3GO58CECAAE4539E09074BF3A8526A92BF1', {
+          process.env.JWT_SECRET, {
           expiresIn: '7d'
         }
         );
@@ -148,7 +148,7 @@ router.post('/signup', (req, res, next) => {
         }
         console.log(`${process.env.HOST}/auth/confirm/${token}`);
         var mailOptions = {
-          from: 'AACS <AACS@aviliax.com>',
+          from: 'PicNet <PicNet@aviliax.com>',
           to: req.body.email,
           subject: 'Confirm your email',
           html: `Hello! Please <a href="http://${process.env.HOST}/auth/confirm/${token}">Confirm your email</a>`
@@ -236,7 +236,7 @@ router.post('/forgot', (req, res, next) => {
       );
 
       var mailOptions = {
-        from: 'AACS <AACS@aviliax.com>',
+        from: 'PicNet <PicNet@aviliax.com>',
         to: req.body.email,
         subject: 'Forgot password?',
         html: `<a href="http://${process.env.HOST}/auth/forgot/${token}">Create a new password</a>`

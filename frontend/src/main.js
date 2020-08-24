@@ -12,15 +12,16 @@ Vue.use(SweetAlertIcons);
 
 //Importing font-awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUpload, faPaperPlane, faTimes, faHandSpock } from '@fortawesome/free-solid-svg-icons'
+import { faUpload, faPaperPlane, faTimes, faHandSpock, faImages, faSearch, faUser, faTh } from '@fortawesome/free-solid-svg-icons'
+import { faImages as faImagesReg, faPlusSquare } from '@fortawesome/free-regular-svg-icons'
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faUpload, faPaperPlane, faTimes, faHandSpock)
+library.add(faUpload, faPaperPlane, faTimes, faHandSpock, faImages, faImagesReg, faSearch, faPlusSquare, faUser, faTh)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // PWA
-
 import './registerServiceWorker'
 
 //Imports
@@ -28,6 +29,13 @@ import router from './router'
 import store from './store'
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+
+
+if (process.env.NODE_ENV == "development") {
+  axios.defaults.baseURL = 'http://localhost:8000/api/'
+} else {
+  axios.defaults.baseURL = 'https://picnet.aviliax.com/api/'
+}
 
 Vue.config.productionTip = false
 
@@ -38,11 +46,11 @@ let vueApp = new Vue({
 })
 
 function secureCheck() {
-  let url = 'http://localhost:8000/auth/'
+
 
   if (store.state.token) {
     axios
-    .post(url + 'checkIfValidSession/')
+    .post('auth/checkIfValidSession/')
     .then(response => {
       const user = {
         email: response.data.email,

@@ -18,8 +18,7 @@ let state = {
   socket: null,
   images: [],
   message: '',
-  showFeed: false
-};
+}
 
 
 // ======================

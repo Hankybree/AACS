@@ -1,0 +1,9 @@
+version: "3.7"
+
+services: 
+  backend:
+    image: picnetdockerhub/backend
+    build: backend/
+  frontend:
+    image: picnetdockerhub/frontend
+    build: frontend/
