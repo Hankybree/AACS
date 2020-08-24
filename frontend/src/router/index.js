@@ -19,6 +19,7 @@ import ImageView from '../views/ImageView'
 import ProfileView from '../views/ProfileView'
 import PurchaseView from '../views/PurchaseView'
 import OfflineView from '../views/OfflineView'
+import FileUploadView from '../views/FileUploadView'
 //import store from '../store'
 
 //Usage
@@ -41,6 +42,14 @@ const router = new VueRouter({
       name: "FeedView",
       component: FeedView,
       path: '/feed',
+      meta: {
+        requiresAuth: true
+      }
+    }, 
+    {
+      name: "FileUploadView",
+      component: FileUploadView,
+      path: '/fileupload',
       meta: {
         requiresAuth: true
       }

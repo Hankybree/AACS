@@ -2,18 +2,12 @@
   <div class="content">
     <!-- Söka efter publika bilder -->
     <Public />
-    <!-- TEMP -->
-    <FileUpload />
-
-    <input type="button" value="Log out" @click="$store.dispatch('logout')" />
-    <!-- END TEMP -->
-
+    
   </div>
 </template>
 
 <script>
   import Public from '../components/Explorers/Public'
-  import FileUpload from '../components/file/FileUpload'
 
   export default {
     beforeCreate() {
@@ -27,7 +21,7 @@
       this.getImages()
     },
     name: 'ExplorerView',
-    components: { Public, FileUpload },
+    components: { Public },
     data() {
       return {
         loading: false,
