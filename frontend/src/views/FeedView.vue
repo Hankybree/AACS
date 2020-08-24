@@ -3,7 +3,7 @@
     <div>FEED</div>
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
-        <img class="image" :src="image.imagePath" alt />
+        <img class="image" :src="imageBaseUrl + image.imageId" alt />
         <div class="author">Author: {{ image.imageUserId }}</div>
         <div class="date">Created: {{ image.creationTime }}</div>
         <div class="commentlikes-container">
@@ -69,6 +69,7 @@ export default {
       commentsVisible: false,
       loading: false,
       currentPage: 0,
+      imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
