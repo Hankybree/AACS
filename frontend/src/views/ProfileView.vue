@@ -20,36 +20,12 @@
     </div>
     <div class="whiteLine"></div>
 
-
     <!-- Bläddra bland privata bilder -->
     <div class="image-grid-wrapper">
       <div class="column">
-
-        <!-- TEMP IMAGES > Load from database here -->
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
-        <img src="../assets/logo.png" alt="Image" class="grid-image" />
+        <div class="grid-image" v-for="(result, index) in images" :key="index">
+          <img :src="'http://localhost:8000/api/fileuploads/uploadedfiles/' + images[index].imagePath" alt="Image" class="image" />
+        </div>
 
       </div>
     </div>
@@ -62,22 +38,26 @@ export default {
   name: 'ProfileView',
   data(){
     return{
-      countedImages: 0
+      countedImages: 0,
+      images: []
     }
   },
   created(){
-    const credentials = { userId: this.$store.state.user.id }
-    let url = "http://localhost:8000/"
-
-    this.axios.post(url + "images/countImages", credentials)
-    .then(res => {
-      this.countedImages = res.data.count
-    })
-    .catch(err => {
-      console.log(err.response.data.message)
-    })
+    this.getImages()
   },
   methods:{
+    getImages(){
+      const credentials = { userId: this.$store.state.user.id }
+
+      this.axios.post("images/getImagesFromUser", credentials)
+      .then(res => {
+        this.images = res.data.images
+        this.countedImages = this.images.length
+      })
+      .catch(err => {
+        console.log(err.response.data.message)
+      })
+    },
     changePassword(){
       //Handle change password here
       console.log("Change password")
@@ -107,6 +87,10 @@ export default {
   height: 100pt;
   margin: 1px;
   background-color: black;
+}
+.image{
+  width: 100%;
+  height: 100%;
 }
 .image-grid-wrapper{
   margin: 10px auto;
@@ -158,7 +142,6 @@ export default {
   width: 100%;
   padding-bottom: 10px;
   padding-top: 10px;
-  display: none;
 }
 .uploads{
   display: flex;
@@ -169,7 +152,6 @@ export default {
 .white{
   background-color: white;
 }
-
 .whiteLine{
   background-color: white;
   width: 80%;

@@ -147,18 +147,17 @@ function deleteComment(data, status) {
   })
 }
 
-router.post('/countImages', (req, res) => {
-  mysqlConnection.query(`SELECT COUNT(*) AS count FROM images WHERE imageUserId = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
-    if(err){
+//Get images for user
+router.post('/getImagesFromUser', (req, res) => {
+  mysqlConnection.query(`SELECT * FROM images WHERE imageUserId = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
+    if(err) {
       return res.status(504).send({
-        message: "Check your network connection!"
+        message: "Check your network connection"
       })
-    }
-
-    // console.log(result[0].count)
-    if(result.length){
+    } 
+    if(result.length) {
       return res.status(200).send({
-        count: result[0].count
+        images: result
       })
     }
 
