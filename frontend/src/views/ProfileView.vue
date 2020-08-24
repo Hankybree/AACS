@@ -1,6 +1,7 @@
 <template>
   <div class="content">
     <!-- Bläddra bland privata bilder -->
+    Hej
   </div>
 </template>
 

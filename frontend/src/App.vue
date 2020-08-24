@@ -1,25 +1,20 @@
 <template>
   <div id="app">
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    {{ this.$store.state }}
     <router-view></router-view>
-
-    <FileUpload />
-    <Public />
   </div>
 </template>
 
 <script>
-  import FileUpload from './components/file/FileUpload.vue'
-  import Public from './components/Explorers/Public.vue'
-
   export default {
-    name: 'App',
-    components: { FileUpload, Public }
+    name: 'App'
   }
 </script>
 
 <style>
+  * {
+    outline: none;
+  }
+
   body,
   html {
     background-image: url('./assets/tempBg.png');
@@ -34,7 +29,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: white;
   }
   .content {
     width: 100%;
