@@ -18,6 +18,7 @@
       <button class="settings-button white" @click="changePassword">Change password</button>
       <button class="settings-button red" @click="logout">Logout</button>
     </div>
+    <div class="whiteLine"></div>
 
 
     <!-- Bläddra bland privata bilder -->
@@ -157,7 +158,7 @@ export default {
   width: 100%;
   padding-bottom: 10px;
   padding-top: 10px;
-  border-bottom: 1px solid white;
+  display: none;
 }
 .uploads{
   display: flex;
@@ -167,6 +168,13 @@ export default {
 }
 .white{
   background-color: white;
+}
+
+.whiteLine{
+  background-color: white;
+  width: 80%;
+  height: 1px;
+  margin: 10px auto;
 }
 
 </style>

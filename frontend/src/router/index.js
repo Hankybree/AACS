@@ -37,7 +37,10 @@ const router = new VueRouter({
     }, {
       name: "ProfileView",
       component: ProfileView,
-      path: '/profile'
+      path: '/profile',
+      meta: {
+        requiresAuth: true
+      }
     }, {
       name: "ImageView",
       component: ImageView,
@@ -53,6 +56,24 @@ const router = new VueRouter({
     }
   ]
 })
+
+
+//Store
+import Store from '../store'
+
+router.beforeEach((to, from, next) => {
+  if(to.meta.requiresAuth){
+    if(Store.state.isLoggedIn){
+      next()
+    } else {
+      router.push({ name: "ExplorerView"})
+    }
+  }
+  else{
+    next()
+  }
+})
+
 
 //Export the router
 export default router
