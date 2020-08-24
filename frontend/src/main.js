@@ -29,6 +29,13 @@ import store from './store'
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
 
+
+if (process.env.NODE_ENV == "development") {
+  axios.defaults.baseURL = 'http://localhost:8000/api/'
+} else {
+  axios.defaults.baseURL = 'https://picnet.aviliax.com/api/'
+}
+
 Vue.config.productionTip = false
 
 let vueApp = new Vue({
@@ -38,11 +45,11 @@ let vueApp = new Vue({
 })
 
 function secureCheck() {
-  let url = 'http://localhost:8000/auth/'
+
 
   if (store.state.token) {
     axios
-    .post(url + 'checkIfValidSession/')
+    .post('auth/checkIfValidSession/')
     .then(response => {
       const user = {
         email: response.data.email,
