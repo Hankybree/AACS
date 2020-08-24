@@ -4,7 +4,8 @@
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
         <img class="image" :src="image.imagePath" alt />
-        <div class="author">author: Frank666</div>
+        <div class="author">Author: {{ image.imageUserId }}</div>
+        <div class="date">Created: {{ image.creationTime }}</div>
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
