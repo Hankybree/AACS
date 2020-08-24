@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <router-view></router-view>
+
+    <button @click="$router.push({ name: 'PhotoView', params: '' })" >PhotoView</button>
   </div>
 </template>
 
