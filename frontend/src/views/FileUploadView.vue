@@ -1,17 +1,11 @@
 <template>
   <div class="content">
-    <button class="open-upload-button" id="show-modal" @click="showModal = true">Upload Files</button>
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
           <div class="modal-container">
             <div class="modal-header">
-              <!-- Close button-->
-              <div class="closemodal-button">
-                <button class="closemodal-button" @click="closeModal">
-                  <font-awesome-icon :icon="['fas', 'times']" />
-                </button>
-              </div>
+             
               <!-- Header-->
               <slot name="header">Choose Files to Upload</slot>
             </div>
@@ -21,16 +15,18 @@
                 <!-- Submit which allows user to upload file from local disc -->
                 <form @submit.prevent="sendFile" enctype="multipart/form-data">
                   <div class="field">
-                    <div class="upload-container"><label for="file">
-                      <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
-                    </label>
-                    <button
-                      class="submit-button1"
-                      v-if="this.files.length && !this.error"
-                      @click="closePreview"
-                    >
-                      <font-awesome-icon :icon="['fas', 'paper-plane']" />
-                    </button></div>
+                    <div class="upload-container">
+                      <label for="file">
+                        <font-awesome-icon :icon="['fas', 'upload']" />Choose files..
+                      </label>
+                      <button
+                        class="submit-button1"
+                        v-if="this.files.length && !this.error"
+                        @click="closePreview"
+                      >
+                        <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                      </button>
+                    </div>
                     <input
                       multiple
                       type="file"
@@ -58,7 +54,7 @@
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
                             >
-                              <font-awesome-icon :icon="['far', 'fa-images']" />
+                              <font-awesome-icon :icon="['fas', 'times']" />
                             </button>
                           </span>
                           <!-- {{file.name}} -->
@@ -118,7 +114,7 @@ export default {
       error: false,
       success: false,
       message: "",
-      showModal: false,
+      showModal: true,
       previewStatus: false,
       loading: false,
     };
@@ -156,7 +152,12 @@ export default {
     //Create error message if not valid
     validate(file) {
       const MAX_SIZE = 1000 * 1000 * 5;
-      const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+      const allowedTypes = [
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+      ];
       if (file.size > MAX_SIZE) {
         return `Max size: ${MAX_SIZE / 1000}Kb`;
       }
@@ -170,7 +171,6 @@ export default {
 
     //Send files to multer
     async sendFile() {
-    
       const formData = new FormData();
 
       // Append all data for validation check in back-end
@@ -179,7 +179,7 @@ export default {
       });
 
       this.loading = true;
-
+      const _this = this
       await axios
         .post("fileuploads/", formData)
         .then((res) => {
@@ -189,6 +189,14 @@ export default {
           this.success = true;
           this.files = [];
           this.uploadFiles = [];
+
+          var millisecondsToWait = 1000;
+
+          setTimeout(function () {
+            console.log('NU HARE GÅTT EN STUND')
+            this.showModal = false
+            _this.$router.push({ name: 'ProfileView' })
+          }, millisecondsToWait);
         })
         .catch((err) => {
           //Invalid file size or filetype
@@ -198,7 +206,7 @@ export default {
             // Network error
             this.message = err;
           }
-          
+
           this.loading = false;
           this.error = true;
           this.previewStatus = false;
@@ -263,7 +271,7 @@ label:hover {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 94.2%;
   background-color: #00000080;
   display: table;
   transition: opacity 0.3s ease;
