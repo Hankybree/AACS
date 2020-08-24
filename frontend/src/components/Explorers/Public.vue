@@ -42,7 +42,8 @@
       return {
         images: [],
         imageId: 0,
-        gutter: 10
+        gutter: 10,
+        showImg: false
       }
     },
     methods: {
@@ -62,6 +63,12 @@
       getImage(index) {
         this.imageId = this.images[index].id
         console.log(this.imageId)
+        if (this.showImg === false) {
+          this.showImg = true
+        } else {
+          this.showImg = false
+        }
+        console.log(this.showImg)
       },
       reDraw() {
         this.$redrawVueMasonry('.grid')
