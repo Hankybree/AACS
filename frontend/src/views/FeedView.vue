@@ -8,23 +8,40 @@
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
-            <button v-if="!image.likes.includes($store.state.user.id)" class="likebutton button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
-            <button v-else class="likebutton-pressed button" @click="$store.dispatch('like', image.imageId)"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+            <button
+              v-if="!image.likes.includes($store.state.user.id)"
+              class="likebutton button"
+              @click="$store.dispatch('like', image.imageId)"
+            >
+              <font-awesome-icon :icon="['fas', 'hand-spock']" />
+            </button>
+            <button
+              v-else
+              class="likebutton-pressed button"
+              @click="$store.dispatch('like', image.imageId)"
+            >
+              <font-awesome-icon :icon="['fas', 'hand-spock']" />
+            </button>
           </div>
-          
+
           <input v-model="message" placeholder="comment..." />
-          <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)"><font-awesome-icon :icon="['fas', 'paper-plane']" /></button>
-          
-  
+          <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)">
+            <font-awesome-icon :icon="['fas', 'paper-plane']" />
+          </button>
+
           <div class="comments">
-            <button v-if="!commentsVisible" @click="showComments" class="show-comment-button button">View all {{image.comments.length}} comments</button>
+            <button
+              v-if="!commentsVisible"
+              @click="showComments"
+              class="show-comment-button button"
+            >View all {{image.comments.length}} comments</button>
             <button v-else @click="showComments" class="show-comment-button button">Hide comments</button>
             <div v-if="commentsVisible" class="comment-container">
               <div :key="index" v-for="(comment, index) in image.comments">
                 <div class="user">{{ comment.commentUserId }}</div>
                 <div class="comment">{{ comment.commentMessage }}</div>
                 <button @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})">Delete comment</button>
-                <hr/>
+                <hr />
               </div>
             </div>
           </div>
@@ -36,33 +53,69 @@
 
 <script>
 export default {
+  beforeCreate() {
+    this.$store.dispatch("connect");
+
+    window.addEventListener("scroll", () => {
+      this.handleScroll();
+    });
+  },
+  created() {
+    this.getImages();
+  },
   data() {
     return {
-      commentsVisible: false
-    }
+      commentsVisible: false,
+      loading: false,
+      currentPage: 0,
+    };
   },
   methods: {
     showComments() {
-      this.commentsVisible = !this.commentsVisible
-    }
+      this.commentsVisible = !this.commentsVisible;
+    },
+    getImages() {
+      this.axios
+        .post("images/", {
+          currentPage: this.currentPage,
+        })
+        .then((result) => {
+          if (this.currentPage === 0) {
+            this.$store.commit("setImages", result.data);
+          } else {
+            this.$store.commit("appendImages", result.data);
+          }
+          this.loading = false;
+        });
+    },
+    handleScroll() {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+        !this.loading
+      ) {
+        this.loading = true;
+        this.currentPage++;
+        this.getImages();
+      }
+    },
   },
   computed: {
     images: {
-        get() {
-            return this.$store.state.images
-        },
-        set(newImages) {
-            this.$store.commit('setImages', newImages)
-        }
+      get() {
+        return this.$store.state.images;
+      },
+      set(newImages) {
+        this.$store.commit("setImages", newImages);
+      },
     },
     message: {
-        get() {
-            return this.$store.state.message
-        },
-        set(newMessage) {
-            this.$store.commit('setMessage', newMessage)
-        }
-    }
+      get() {
+        return this.$store.state.message;
+      },
+      set(newMessage) {
+        this.$store.commit("setMessage", newMessage);
+      },
+    },
   },
   name: "Feed",
 };
@@ -83,7 +136,7 @@ hr {
 
 .image {
   width: 95%;
-  max-width: 30em;  
+  max-width: 30em;
 }
 
 .commentlikes-container {
@@ -124,7 +177,7 @@ hr {
   font-size: 1.3em;
 }
 
-.comment-container  {
+.comment-container {
   text-align: left;
   margin-left: 2em;
   margin-right: 2em;

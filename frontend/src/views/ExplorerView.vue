@@ -10,54 +10,8 @@
   import Public from '../components/Explorers/Public'
 
   export default {
-    beforeCreate() {
-      this.$store.dispatch('connect')
-
-      window.addEventListener('scroll', () => {
-        this.handleScroll()
-      })
-    },
-    created() {
-      this.getImages()
-    },
     name: 'ExplorerView',
     components: { Public },
-    data() {
-      return {
-        loading: false,
-        currentPage: 0
-      }
-    },
-    methods: {
-      getImages() {
-        fetch('http://localhost:8000/images/', {
-          headers: {
-            CurrentPage: this.currentPage
-          },
-          method: 'GET'
-        })
-          .then((response) => response.json())
-          .then((result) => {
-            if (this.currentPage === 0) {
-              this.$store.commit('setImages', result.data)
-            } else {
-              this.$store.commit('appendImages', result.data)
-            }
-            this.loading = false
-            console.log(result)
-          })
-      },
-      handleScroll() {
-        if (
-          window.innerHeight + window.scrollY >= document.body.offsetHeight &&
-          !this.loading
-        ) {
-          this.loading = true
-          this.currentPage++
-          this.getImages()
-        }
-      }
-    }
   }
 </script>
 
