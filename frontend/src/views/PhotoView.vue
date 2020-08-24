@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+      <!-- Send image via params and insert everything in here to show comments and likes -->
   <transition name="fade">
          <div class="photoview">
       <div class="image-container">
