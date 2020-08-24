@@ -4,7 +4,7 @@
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
         <img class="image" :src="imageBaseUrl + image.imageId" alt />
-        <div class="author">Author: {{ image.imageUserId }}</div>
+        <div class="author">Author: {{ image.userName }}</div>
         <div class="date">Created: {{ image.creationTime }}</div>
         <div class="commentlikes-container">
           <div class="likes">
@@ -82,6 +82,7 @@ export default {
           currentPage: this.currentPage,
         })
         .then((result) => {
+          console.log(result)
           if (this.currentPage === 0) {
             this.$store.commit("setImages", result.data);
           } else {
