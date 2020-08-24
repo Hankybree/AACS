@@ -52,7 +52,7 @@
   }
 
   .navbar {
-    background: white;
+    background: #11193f;
     bottom: 0;
     position: fixed;
     width: 100%;
@@ -61,7 +61,7 @@
 
   .navbar a {
     display: inline-flex;
-    color: black;
+    color: white;
     font-size: 20pt;
     padding: 10px 0;
     margin: auto;

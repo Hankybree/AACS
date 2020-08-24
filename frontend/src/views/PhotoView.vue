@@ -10,8 +10,8 @@
         <div class="commentlikes-container">
           <div class="likes">
             <span>69 spocks</span>
-            <button> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
-            <button> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+            <button class="likebutton button"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
+            <button class="likebutton button"> <font-awesome-icon :icon="['fas', 'hand-spock']" /></button>
           </div>
           
           <input v-model="message" placeholder="comment..." />
@@ -64,7 +64,7 @@ export default {
 .image-container {
   width: 95%;
   max-width: 30em;
-  background-color: teal;
+  background-color: white;
   display: inline-block;
   font-family: Montserrat, sans-serif;
 }

@@ -1,6 +1,5 @@
 <template>
   <div class="content">
-    <button class="open-upload-button" id="show-modal" @click="showModal = true">Upload Files</button>
     <transition name="modal">
       <div class="modal-mask" v-if="showModal">
         <div class="modal-wrapper">
@@ -58,7 +57,7 @@
                               class="delete-btn"
                               @click.prevent="files.splice(index, 1); uploadFiles.splice(index, 1)"
                             >
-                              <font-awesome-icon :icon="['far', 'fa-images']" />
+                              <font-awesome-icon :icon="['fas', 'times']" />
                             </button>
                           </span>
                           <!-- {{file.name}} -->
@@ -118,7 +117,7 @@ export default {
       error: false,
       success: false,
       message: "",
-      showModal: false,
+      showModal: true,
       previewStatus: false,
       loading: false,
     };
