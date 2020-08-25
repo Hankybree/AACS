@@ -46,6 +46,7 @@
         images: [],
         imageId: 0,
         gutter: 10,
+        imageData: {},
         showImg: false,
         currentPage: 0,
         imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
@@ -69,13 +70,19 @@
       },
       getImage(index) {
         this.imageId = this.images[index].imageId
+        this.imageData = this.images[index]
         console.log(this.imageId)
         if (this.showImg === false) {
           this.showImg = true
         } else {
           this.showImg = false
         }
-        console.log(this.showImg)
+        // @click="
+        this.$router.push({
+          name: 'PhotoView',
+          params: { photoid: this.imageId },
+          query: { image: this.imageData }
+        })
       },
       reDraw() {
         this.$redrawVueMasonry('.grid')

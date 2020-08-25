@@ -1,15 +1,18 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 import axios from 'axios'
-import router from './../router';
+import router from './../router'
 
-import createPersistedState from 'vuex-persistedstate';
-import SecureLS from "secure-ls";
-var ls = new SecureLS({ encodingType: 'rc4', isCompression: false, encryptionSecret: 'r89RnWwJUuudXPSwaJyCdvSv7zVJ5G4ajKwBGbqAZr3mx7JQ4mX' });
+import createPersistedState from 'vuex-persistedstate'
+import SecureLS from 'secure-ls'
+var ls = new SecureLS({
+  encodingType: 'rc4',
+  isCompression: false,
+  encryptionSecret: 'r89RnWwJUuudXPSwaJyCdvSv7zVJ5G4ajKwBGbqAZr3mx7JQ4mX'
+})
 import { client } from '../scripts/client.js'
 
-Vue.use(Vuex);
-
+Vue.use(Vuex)
 
 let state = {
   token: '',
@@ -17,9 +20,9 @@ let state = {
   isLoggedIn: false,
   socket: null,
   images: [],
-  message: '',
+  image: {},
+  message: ''
 }
-
 
 // ======================
 //        Mutations
@@ -29,23 +32,26 @@ const mutations = {
     state.isLoggedIn = payload
   },
   SET_TOKEN: (state, token) => {
-    state.token = token;
+    state.token = token
   },
   SET_USER: (state, user) => {
-    state.user = user;
+    state.user = user
   },
-  RESET: state => {
-    Object.assign(state, getDefaultState());
+  RESET: (state) => {
+    Object.assign(state, getDefaultState())
   },
   setImages(state, newImages) {
     state.images = newImages
+  },
+  setImage(state, newImage) {
+    state.image = newImage
   },
   setSocket(state, newSocket) {
     state.socket = newSocket
   },
   appendImages(state, newImages) {
-    newImages.forEach(newImage => {
-      if (!state.images.some(image => image.imageId === newImage.imageId)) {
+    newImages.forEach((newImage) => {
+      if (!state.images.some((image) => image.imageId === newImage.imageId)) {
         state.images.push(newImage)
       }
     })
@@ -58,39 +64,55 @@ const mutations = {
   },
   setLike(state, data) {
     if (data.isLiking) {
-      state.images.find(image => image.imageId === data.likeImageId).likes.push(data.likeUserId)
+      state.images
+        .find((image) => image.imageId === data.likeImageId)
+        .likes.push(data.likeUserId)
     } else {
-      let likeArray = state.images.find(image => image.imageId === data.likeImageId).likes
+      let likeArray = state.images.find(
+        (image) => image.imageId === data.likeImageId
+      ).likes
       likeArray.splice(likeArray.indexOf(data.likeUserId), 1)
     }
   },
   setComment(state, data) {
-    state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+    state.images
+      .find((image) => image.imageId === data.commentImageId)
+      .comments.push({
+        commentId: data.commentId,
+        commentUserId: data.commentUserId,
+        commentMessage: data.commentMessage
+      })
   },
   deleteComment(state, data) {
-    let commentArray = state.images.find(image => image.imageId === data.imageId).comments
-      commentArray.splice(commentArray.indexOf(commentArray.find(comment => comment.commentId === data.commentId)), 1)
+    let commentArray = state.images.find(
+      (image) => image.imageId === data.imageId
+    ).comments
+    commentArray.splice(
+      commentArray.indexOf(
+        commentArray.find((comment) => comment.commentId === data.commentId)
+      ),
+      1
+    )
   }
 }
-
 
 const getDefaultState = () => {
   return {
     token: '',
     user: {}
-  };
-};
+  }
+}
 
 // ======================
 //        GETTERS
 // ======================
 const getters = {
-  isLoggedIn: state => {
-    return state.isLoggedIn;
+  isLoggedIn: (state) => {
+    return state.isLoggedIn
   },
-  getUser: state => {
-    return state.user;
-  },
+  getUser: (state) => {
+    return state.user
+  }
 }
 
 // ======================
@@ -98,14 +120,14 @@ const getters = {
 // ======================
 const actions = {
   login: ({ commit }, { token, user }) => {
-    commit('SET_TOKEN', token);
-    commit('SET_USER', user);
+    commit('SET_TOKEN', token)
+    commit('SET_USER', user)
     commit('SET_IS_LOGGED_IN', true)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     router.push({ name: 'ExplorerView' })
   },
   logout: ({ commit }) => {
-    commit('RESET', '');
+    commit('RESET', '')
     commit('SET_IS_LOGGED_IN', false)
     if (router.currentRoute.name !== 'Trips') {
       router.push({ name: 'AuthView', params: { page: 'login' } })
@@ -116,18 +138,35 @@ const actions = {
     client.connect(context)
   },
   like: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
+    context.state.socket.send(
+      JSON.stringify({
+        status: 2,
+        likeImageId: imageId,
+        likeUserId: context.state.user.id
+      })
+    )
   },
   comment: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.user.id, commentMessage: context.state.message }))
+    context.state.socket.send(
+      JSON.stringify({
+        status: 3,
+        commentImageId: imageId,
+        commentUserId: context.state.user.id,
+        commentMessage: context.state.message
+      })
+    )
     context.commit('setMessage', '')
   },
   deleteComment(context, data) {
-    context.state.socket.send(JSON.stringify({ status: 4, imageId: data.imageId, commentId: data.commentId }))
+    context.state.socket.send(
+      JSON.stringify({
+        status: 4,
+        imageId: data.imageId,
+        commentId: data.commentId
+      })
+    )
   }
 }
-
-
 
 const store = new Vuex.Store({
   strict: true,
@@ -136,16 +175,14 @@ const store = new Vuex.Store({
       storage: {
         getItem: (key) => ls.get(key),
         setItem: (key, value) => ls.set(key, value),
-        removeItem: (key) => ls.remove(key),
-      },
-    }),
+        removeItem: (key) => ls.remove(key)
+      }
+    })
   ],
   state,
   mutations,
   getters,
-  actions,
-});
+  actions
+})
 
-
-export default store;
-
+export default store
