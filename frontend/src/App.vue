@@ -31,9 +31,11 @@
 
   body,
   html {
-    background-image: url('./assets/tempBg.png');
     margin: 0;
     padding: 0;
+    background-image: linear-gradient( 10.9deg,  rgba(34,34,34,1) 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
+    background-repeat: no-repeat;
+    height: 100%;
   }
   .whiteColor {
     color: white;
@@ -52,7 +54,7 @@
   }
 
   .navbar {
-    background: #11193f;
+    background: #060916;
     bottom: 0;
     position: fixed;
     width: 100%;
