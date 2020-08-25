@@ -25,11 +25,6 @@
             </button>
           </div>
 
-          <input v-model="message" placeholder="comment..." />
-          <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)">
-            <font-awesome-icon :icon="['fas', 'paper-plane']" />
-          </button>
-
           <div class="comments">
             <button
               v-if="!commentsVisible"
@@ -38,10 +33,17 @@
             >View all {{image.comments.length}} comments</button>
             <button v-else @click="showComments" class="show-comment-button button">Hide comments</button>
             <div v-if="commentsVisible" class="comment-container">
+
+              <input v-model="message" placeholder="comment..." />
+              <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)">
+              <font-awesome-icon :icon="['fas', 'paper-plane']" />
+              </button>
+              
               <div :key="index" v-for="(comment, index) in image.comments">
                 <div class="user">{{ comment.commentUserId }}</div>
                 <div class="comment">{{ comment.commentMessage }}</div>
                 <button @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})">Delete comment</button>
+                <div>{{ comment.commentCreationTime }}</div>
                 <hr />
               </div>
             </div>

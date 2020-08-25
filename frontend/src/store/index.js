@@ -65,7 +65,7 @@ const mutations = {
     }
   },
   setComment(state, data) {
-    state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+    state.images.find(image => image.imageId === data.commentImageId).comments.unshift({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage, commentCreationTime: data.commentCreationTime })
   },
   deleteComment(state, data) {
     let commentArray = state.images.find(image => image.imageId === data.imageId).comments
