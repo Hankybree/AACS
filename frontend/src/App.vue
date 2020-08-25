@@ -33,8 +33,10 @@
   html {
     margin: 0;
     padding: 0;
-    background-image: linear-gradient( 10.9deg,  rgba(34,34,34,1) 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
+    background-image: linear-gradient( 10.9deg,  #222222 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
     background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 100%;
     height: 100%;
   }
   .whiteColor {
@@ -54,7 +56,7 @@
   }
 
   .navbar {
-    background: #060916;
+    background: #1a1818;
     bottom: 0;
     position: fixed;
     width: 100%;
