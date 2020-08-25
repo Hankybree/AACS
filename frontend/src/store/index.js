@@ -18,7 +18,7 @@ let state = {
   socket: null,
   images: [],
   message: '',
-};
+}
 
 
 // ======================
@@ -52,6 +52,9 @@ const mutations = {
   },
   setMessage(state, newMessage) {
     state.message = newMessage
+  },
+  setShowFeed(state, newShowFeed) {
+    state.showFeed = newShowFeed
   },
   setLike(state, data) {
     if (data.isLiking) {

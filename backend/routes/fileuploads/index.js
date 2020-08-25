@@ -5,6 +5,7 @@ const cors = require('cors');
 const mysqlConnection = require('../../mysql');
 const uuid = require('uuid')
 const middleware = require('../../middleware/authuser.js')
+const fs = require('fs')
 
 router.use(cors());
 router.use(express.json())
@@ -33,15 +34,23 @@ const upload = multer({
 })
 
 router.post('/', upload.array("files"), middleware.verifyUser, (req, res, next) => {
+    console.log('called')
 
     if (req.files) {
         req.files.forEach(file => {
-            let imagePath = 'http://localhost:8000/fileuploads/' + file.path
+
+            console.log('In loop')
+            
             let token = uuid.v4()
 
-            mysqlConnection.query('INSERT INTO images (imageId, imagePath, imageUserId) VALUES (?, ?, ?)', [token, imagePath, req.decoded.userId], (err) => {
+
+
+            fs.rename(file.path, 'uploadedfiles/' + token, () => {
+                console.log('Changed filename')
+            })
+
+            mysqlConnection.query('INSERT INTO images (imageId, imageUserId) VALUES (?, ?)', [token, req.decoded.userId], (err) => {
                 if (err) throw err
-                console.log('Databasar')
 
                 res.status(200).send(JSON.stringify({
                     msg: `Uploaded ${req.files.length} files successfully!`

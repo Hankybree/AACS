@@ -61,10 +61,10 @@ function getImages(currentPage) {
 
   return new Promise((resolve) => {
 
-    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 2 OFFSET ?', [currentPage * 2], (err, images) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
       if (err) throw err
 
-      mysqlConnection.query('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId', (err, imageData) => {
+      mysqlConnection.query('SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id', (err, imageData) => {
         if (err) throw err
 
         for (let i = 0; i < images.length; i++) {
@@ -80,6 +80,10 @@ function getImages(currentPage) {
 
             if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
               comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage })
+            }
+
+            if (imageData[j].imageUserId === images[i].imageUserId) {
+              images[i].userName = imageData[j].username
             }
           }
 

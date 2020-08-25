@@ -3,8 +3,9 @@
     <div>FEED</div>
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
-        <img class="image" :src="image.imagePath" alt />
-        <div class="author">author: Frank666</div>
+        <img class="image" :src="imageBaseUrl + image.imageId" alt />
+        <div class="author">Author: {{ image.userName }}</div>
+        <div class="date">Created: {{ image.creationTime }}</div>
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
@@ -68,6 +69,7 @@ export default {
       commentsVisible: false,
       loading: false,
       currentPage: 0,
+      imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
@@ -80,6 +82,7 @@ export default {
           currentPage: this.currentPage,
         })
         .then((result) => {
+          console.log(result)
           if (this.currentPage === 0) {
             this.$store.commit("setImages", result.data);
           } else {
