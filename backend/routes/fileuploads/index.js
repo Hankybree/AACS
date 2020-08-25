@@ -34,16 +34,11 @@ const upload = multer({
 })
 
 router.post('/', upload.array("files"), middleware.verifyUser, (req, res, next) => {
-    console.log('called')
 
     if (req.files) {
         req.files.forEach(file => {
-
-            console.log('In loop')
             
             let token = uuid.v4()
-
-
 
             fs.rename(file.path, 'uploadedfiles/' + token, () => {
                 console.log('Changed filename')

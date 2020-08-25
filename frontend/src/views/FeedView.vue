@@ -27,15 +27,16 @@
 
           <div class="comments">
             <button
-              v-if="!commentsVisible"
-              @click="showComments"
+              v-if="!visibleArray.includes(index)"
+              @click="showComments(index)"
               class="show-comment-button button"
             >View all {{image.comments.length}} comments</button>
-            <button v-else @click="showComments" class="show-comment-button button">Hide comments</button>
-            <div v-if="commentsVisible" class="comment-container">
+            <button v-else @click="showComments(index)" class="show-comment-button button">Hide comments</button>
+            <div v-if="visibleArray.includes(index)" class="comment-container">
 
-              <input v-model="message" placeholder="comment..." />
-              <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)">
+              <input :id="'comment-input' + index" type="text" placeholder="comment..." />
+              <!-- <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)"> -->
+                <button class="sendbutton button" @click="sendComment(index, image.imageId)">
               <font-awesome-icon :icon="['fas', 'paper-plane']" />
               </button>
               
@@ -68,15 +69,23 @@ export default {
   },
   data() {
     return {
-      commentsVisible: false,
+      visibleArray: [],
       loading: false,
       currentPage: 0,
       imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
-    showComments() {
-      this.commentsVisible = !this.commentsVisible;
+    sendComment(index, imageId) {
+      this.$store.dispatch('comment', { imageId: imageId, message: document.querySelector('#comment-input' + index).value })
+      document.querySelector('#comment-input' + index).value = ''
+    },
+    showComments(index) {
+      if (!this.visibleArray.includes(index)) {
+        this.visibleArray.push(index)
+      } else {
+        this.visibleArray.splice(this.visibleArray.indexOf(index), 1)
+      }
     },
     getImages() {
       this.axios

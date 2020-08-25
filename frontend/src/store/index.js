@@ -16,8 +16,7 @@ let state = {
   user: {},
   isLoggedIn: false,
   socket: null,
-  images: [],
-  message: '',
+  images: []
 }
 
 
@@ -49,9 +48,6 @@ const mutations = {
         state.images.push(newImage)
       }
     })
-  },
-  setMessage(state, newMessage) {
-    state.message = newMessage
   },
   setShowFeed(state, newShowFeed) {
     state.showFeed = newShowFeed
@@ -118,9 +114,8 @@ const actions = {
   like: (context, imageId) => {
     context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
   },
-  comment: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.user.id, commentMessage: context.state.message }))
-    context.commit('setMessage', '')
+  comment: (context, data) => {
+    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: data.imageId, commentUserId: context.state.user.id, commentMessage: data.message }))
   },
   deleteComment(context, data) {
     context.state.socket.send(JSON.stringify({ status: 4, imageId: data.imageId, commentId: data.commentId }))
