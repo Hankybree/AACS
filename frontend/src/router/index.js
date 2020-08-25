@@ -33,7 +33,7 @@ const router = new VueRouter({
     {
       name: "ExplorerView",
       component: ExplorerView,
-      path: '/explorer',
+      path: '/',
       meta: {
         requiresAuth: true
       }
