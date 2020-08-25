@@ -15,12 +15,14 @@
           :key="index"
           v-for="(image, index) in images"
         >
+          <!-- <div v-if="image.userName == userName"> -->
           <img
             class="image"
-            :src="image.previewURL"
+            :src="imageBaseUrl + image.imageId"
             alt="no image"
             @click="getImage(index)"
           />
+          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -44,7 +46,10 @@
         images: [],
         imageId: 0,
         gutter: 10,
-        showImg: false
+        showImg: false,
+        currentPage: 0,
+        imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
+        // userName: 'mybigpic'
       }
     },
     methods: {
@@ -52,17 +57,18 @@
         const apiKey = '4893035-50117f6a495574786f78b773f'
         const url = 'https://pixabay.com/api/?key='
 
-        fetch(url + apiKey + '&q=yellow+flowers&image_type=photo', {
-          // headers: { 'x-api-key': '4893035-50117f6a495574786f78b773f' }
-        })
-          .then((response) => response.json())
+        this.axios
+          .post('images/grid', {
+            currentPage: this.currentPage
+          })
           .then((result) => {
-            // console.log(result)
-            this.images = result.hits
+            console.log(result)
+
+            this.images = result.data
           })
       },
       getImage(index) {
-        this.imageId = this.images[index].id
+        this.imageId = this.images[index].imageId
         console.log(this.imageId)
         if (this.showImg === false) {
           this.showImg = true
@@ -81,11 +87,10 @@
 <style scoped>
   /* item = image container (inte själva bilden alltså) */
   .item {
-    background-color: green;
   }
-  /* .image {
-    width: 20vw;
-  } */
+  .image {
+    max-width: 150px;
+  }
   .masonry-container {
     margin: 0 auto;
     margin-left: 6%;
@@ -97,6 +102,5 @@
     display: inline-block;
     margin: 5px;
     padding: 5px;
-    border: chocolate solid 5px;
   }
 </style>
