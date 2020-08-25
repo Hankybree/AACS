@@ -14,11 +14,11 @@ import Axios from 'axios'
 // Views
 import AuthView from '../views/AuthView'
 import ExplorerView from '../views/ExplorerView'
-import FeedView from '../views/FeedView'
-import ImageView from '../views/ImageView'
 import ProfileView from '../views/ProfileView'
 import PurchaseView from '../views/PurchaseView'
 import OfflineView from '../views/OfflineView'
+import PhotoView from '../views/PhotoView'
+import FeedView from '../views/FeedView'
 import FileUploadView from '../views/FileUploadView'
 //import store from '../store'
 
@@ -66,13 +66,7 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true
       }
-    }, 
-    {
-      name: "ImageView",
-      component: ImageView,
-      path: '/:id'
-    },
-    {
+    }, {
       name: "PurchaseView",
       component: PurchaseView,
       path: '/purchase'
@@ -81,7 +75,11 @@ const router = new VueRouter({
       name: "OfflineView",
       component: OfflineView,
       path: '/offline'
-    },
+    }, {
+      name: "PhotoView",
+      component: PhotoView,
+      path: '/photo/:photoid'
+    }
   ]
 })
 
