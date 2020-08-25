@@ -50,18 +50,25 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.post('/', (req, res) => {
-  getImages(req.body.currentPage)
+router.post('/feed', (req, res) => {
+  getImages(req.body.currentPage, 2)
     .then((images) => {
       res.send(JSON.stringify(images))
     })
 })
 
-function getImages(currentPage) {
+router.post('/grid', (req, res) => {
+  getImages(req.body.currentPage, req.body.limit, 50)
+    .then((images) => {
+      res.send(JSON.stringify(images))
+    })
+})
+
+function getImages(currentPage, limit) {
 
   return new Promise((resolve) => {
 
-    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 5 OFFSET ?', [currentPage * 5], (err, images) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?', [limit, currentPage * limit], (err, images) => {
       if (err) throw err
 
       mysqlConnection.query('SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id', (err, imageData) => {
@@ -79,7 +86,7 @@ function getImages(currentPage) {
             }
 
             if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
-              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage })
+              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage, creationTime: imageData[j].creationTime })
             }
 
             if (imageData[j].imageUserId === images[i].imageUserId) {
@@ -88,7 +95,7 @@ function getImages(currentPage) {
           }
 
           images[i].likes = likes
-          images[i].comments = comments.sort((a, b) => a.commentId - b.commentId)
+          images[i].comments = comments.sort((a, b) => a.creationTime - b.creationTime)
         }
 
         resolve(images)
