@@ -5,8 +5,10 @@ const uuid = require('uuid')
 const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
+const bodyParser = require("body-parser");
 
 router.use(cors())
+router.use(bodyParser.json())
 
 let clients = []
 
@@ -48,11 +50,10 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.get('/', (req, res) => {
-
-  getImages(req.get('CurrentPage'))
+router.post('/', (req, res) => {
+  getImages(req.body.currentPage)
     .then((images) => {
-      res.send(JSON.stringify({ status: 1, data: images }))
+      res.send(JSON.stringify(images))
     })
 })
 
@@ -144,5 +145,22 @@ function deleteComment(data, status) {
     })
   })
 }
+
+//Get images for user
+router.post('/getImagesFromUser', (req, res) => {
+  mysqlConnection.query(`SELECT * FROM images WHERE imageUserId = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
+    if(err) {
+      return res.status(504).send({
+        message: "Check your network connection"
+      })
+    } 
+    if(result.length) {
+      return res.status(200).send({
+        images: result
+      })
+    }
+
+  })
+})
 
 module.exports = router
