@@ -78,7 +78,7 @@ export default {
     },
     getImages() {
       this.axios
-        .post("images/", {
+        .post("images/feed", {
           currentPage: this.currentPage,
         })
         .then((result) => {
