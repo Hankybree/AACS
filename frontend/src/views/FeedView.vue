@@ -72,7 +72,7 @@ export default {
       visibleArray: [],
       loading: false,
       currentPage: 0,
-      imageBaseUrl: process.env.HOST + '/api/fileuploads/uploadedfiles/'
+      imageBaseUrl: process.env.VUE_APP_SERVER + '/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
