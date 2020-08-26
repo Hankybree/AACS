@@ -6,10 +6,7 @@ const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
 const bodyParser = require("body-parser");
-<<<<<<< HEAD
-=======
 const moment = require('moment')
->>>>>>> 53b841c4343da842e9a4a45f56f25455d519abb6
 
 router.use(cors())
 router.use(bodyParser.json())
