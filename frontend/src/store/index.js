@@ -16,9 +16,8 @@ let state = {
   user: {},
   isLoggedIn: false,
   socket: null,
-  images: [],
-  message: '',
-};
+  images: []
+}
 
 
 // ======================
@@ -50,8 +49,8 @@ const mutations = {
       }
     })
   },
-  setMessage(state, newMessage) {
-    state.message = newMessage
+  setShowFeed(state, newShowFeed) {
+    state.showFeed = newShowFeed
   },
   setLike(state, data) {
     if (data.isLiking) {
@@ -62,7 +61,7 @@ const mutations = {
     }
   },
   setComment(state, data) {
-    state.images.find(image => image.imageId === data.commentImageId).comments.push({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage })
+    state.images.find(image => image.imageId === data.commentImageId).comments.unshift({ commentId: data.commentId, commentUserId: data.commentUserId, commentMessage: data.commentMessage, commentCreationTime: data.commentCreationTime })
   },
   deleteComment(state, data) {
     let commentArray = state.images.find(image => image.imageId === data.imageId).comments
@@ -115,9 +114,8 @@ const actions = {
   like: (context, imageId) => {
     context.state.socket.send(JSON.stringify({ status: 2, likeImageId: imageId, likeUserId: context.state.user.id }))
   },
-  comment: (context, imageId) => {
-    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: imageId, commentUserId: context.state.user.id, commentMessage: context.state.message }))
-    context.commit('setMessage', '')
+  comment: (context, data) => {
+    context.state.socket.send(JSON.stringify({ status: 3, commentImageId: data.imageId, commentUserId: context.state.user.id, commentMessage: data.message }))
   },
   deleteComment(context, data) {
     context.state.socket.send(JSON.stringify({ status: 4, imageId: data.imageId, commentId: data.commentId }))
