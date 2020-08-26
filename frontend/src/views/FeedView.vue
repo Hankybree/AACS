@@ -67,6 +67,9 @@ export default {
   created() {
     this.getImages();
   },
+  beforeDestroy() {
+    this.$store.dispatch('disconnect')
+  },
   data() {
     return {
       visibleArray: [],

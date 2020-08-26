@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack')
+
 module.exports = {
   pwa: {
     name: 'PicNet',
@@ -17,5 +19,10 @@ module.exports = {
         }
       ]
     }
+  },
+  configureWebpack: {
+    plugins: [
+      new Dotenv()
+    ]
   }
 }; 
