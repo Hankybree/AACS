@@ -1,6 +1,6 @@
 export const client = {
   connect(context) {
-      context.commit('setSocket', new WebSocket('ws://localhost:8000'))
+      context.commit('setSocket', new WebSocket('ws://' + process.env.HOST))
 
       context.state.socket.onopen = () => {
 
