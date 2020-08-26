@@ -62,7 +62,7 @@ const router = new VueRouter({
     {
       name: "ProfileView",
       component: ProfileView,
-      path: '/profile',
+      path: '/profile/:page',
       meta: {
         requiresAuth: true
       }

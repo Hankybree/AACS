@@ -30,12 +30,18 @@
       </div>
     </div>
 
+    <ResetPassword v-if="page === 'resetPassword'" />
   </div>
 </template>
 
 <script>
+import ResetPassword from '../components/Auth/ResetPassword'
+
 export default {
   name: 'ProfileView',
+  components: {
+    ResetPassword
+  },
   data(){
     return{
       countedImages: 0,
@@ -61,6 +67,16 @@ export default {
     changePassword(){
       //Handle change password here
       console.log("Change password")
+      this.$router.push({ name: "ProfileView", params:{ page: "resetPassword" }})
+      // const credentials = { userId: this.$store.state.user.id }
+
+      // this.axios.post("auth/reset/", credentials)
+      // .then(res => {
+
+      // })
+      // .catch(err => {
+      //   console.log(err.response.data.msg)
+      // })
     },
     logout(){
       //Handle logout here
