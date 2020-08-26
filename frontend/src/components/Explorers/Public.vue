@@ -13,7 +13,7 @@
           column-width="10px"
           class="item"
           :key="index"
-          v-for="(image, index) in images"
+          v-for="(image, index) in $store.state.images"
         >
           <!-- <div v-if="image.userName == userName"> -->
           <img
@@ -45,6 +45,8 @@
       return {
         images: [],
         imageId: 0,
+        imageMessages: [],
+        imageLikes: [],
         gutter: 10,
         imageData: {},
         showImg: false,
@@ -64,14 +66,12 @@
           })
           .then((result) => {
             console.log(result)
-
-            this.images = result.data
+            this.$store.commit('setImages', result.data)
+            // this.images = result.data
           })
       },
       getImage(index) {
-        this.imageId = this.images[index].imageId
-        this.imageData = this.images[index]
-        console.log(this.imageId)
+        this.imageId = this.$store.state.images[index].imageId
         if (this.showImg === false) {
           this.showImg = true
         } else {
@@ -80,8 +80,9 @@
         // @click="
         this.$router.push({
           name: 'PhotoView',
-          params: { photoid: this.imageId },
-          query: { image: this.imageData }
+          params: {
+            photoid: this.imageId
+          }
         })
       },
       reDraw() {

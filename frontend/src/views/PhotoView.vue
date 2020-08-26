@@ -5,38 +5,64 @@
       <div class="photoview">
         <div class="image-container">
           <button class="closebutton">X</button>
+          <div class="author">{{ this.image.userName }}</div>
           <img
             class="image"
-            :src="imageBaseUrl + $store.state.image.imageId"
-            alt
+            :src="imageBaseUrl + this.image.imageId"
+            alt="hej"
           />
-          <div class="author">author: Frank666</div>
+
           <div class="commentlikes-container">
             <div class="likes">
-              <span>69 spocks</span>
-              <button class="likebutton button">
+              <span>{{ image.likes.length }} spocks</span>
+              <button
+                v-if="!image.likes.includes($store.state.user.id)"
+                class="likebutton button"
+                @click="$store.dispatch('like', image.imageId)"
+              >
                 <font-awesome-icon :icon="['fas', 'hand-spock']" />
               </button>
-              <button class="likebutton button">
+              <button
+                v-else
+                class="likebutton-pressed button"
+                @click="$store.dispatch('like', image.imageId)"
+              >
                 <font-awesome-icon :icon="['fas', 'hand-spock']" />
               </button>
             </div>
 
-            <input v-model="message" placeholder="comment..." />
+            <!-- <input v-model="message" placeholder="comment..." /> -->
             <button class="sendbutton button">
               <font-awesome-icon :icon="['fas', 'paper-plane']" />
             </button>
 
             <div class="comments">
-              <button class="show-comment-button button">
-                View all 59 comments
+              <button class="show-comment-button button" @click="open">
+                Show all {{ this.image.comments.length }} Comments
               </button>
-              <button class="show-comment-button button">Hide comments</button>
-              <div class="comment-container">
-                <div>
-                  <div class="user"></div>
-                  <div class="comment"></div>
-                  <button>Delete comment</button>
+              <button class="show-comment-button button" @click="close">
+                Hide comments
+              </button>
+              <div v-if="this.showComments === true">
+                <div
+                  class="comment-container"
+                  :key="index"
+                  v-for="(comment, index) in this.image.comments"
+                >
+                  <div>
+                    <!-- <div class="user">{{ this.image.username[index] }}</div> -->
+                    <div class="comment">{{ comment.commentMessage }}</div>
+                    <button
+                      @click="
+                        $store.dispatch('deleteComment', {
+                          imageId: image.imageId,
+                          commentId: comment.commentId
+                        })
+                      "
+                    >
+                      Delete comment
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -51,21 +77,33 @@
   export default {
     name: 'PhotoView',
     created() {
-      if (this.$route.query) {
-        this.$store.commit('setImage', this.$route.query.image)
-        console.log('Hej' + this.$store.state.image.imageId)
-      }
+      console.log(this.$route.params.photoid)
+      this.image = this.$store.state.images.find(
+        (image) => image.imageId === this.$route.params.photoid
+      )
+      console.log('Hej ' + JSON.stringify(this.image))
     },
     data() {
       return {
-        imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
+        imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/',
+        image: {},
+        showComments: false,
+        imageId: this.$route.params.photoid
       }
     },
     computed: {
-      image: {
+      images: {
         get() {
-          return this.$store.state.image
+          return this.$store.state.images
         }
+      }
+    },
+    methods: {
+      open() {
+        this.showComments = true
+      },
+      close() {
+        this.showComments = false
       }
     }
   }
@@ -86,6 +124,7 @@
 
   .photoview {
     margin-top: 10%;
+    margin-bottom: 10%;
     width: 100%;
     background-color: transparent;
   }

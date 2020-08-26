@@ -20,7 +20,6 @@ let state = {
   isLoggedIn: false,
   socket: null,
   images: [],
-  image: {},
   message: ''
 }
 
@@ -42,9 +41,6 @@ const mutations = {
   },
   setImages(state, newImages) {
     state.images = newImages
-  },
-  setImage(state, newImage) {
-    state.image = newImage
   },
   setSocket(state, newSocket) {
     state.socket = newSocket
