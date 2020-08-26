@@ -19,8 +19,7 @@ let state = {
   user: {},
   isLoggedIn: false,
   socket: null,
-  images: [],
-  message: ''
+  images: []
 }
 
 // ======================
@@ -52,9 +51,6 @@ const mutations = {
       }
     })
   },
-  setMessage(state, newMessage) {
-    state.message = newMessage
-  },
   setShowFeed(state, newShowFeed) {
     state.showFeed = newShowFeed
   },
@@ -73,10 +69,11 @@ const mutations = {
   setComment(state, data) {
     state.images
       .find((image) => image.imageId === data.commentImageId)
-      .comments.push({
+      .comments.unshift({
         commentId: data.commentId,
         commentUserId: data.commentUserId,
-        commentMessage: data.commentMessage
+        commentMessage: data.commentMessage,
+        commentCreationTime: data.commentCreationTime
       })
   },
   deleteComment(state, data) {
@@ -142,16 +139,15 @@ const actions = {
       })
     )
   },
-  comment: (context, imageId) => {
+  comment: (context, data) => {
     context.state.socket.send(
       JSON.stringify({
         status: 3,
-        commentImageId: imageId,
+        commentImageId: data.imageId,
         commentUserId: context.state.user.id,
-        commentMessage: context.state.message
+        commentMessage: data.message
       })
     )
-    context.commit('setMessage', '')
   },
   deleteComment(context, data) {
     context.state.socket.send(

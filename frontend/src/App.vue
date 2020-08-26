@@ -20,6 +20,10 @@
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
       }
+    },
+    created() {
+      console.log(navigator.onLine ? 'Online' : 'Offline')
+
     }
   }
 </script>
