@@ -1,6 +1,6 @@
 export const client = {
   connect(context) {
-      context.commit('setSocket', new WebSocket('ws://localhost:8000'))
+      context.commit('setSocket', new WebSocket(process.env.VUE_APP_SOCKET_SERVER))
 
       context.state.socket.onopen = () => {
 
@@ -21,6 +21,10 @@ export const client = {
       context.state.socket.onclose = () => {
           console.log('Disconnected from server')
       }
+  },
+  disconnect(context) {
+    context.state.socket.close()
+    context.commit('setSocket', null)
   },
   checkStatus(context, data) {
       if (data.status === 1) {

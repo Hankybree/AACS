@@ -6,6 +6,10 @@ const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
 const bodyParser = require("body-parser");
+<<<<<<< HEAD
+=======
+const moment = require('moment')
+>>>>>>> 53b841c4343da842e9a4a45f56f25455d519abb6
 
 router.use(cors())
 router.use(bodyParser.json())
@@ -50,21 +54,28 @@ wss.on('connection', (socket, request) => {
   }
 })
 
-router.post('/', (req, res) => {
-  getImages(req.body.currentPage)
+router.post('/feed', (req, res) => {
+  getImages(req.body.currentPage, 5)
     .then((images) => {
       res.send(JSON.stringify(images))
     })
 })
 
-function getImages(currentPage) {
+router.post('/grid', (req, res) => {
+  getImages(req.body.currentPage, req.body.limit, 50)
+    .then((images) => {
+      res.send(JSON.stringify(images))
+    })
+})
+
+function getImages(currentPage, limit) {
 
   return new Promise((resolve) => {
 
-    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT 2 OFFSET ?', [currentPage * 2], (err, images) => {
+    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?', [limit, currentPage * limit], (err, images) => {
       if (err) throw err
 
-      mysqlConnection.query('SELECT * FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId', (err, imageData) => {
+      mysqlConnection.query('SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id', (err, imageData) => {
         if (err) throw err
 
         for (let i = 0; i < images.length; i++) {
@@ -79,12 +90,16 @@ function getImages(currentPage) {
             }
 
             if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
-              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage })
+              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage, commentCreationTime: imageData[j].commentCreationTime })
+            }
+
+            if (imageData[j].imageUserId === images[i].imageUserId) {
+              images[i].userName = imageData[j].username
             }
           }
 
           images[i].likes = likes
-          images[i].comments = comments.sort((a, b) => a.commentId - b.commentId)
+          images[i].comments = comments.sort((a, b) => new Date(b.commentCreationTime) - new Date(a.commentCreationTime))
         }
 
         resolve(images)
@@ -125,12 +140,13 @@ function like(data, status) {
 function comment(data, status) {
 
   const token = uuid.v4()
+  const timeStamp = new Date(moment().format())
 
-  mysqlConnection.query('INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage) VALUES (?, ?, ?, ?)', [token, data.commentImageId, data.commentUserId, data.commentMessage], (err) => {
+  mysqlConnection.query('INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage, commentCreationTime) VALUES (?, ?, ?, ?, ?)', [token, data.commentImageId, data.commentUserId, data.commentMessage, timeStamp], (err) => {
     if (err) throw err
 
     clients.forEach((client) => {
-      client.send(JSON.stringify({ status: status, commentId: token, commentImageId: data.commentImageId, commentUserId: data.commentUserId, commentMessage: data.commentMessage }))
+      client.send(JSON.stringify({ status: status, commentId: token, commentImageId: data.commentImageId, commentUserId: data.commentUserId, commentMessage: data.commentMessage, commentCreationTime: timeStamp }))
     })
   })
 }

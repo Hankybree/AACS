@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <router-view></router-view>
+
+    <button @click="$router.push({ name: 'PhotoView', params: '' })" >PhotoView</button>
     <div class="navbar" v-if="isLoggedIn">
       <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
       <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
@@ -18,6 +20,10 @@
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
       }
+    },
+    created() {
+      console.log(navigator.onLine ? 'Online' : 'Offline')
+
     }
   }
 </script>
@@ -50,7 +56,7 @@
   }
 
   .navbar {
-    background: white;
+    background: #11193f;
     bottom: 0;
     position: fixed;
     width: 100%;
@@ -59,7 +65,7 @@
 
   .navbar a {
     display: inline-flex;
-    color: black;
+    color: white;
     font-size: 20pt;
     padding: 10px 0;
     margin: auto;
