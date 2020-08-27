@@ -3,10 +3,15 @@
         
     <!-- Reset password components -->
     <div class="reset-password-components" v-if="!hasToken">
-      <h1 class="whiteColor">Forgot password</h1>
+      <p>
+      Forgot password?
+      <br />
+       get a new one to keep sharing pictures with your <b>friends</b>.
+    </p>
 
-      <label for="reset-password-email" class="whiteColor">Email</label>
-      <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
+      <div><label for="reset-password-email" class="whiteColor">Email</label>
+      <font-awesome-icon class="icons" :icon="['fas', 'at']" />
+      <input type="text" placeholder="email" id="reset-password-email" class="reset-password-input" v-model="email" /></div>
 
       <!-- Reset password button -->
       <div id="button-components">
@@ -107,19 +112,36 @@ export default {
 }
 
 .reset-password-components label {
-  padding-bottom: 5px;
-  padding-left: 15px;
+  padding-bottom: 0px;
+  padding-left: 12px;
   display: block;
+  font-size: 0.9em;
 }
 
 .reset-password-input{
+ display: inline-block;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
   font-size: 12pt;
   margin-bottom: 10pt;
-  border-radius: 7px;
-  border: 0px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.253);
+  color: white;
+}
+
+p {
+  margin-top: 1.5em;
+  margin-bottom: 3em;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2em;
+}
+
+.icons {
+  margin-left: -1em;
+  opacity: 0.5;
 }
 
 /* Button components */
