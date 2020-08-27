@@ -1,6 +1,10 @@
 <template>
   <div class="content bgColor">
 
+    <div>
+      <div class="profile-image"></div>
+    </div>
+
     <Login v-if="page === 'login'"/>
     <Signup v-if="page === 'signup'" />
     <ForgotPassword v-if="page === 'forgot'" />
@@ -42,6 +46,16 @@
     border: 0px;
     font-size: 15pt;
   }
+
+  .profile-image {
+  width: 50px;
+  height: 50px;
+  background-image: url("../assets/logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-left: 1em;
+  margin-top: 1em;
+}
 
   /deep/ .errorMessage {
     text-align: center;

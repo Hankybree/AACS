@@ -43,8 +43,14 @@
               <div :key="index" v-for="(comment, index) in image.comments">
                 <div class="user">{{ comment.commentUserId }}</div>
                 <div class="comment">{{ comment.commentMessage }}</div>
-                <button @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})">Delete comment</button>
-                <div>{{ comment.commentCreationTime }}</div>
+                <div class="delete-button-wrapper">
+                  <button
+                    class="delete"
+                    @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})"
+                  >
+                    <font-awesome-icon :icon="['far', 'trash-alt']" />
+                  </button>
+                </div>
                 <hr />
               </div>
             </div>
@@ -147,7 +153,7 @@ hr {
 .image-container {
   width: 95%;
   max-width: 30em;
-  background-color: teal;
+  background-color: #0a0a27;
   display: inline-block;
   font-family: Montserrat, sans-serif;
 }
@@ -170,6 +176,7 @@ hr {
 .author {
   text-align: start;
   margin-left: 1em;
+  font-weight: 500;
 }
 
 /** --------------BUTTONS----------- */
@@ -195,10 +202,21 @@ hr {
   font-size: 1.3em;
 }
 
+.delete {
+  border-style: none;
+  background-color: transparent;
+  color: white;
+  font-size: 1.2em;
+}
+
 .comment-container {
   text-align: left;
   margin-left: 2em;
   margin-right: 2em;
   padding: 1em;
+}
+
+.delete-button-wrapper {
+  text-align: right;
 }
 </style>
