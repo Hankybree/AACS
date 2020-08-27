@@ -13,14 +13,16 @@
           column-width="10px"
           class="item"
           :key="index"
-          v-for="(image, index) in images"
+          v-for="(image, index) in $store.state.images"
         >
+          <!-- <div v-if="image.userName == userName"> -->
           <img
             class="image"
-            :src="image.previewURL"
+            :src="imageBaseUrl + image.imageId"
             alt="no image"
             @click="getImage(index)"
           />
+          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -43,7 +45,14 @@
       return {
         images: [],
         imageId: 0,
-        gutter: 10
+        imageMessages: [],
+        imageLikes: [],
+        gutter: 10,
+        imageData: {},
+        showImg: false,
+        currentPage: 0,
+        imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
+        // userName: 'mybigpic'
       }
     },
     methods: {
@@ -51,18 +60,30 @@
         const apiKey = '4893035-50117f6a495574786f78b773f'
         const url = 'https://pixabay.com/api/?key='
 
-        fetch(url + apiKey + '&q=yellow+flowers&image_type=photo', {
-          // headers: { 'x-api-key': '4893035-50117f6a495574786f78b773f' }
-        })
-          .then((response) => response.json())
+        this.axios
+          .post('images/grid', {
+            currentPage: this.currentPage
+          })
           .then((result) => {
-            // console.log(result)
-            this.images = result.hits
+            console.log(result)
+            this.$store.commit('setImages', result.data)
+            // this.images = result.data
           })
       },
       getImage(index) {
-        this.imageId = this.images[index].id
-        console.log(this.imageId)
+        this.imageId = this.$store.state.images[index].imageId
+        if (this.showImg === false) {
+          this.showImg = true
+        } else {
+          this.showImg = false
+        }
+        // @click="
+        this.$router.push({
+          name: 'PhotoView',
+          params: {
+            photoid: this.imageId
+          }
+        })
       },
       reDraw() {
         this.$redrawVueMasonry('.grid')
@@ -74,11 +95,10 @@
 <style scoped>
   /* item = image container (inte själva bilden alltså) */
   .item {
-    background-color: green;
   }
-  /* .image {
-    width: 20vw;
-  } */
+  .image {
+    max-width: 150px;
+  }
   .masonry-container {
     margin: 0 auto;
     margin-left: 6%;
@@ -90,6 +110,5 @@
     display: inline-block;
     margin: 5px;
     padding: 5px;
-    border: chocolate solid 5px;
   }
 </style>

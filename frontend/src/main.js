@@ -7,17 +7,40 @@ import vueAxios from 'vue-axios'
 Vue.use(vueAxios, axios)
 
 //Importing vue-sweetalerts
-import SweetAlertIcons from 'vue-sweetalert-icons';
-Vue.use(SweetAlertIcons);
+import SweetAlertIcons from 'vue-sweetalert-icons'
+Vue.use(SweetAlertIcons)
 
 //Importing font-awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUpload, faPaperPlane, faTimes, faHandSpock, faImages, faSearch, faUser, faTh } from '@fortawesome/free-solid-svg-icons'
-import { faImages as faImagesReg, faPlusSquare } from '@fortawesome/free-regular-svg-icons'
+import {
+  faUpload,
+  faPaperPlane,
+  faTimes,
+  faHandSpock,
+  faImages,
+  faSearch,
+  faUser,
+  faTh
+} from '@fortawesome/free-solid-svg-icons'
+import {
+  faImages as faImagesReg,
+  faPlusSquare
+} from '@fortawesome/free-regular-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faUpload, faPaperPlane, faTimes, faHandSpock, faImages, faImagesReg, faSearch, faPlusSquare, faUser, faTh)
+library.add(
+  faUpload,
+  faPaperPlane,
+  faTimes,
+  faHandSpock,
+  faImages,
+  faImagesReg,
+  faSearch,
+  faPlusSquare,
+  faUser,
+  faTh
+)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -28,7 +51,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
 
 
 addEventListener('offline', () => {
@@ -50,7 +73,7 @@ Vue.config.productionTip = false
 let vueApp = new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })
 
 function secureCheck() {
@@ -82,7 +105,6 @@ function secureCheck() {
   } else {
     vueApp.$mount('#app')
   }
-
 }
 
 secureCheck()

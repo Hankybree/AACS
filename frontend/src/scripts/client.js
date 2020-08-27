@@ -22,6 +22,10 @@ export const client = {
           console.log('Disconnected from server')
       }
   },
+  disconnect(context) {
+    context.state.socket.close()
+    context.commit('setSocket', null)
+  },
   checkStatus(context, data) {
       if (data.status === 1) {
           context.commit('setImages', data.data)

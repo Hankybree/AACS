@@ -46,7 +46,6 @@ export default {
         this.$store.dispatch('login', { user, token })
       })
       .catch(err => {
-        console.log("awd", err.response.data)
         this.errorMessage = err.response.data.msg
       })
     },

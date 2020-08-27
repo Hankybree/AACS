@@ -3,8 +3,9 @@
     <div>FEED</div>
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
-        <img class="image" :src="image.imagePath" alt />
-        <div class="author">author: Frank666</div>
+        <img class="image" :src="imageBaseUrl + image.imageId" alt />
+        <div class="author">Author: {{ image.userName }}</div>
+        <div class="date">Created: {{ image.creationTime }}</div>
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
@@ -24,23 +25,26 @@
             </button>
           </div>
 
-          <input v-model="message" placeholder="comment..." />
-          <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)">
-            <font-awesome-icon :icon="['fas', 'paper-plane']" />
-          </button>
-
           <div class="comments">
             <button
-              v-if="!commentsVisible"
-              @click="showComments"
+              v-if="!visibleArray.includes(index)"
+              @click="showComments(index)"
               class="show-comment-button button"
             >View all {{image.comments.length}} comments</button>
-            <button v-else @click="showComments" class="show-comment-button button">Hide comments</button>
-            <div v-if="commentsVisible" class="comment-container">
+            <button v-else @click="showComments(index)" class="show-comment-button button">Hide comments</button>
+            <div v-if="visibleArray.includes(index)" class="comment-container">
+
+              <input :id="'comment-input' + index" type="text" placeholder="comment..." />
+              <!-- <button class="sendbutton button" @click="$store.dispatch('comment', image.imageId)"> -->
+                <button class="sendbutton button" @click="sendComment(index, image.imageId)">
+              <font-awesome-icon :icon="['fas', 'paper-plane']" />
+              </button>
+              
               <div :key="index" v-for="(comment, index) in image.comments">
                 <div class="user">{{ comment.commentUserId }}</div>
                 <div class="comment">{{ comment.commentMessage }}</div>
                 <button @click="$store.dispatch('deleteComment', {imageId: image.imageId, commentId: comment.commentId})">Delete comment</button>
+                <div>{{ comment.commentCreationTime }}</div>
                 <hr />
               </div>
             </div>
@@ -54,8 +58,6 @@
 <script>
 export default {
   beforeCreate() {
-    this.$store.dispatch("connect");
-
     window.addEventListener("scroll", () => {
       this.handleScroll();
     });
@@ -63,23 +65,39 @@ export default {
   created() {
     this.getImages();
   },
+  mounted() {
+    this.$store.dispatch("connect");
+  },
+  beforeDestroy() {
+    this.$store.dispatch('disconnect')
+  },
   data() {
     return {
-      commentsVisible: false,
+      visibleArray: [],
       loading: false,
       currentPage: 0,
+      imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
-    showComments() {
-      this.commentsVisible = !this.commentsVisible;
+    sendComment(index, imageId) {
+      this.$store.dispatch('comment', { imageId: imageId, message: document.querySelector('#comment-input' + index).value })
+      document.querySelector('#comment-input' + index).value = ''
+    },
+    showComments(index) {
+      if (!this.visibleArray.includes(index)) {
+        this.visibleArray.push(index)
+      } else {
+        this.visibleArray.splice(this.visibleArray.indexOf(index), 1)
+      }
     },
     getImages() {
       this.axios
-        .post("images/", {
+        .post("images/feed", {
           currentPage: this.currentPage,
         })
         .then((result) => {
+          console.log(result)
           if (this.currentPage === 0) {
             this.$store.commit("setImages", result.data);
           } else {
