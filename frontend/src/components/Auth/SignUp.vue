@@ -26,7 +26,7 @@
 
       <!-- Login button -->
       <div id="login-components">
-        <input class="login-button whiteColor" type="button" value="Already have an account? Sign up" @click="loginButtonTapped" />
+        <input class="login-button whiteColor" type="button" value="Already have an account? Sign in" @click="loginButtonTapped" />
       </div>
 
     </div>
@@ -51,8 +51,6 @@ export default {
       this.$router.push({ name: "AuthView", params:{ page: "login" }})
     },
     signUpButtonTapped(){
-     
-
         const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
         console.log(credentials)
 

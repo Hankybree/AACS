@@ -62,7 +62,7 @@ const router = new VueRouter({
     {
       name: "ProfileView",
       component: ProfileView,
-      path: '/profile',
+      path: '/profile/:page?',
       meta: {
         requiresAuth: true
       }
@@ -84,7 +84,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-
   const permission = await hasPermission()
 
   if (to.meta.requiresAuth) {

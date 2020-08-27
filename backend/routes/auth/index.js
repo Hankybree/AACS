@@ -315,22 +315,21 @@ router.post('/reset', (req, res, next) => {
 
       if (!bResult) {
         return res.status(400).send({
-          msg: 'Fel lösenord'
+          msg: 'Wrong password'
         })
       }
 
       if (bResult) {
-        console.log("Jämfört gamla lösenordet");
 
-        if (!req.body.newPassword || req.body.newPassword.length < 7) {
+        if (!req.body.newPassword || req.body.newPassword.length < 5) {
           return res.status(400).send({
-            msg: 'Ange ett lösenord med minst 7 tecken'
+            msg: 'Enter a password with atleast 6 characters'
           });
         }
 
         if (!req.body.repeatPassword || req.body.newPassword != req.body.repeatPassword) {
           return res.status(400).send({
-            msg: 'Lösenorden matchar inte'
+            msg: 'Passwords does not match!'
           });
         }
 
@@ -341,14 +340,14 @@ router.post('/reset', (req, res, next) => {
           }
 
           mysqlConnection.query(
-            `UPDATE users SET passwordHash = ${mysqlConnection.escape(hash)} WHERE id = ${mysqlConnection.escape(req.body.userId)}`, (dErr, dResult) => {
+            `UPDATE userdetails SET password = ${mysqlConnection.escape(hash)} WHERE id = ${mysqlConnection.escape(req.body.userId)}`, (dErr, dResult) => {
               if (dErr) {
                 console.log(dErr);
                 return res.status(500).send();
               }
 
               return res.status(200).send({
-                msg: 'Lösenord ändrat!',
+                msg: 'Password successfully changed',
               });
             }
           )
