@@ -150,20 +150,22 @@ hr {
 }
 
 .image-container {
-  width: 95%;
+  width: 90%;
   max-width: 30em;
   background-color: #0a0a27;
   display: inline-block;
   font-family: Montserrat, sans-serif;
+  margin-bottom: 2em;
 }
 
 .image {
-  width: 95%;
+  width: 100%;
   max-width: 30em;
 }
 
 .commentlikes-container {
   background-color: #0a0a27;
+  padding-bottom: 1em;
 }
 
 .likes {
