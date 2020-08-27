@@ -5,12 +5,8 @@ const uuid = require('uuid')
 const mysqlConnection = require('../../mysql')
 const WebSocketServer = require('ws').Server
 const server = require('../../server.js')
-<<<<<<< HEAD
 const bodyParser = require('body-parser')
-=======
-const bodyParser = require("body-parser");
 const moment = require('moment')
->>>>>>> 44c5b6c42c8132a86b2f9753527c4ff41faf9d4f
 
 router.use(cors())
 router.use(bodyParser.json())
@@ -53,16 +49,9 @@ wss.on('connection', (socket, request) => {
 })
 
 router.post('/feed', (req, res) => {
-<<<<<<< HEAD
-  getImages(req.body.currentPage, 2).then((images) => {
+  getImages(req.body.currentPage, 5).then((images) => {
     res.send(JSON.stringify(images))
   })
-=======
-  getImages(req.body.currentPage, 5)
-    .then((images) => {
-      res.send(JSON.stringify(images))
-    })
->>>>>>> 44c5b6c42c8132a86b2f9753527c4ff41faf9d4f
 })
 
 router.post('/grid', (req, res) => {
@@ -73,7 +62,6 @@ router.post('/grid', (req, res) => {
 
 function getImages(currentPage, limit) {
   return new Promise((resolve) => {
-<<<<<<< HEAD
     mysqlConnection.query(
       'SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?',
       [limit, currentPage * limit],
@@ -81,7 +69,7 @@ function getImages(currentPage, limit) {
         if (err) throw err
 
         mysqlConnection.query(
-          'SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id',
+          'SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id',
           (err, imageData) => {
             if (err) throw err
 
@@ -107,59 +95,26 @@ function getImages(currentPage, limit) {
                     commentId: imageData[j].commentId,
                     commentUserId: imageData[j].commentUserId,
                     commentMessage: imageData[j].commentMessage,
-                    creationTime: imageData[j].creationTime
+                    commentCreationTime: imageData[j].commentCreationTime
                   })
                 }
 
-                if (imageData[j].imageUserId === images[i].imageUserId) {
-                  images[i].userName = imageData[j].username
-                }
+                resolve(images)
               }
 
               images[i].likes = likes
               images[i].comments = comments.sort(
-                (a, b) => a.creationTime - b.creationTime
+                (a, b) =>
+                  new Date(b.commentCreationTime) -
+                  new Date(a.commentCreationTime)
               )
-=======
-
-    mysqlConnection.query('SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?', [limit, currentPage * limit], (err, images) => {
-      if (err) throw err
-
-      mysqlConnection.query('SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id', (err, imageData) => {
-        if (err) throw err
-
-        for (let i = 0; i < images.length; i++) {
-
-          let likes = []
-          let comments = []
-
-          for (let j = 0; j < imageData.length; j++) {
-
-            if (imageData[j].likeImageId === images[i].imageId && !likes.includes(imageData[j].likeUserId)) {
-              likes.push(imageData[j].likeUserId)
-            }
-
-            if (imageData[j].commentImageId === images[i].imageId && !comments.some(comment => comment.commentId === imageData[j].commentId)) {
-              comments.push({ commentId: imageData[j].commentId, commentUserId: imageData[j].commentUserId, commentMessage: imageData[j].commentMessage, commentCreationTime: imageData[j].commentCreationTime })
->>>>>>> 44c5b6c42c8132a86b2f9753527c4ff41faf9d4f
             }
 
             resolve(images)
           }
-<<<<<<< HEAD
         )
       }
     )
-=======
-
-          images[i].likes = likes
-          images[i].comments = comments.sort((a, b) => new Date(b.commentCreationTime) - new Date(a.commentCreationTime))
-        }
-
-        resolve(images)
-      })
-    })
->>>>>>> 44c5b6c42c8132a86b2f9753527c4ff41faf9d4f
   })
 }
 
@@ -214,10 +169,15 @@ function comment(data, status) {
   const token = uuid.v4()
   const timeStamp = new Date(moment().format())
 
-<<<<<<< HEAD
   mysqlConnection.query(
-    'INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage) VALUES (?, ?, ?, ?)',
-    [token, data.commentImageId, data.commentUserId, data.commentMessage],
+    'INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage, commentCreationTime) VALUES (?, ?, ?, ?, ?)',
+    [
+      token,
+      data.commentImageId,
+      data.commentUserId,
+      data.commentMessage,
+      timeStamp
+    ],
     (err) => {
       if (err) throw err
 
@@ -228,21 +188,13 @@ function comment(data, status) {
             commentId: token,
             commentImageId: data.commentImageId,
             commentUserId: data.commentUserId,
-            commentMessage: data.commentMessage
+            commentMessage: data.commentMessage,
+            commentCreationTime: timeStamp
           })
         )
       })
     }
   )
-=======
-  mysqlConnection.query('INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage, commentCreationTime) VALUES (?, ?, ?, ?, ?)', [token, data.commentImageId, data.commentUserId, data.commentMessage, timeStamp], (err) => {
-    if (err) throw err
-
-    clients.forEach((client) => {
-      client.send(JSON.stringify({ status: status, commentId: token, commentImageId: data.commentImageId, commentUserId: data.commentUserId, commentMessage: data.commentMessage, commentCreationTime: timeStamp }))
-    })
-  })
->>>>>>> 44c5b6c42c8132a86b2f9753527c4ff41faf9d4f
 }
 
 function deleteComment(data, status) {
