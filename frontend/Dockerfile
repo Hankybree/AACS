@@ -12,10 +12,6 @@ COPY . .
 
 RUN npm run build 
 
-
-
 FROM nginx:latest
 COPY --from=node /usr/src/app/dist/ /usr/share/nginx/html
 COPY ./nginx-config.conf /etc/nginx/conf.d/default.conf
-
-COPY ./sw/* /usr/share/nginx/html/

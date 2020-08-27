@@ -104,7 +104,7 @@ const actions = {
   logout: ({ commit }) => {
     commit('RESET', '');
     commit('SET_IS_LOGGED_IN', false)
-    if (router.currentRoute.name !== 'Trips') {
+    if (router.currentRoute.name !== 'AuthView') {
       router.push({ name: 'AuthView', params: { page: 'login' } })
     }
   },

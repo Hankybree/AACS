@@ -31,6 +31,14 @@ import store from './store'
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
 
 
+addEventListener('offline', () => {
+  alert('Offline')
+})
+
+addEventListener('online', () => {
+  alert('Online')
+})
+
 if (process.env.NODE_ENV == "development") {
   axios.defaults.baseURL = 'http://localhost:8000/api/'
 } else {
@@ -47,28 +55,31 @@ let vueApp = new Vue({
 
 function secureCheck() {
 
-
-  if (store.state.token) {
-    axios
-    .post('auth/checkIfValidSession/')
-    .then(response => {
-      const user = {
-        email: response.data.email,
-        id: response.data.userId
-      }
-      let tempUser = JSON.parse(JSON.stringify(store.getters.getUser))
-      store.commit('SET_IS_LOGGED_IN', true)
-      store.commit('SET_USER', Object.assign(tempUser, user))
+  if (navigator.onLine == 'Offline') {
+    if (store.state.token) {
+      axios
+      .post('auth/checkIfValidSession/')
+      .then(response => {
+        const user = {
+          email: response.data.email,
+          id: response.data.userId
+        }
+        let tempUser = JSON.parse(JSON.stringify(store.getters.getUser))
+        store.commit('SET_IS_LOGGED_IN', true)
+        store.commit('SET_USER', Object.assign(tempUser, user))
+        vueApp.$mount('#app')
+      })
+      .catch(err => {
+        console.log(err.response.data.msg);
+        store.commit('SET_IS_LOGGED_IN', false)
+        store.dispatch('logout')
+        vueApp.$mount('#app')
+      }) 
+    } else {
+      store.commit('RESET')
       vueApp.$mount('#app')
-    })
-    .catch(err => {
-      console.log(err.response.data.msg);
-      store.commit('SET_IS_LOGGED_IN', false)
-      store.dispatch('logout')
-      vueApp.$mount('#app')
-    }) 
+    }
   } else {
-    store.commit('RESET')
     vueApp.$mount('#app')
   }
 
