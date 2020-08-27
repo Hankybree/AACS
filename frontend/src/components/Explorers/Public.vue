@@ -53,7 +53,6 @@
         showImg: false,
         currentPage: 0,
         imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'
-        // userName: 'mybigpic'
       }
     },
     methods: {

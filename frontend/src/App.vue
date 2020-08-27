@@ -10,7 +10,7 @@
       <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
       <router-link to="/fileupload"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
       <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
-      <router-link :to="'/profile/' + 'profileDetails'"><font-awesome-icon :icon="['fas', 'user']" /></router-link>
+      <router-link :to="'/profile/' + 'profileDetails'"><font-awesome-icon :icon="['far', 'user']" /></router-link>
     </div>
   </div>
 </template>
@@ -33,9 +33,13 @@
 
   body,
   html {
-    background-image: url('./assets/tempBg.png');
     margin: 0;
     padding: 0;
+    background-image: linear-gradient( 10.9deg,  #222222 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
   }
   .whiteColor {
     color: white;
@@ -54,7 +58,7 @@
   }
 
   .navbar {
-    background: #11193f;
+    background: #1a1818;
     bottom: 0;
     position: fixed;
     width: 100%;
