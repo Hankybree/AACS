@@ -36,7 +36,8 @@
           value="Forgot password?"
           @click="resetPasswordButtonTapped"
         />
-        <input class="login-button" type="button" value="Login" @click="loginButtonTapped" />
+        <!-- <input class="login-button" type="button" value="Login" @click="loginButtonTapped" /> -->
+        <button :class="`${emailUsername && password ? 'login-button-valid' : 'login-button'}`" class="login-button" @click="loginButtonTapped"><font-awesome-icon :icon="['fas', 'arrow-circle-right']" /></button>
       </div>
       <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
 
@@ -110,6 +111,7 @@ export default {
 
 .icons {
   margin-left: -1em;
+  opacity: 0.5;
 }
 
 .login-input {
@@ -122,7 +124,7 @@ export default {
   border: 0;
   outline: 0;
   background: transparent;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.253);
   color: white;
 }
 /* Button components */
@@ -134,11 +136,26 @@ export default {
   width: 40%;
   height: 100%;
   color: white;
-  border-radius: 5px;
+  border-radius: 50%;
   text-transform: uppercase;
   font-weight: 600;
+  font-size: 1.50em;
   background-color: transparent;
+  border-style: none;
 }
+
+.login-button-valid {
+  width: 40%;
+  height: 100%;
+  color: blue;
+  border-radius: 50%;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.50em;
+  background-color: transparent;
+  border-style: none;
+}
+
 .forgot-password-button {
   width: 60%;
   height: 100%;
