@@ -24,7 +24,7 @@
     <div class="image-grid-wrapper">
       <div class="column">
         <div class="grid-image" v-for="(result, index) in images" :key="index">
-          <img :src="'http://localhost:8000/api/fileuploads/uploadedfiles/' + images[index].imageId" alt="Image" class="image" />
+          <img :src="imageBaseUrl + images[index].imageId" alt="Image" class="image" />
         </div>
 
       </div>
@@ -40,7 +40,8 @@ export default {
   data(){
     return{
       countedImages: 0,
-      images: []
+      images: [],
+      imageBaseUrl: process.env.NODE_ENV == 'production' ? 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/' : 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     }
   },
   created(){

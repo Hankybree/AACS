@@ -14,10 +14,10 @@ module.exports = {
       runtimeCaching: [
         {
           handler: 'NetworkFirst',
-          urlPattern: new RegExp('^http://picnet.aviliax.com/'),
+          urlPattern: new RegExp('^https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'),
           options: {
             networkTimeoutSeconds: 3,
-            cacheName: 'api-cache',
+            cacheName: 'images',
             cacheableResponse: {
                 statuses: [0, 200],
             },

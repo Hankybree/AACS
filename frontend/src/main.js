@@ -62,6 +62,7 @@ addEventListener('online', () => {
   alert('Online')
 })
 
+
 if (process.env.NODE_ENV == "development") {
   axios.defaults.baseURL = 'http://localhost:8000/api/'
 } else {
