@@ -37,3 +37,5 @@ uploads
 #Files
 uploadedfiles
 dev-docker-compose.yaml
+frontend/keys.js
+backend/keys.js

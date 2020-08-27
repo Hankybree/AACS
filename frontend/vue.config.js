@@ -10,20 +10,10 @@ module.exports = {
     },
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
+    workboxPluginMode: "InjectManifest",
     workboxOptions: {
-      runtimeCaching: [
-        {
-          handler: 'NetworkFirst',
-          urlPattern: new RegExp('^https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'),
-          options: {
-            networkTimeoutSeconds: 3,
-            cacheName: 'images',
-            cacheableResponse: {
-                statuses: [0, 200],
-            },
-          },
-        },
-      ],
-    }
-  },
+      swSrc: "./service-worker.js",
+      swDest: './service-worker.js'
+    },
+  }
 }; 

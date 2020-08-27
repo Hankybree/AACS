@@ -8,6 +8,12 @@ const server = require('../../server.js')
 const bodyParser = require('body-parser')
 const moment = require('moment')
 
+const webPush = require('web-push')
+const { PRIVATE_VAPID_KEY, PUBLIC_VAPID_KEY } = require('./../push/keys')
+
+
+
+
 router.use(cors())
 router.use(bodyParser.json())
 
@@ -153,6 +159,38 @@ function like(data, status) {
           [data.likeImageId, data.likeUserId],
           (err) => {
             if (err) throw err
+
+            mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.likeUserId)}`, (err, result) => {
+              if (err) throw err
+              console.log(result);
+              if (result.length > 0) {
+
+
+                mysqlConnection.query(`SELECT pushSubscription, pubprivkeys FROM images 
+                INNER JOIN userdetails ON userdetails.id = imageUserId
+                WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result) => {
+
+                  webPush.setVapidDetails(
+                    'mailto:picnet@aviliax.com',
+                    JSON.parse(result[0].pubprivkeys).pub,
+                    JSON.parse(result[0].pubprivkeys).priv
+                  )
+  
+                  webPush.sendNotification(
+                    JSON.parse(result[0].pushSubscription),
+                    JSON.stringify({
+                      body: result[0].username + ' spocked your image',
+                      title: 'New spock!'
+                    })
+                  )
+
+                });
+
+            
+              }
+
+            })
+
 
             clients.forEach((client) => {
               likeData.isLiking = true
