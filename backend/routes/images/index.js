@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const moment = require('moment')
 
 const webPush = require('web-push')
-const { PRIVATE_VAPID_KEY, PUBLIC_VAPID_KEY } = require('./../push/keys')
+// const { PRIVATE_VAPID_KEY, PUBLIC_VAPID_KEY } = require('./../push/keys')
 
 
 
@@ -166,18 +166,18 @@ function like(data, status) {
               if (result.length > 0) {
 
 
-                mysqlConnection.query(`SELECT pushSubscription, pubprivkeys FROM images 
+                mysqlConnection.query(`SELECT username, pushSubscription, pubprivkeys FROM images 
                 INNER JOIN userdetails ON userdetails.id = imageUserId
-                WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result) => {
-
+                WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result2) => {
+                  console.log(result2);
                   webPush.setVapidDetails(
                     'mailto:picnet@aviliax.com',
-                    JSON.parse(result[0].pubprivkeys).pub,
-                    JSON.parse(result[0].pubprivkeys).priv
+                    JSON.parse(result2[0].pubprivkeys).pub,
+                    JSON.parse(result2[0].pubprivkeys).priv
                   )
   
                   webPush.sendNotification(
-                    JSON.parse(result[0].pushSubscription),
+                    JSON.parse(result2[0].pushSubscription),
                     JSON.stringify({
                       body: result[0].username + ' spocked your image',
                       title: 'New spock!'
