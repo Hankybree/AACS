@@ -2,9 +2,6 @@
   <div id="app">
     <router-view></router-view>
 
-    <button @click="$router.push({ name: 'PhotoView', params: '' })">
-      PhotoView
-    </button>
     <div class="navbar" v-if="isLoggedIn">
       <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
       <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
@@ -49,6 +46,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: white;
+    min-height: 100vh;
   }
   .content {
     width: 100%;

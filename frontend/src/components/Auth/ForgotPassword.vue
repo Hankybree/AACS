@@ -1,37 +1,38 @@
 <template>
-  <div class="content">
+  <div class="wrapper">
+    <div class="content">
+          
+      <!-- Reset password components -->
+      <div class="reset-password-components" v-if="!hasToken">
+        <h1 class="whiteColor">Forgot password</h1>
+  
+        <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" placeholder="Email" />
+  
+        <!-- Reset password button -->
+        <div id="button-components">
+          <input class="reset-password-button" type="button" value="Reset password" @click="forgot"/>
+        </div>
+      </div>
+  
+      <!-- Change password components -->
+      <div class="reset-password-components"  v-if="hasToken">
+        <h1 class="whiteColor">Change password</h1>
         
-    <!-- Reset password components -->
-    <div class="reset-password-components" v-if="!hasToken">
-      <h1 class="whiteColor">Forgot password</h1>
-
-      <label for="reset-password-email" class="whiteColor">Email</label>
-      <input type="text" id="reset-password-email" class="reset-password-input" v-model="email" />
-
-      <!-- Reset password button -->
-      <div id="button-components">
-        <input class="reset-password-button" type="button" value="Reset password" @click="forgot"/>
+        <label for="forgot-new-pass" class="whiteColor">New password</label>
+        <input type="password" id="forgot-new-pass" class="reset-password-input" v-model="newPassword" />
+  
+        <label for="forgot-repeat-pass" class="whiteColor">Repeat password</label>
+        <input type="password" id="forgot-repeat-pass" class="reset-password-input" v-model="repeatPassword" />
+  
+        <!-- Change password button -->
+        <div id="button-components">
+          <input class="reset-password-button" type="button" value="Change password" @click="createNewPass"/>
+        </div>
       </div>
+  
+      <p>{{errorMessage}}</p>
+      <p>{{successMessage}}</p>
     </div>
-
-    <!-- Change password components -->
-    <div class="reset-password-components"  v-if="hasToken">
-      <h1 class="whiteColor">Change password</h1>
-      
-      <label for="forgot-new-pass" class="whiteColor">New password</label>
-      <input type="password" id="forgot-new-pass" class="reset-password-input" v-model="newPassword" />
-
-      <label for="forgot-repeat-pass" class="whiteColor">Repeat password</label>
-      <input type="password" id="forgot-repeat-pass" class="reset-password-input" v-model="repeatPassword" />
-
-      <!-- Change password button -->
-      <div id="button-components">
-        <input class="reset-password-button" type="button" value="Change password" @click="createNewPass"/>
-      </div>
-    </div>
-
-    <p>{{errorMessage}}</p>
-    <p>{{successMessage}}</p>
   </div>
 </template>
 
@@ -99,6 +100,20 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.content {
+  margin: auto;
+}
+
+h1 {
+  font-family: 'Montserrat',sans-serif;
+  font-weight: lighter;
+}
+
 /* Sign up components */
 .reset-password-components{
   width: 80%;
@@ -108,7 +123,6 @@ export default {
 
 .reset-password-components label {
   padding-bottom: 5px;
-  padding-left: 15px;
   display: block;
 }
 
@@ -130,7 +144,7 @@ export default {
   justify-content: flex-end;
 }
 .reset-password-button{
-  width: 40%;
+  width: 50%;
   height: 100%;
   border: 0px;
   background-color: white;

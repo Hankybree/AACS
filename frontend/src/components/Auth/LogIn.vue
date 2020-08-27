@@ -1,24 +1,24 @@
 <template>
-  <div class="content">
-    <h1 class="whiteColor">Login</h1>
-
-    <!-- Login components -->
-    <div id="login-components">
-      <label for="login-username" class="whiteColor left-padding">Email</label>
-      <input type="text" id="login-username" class="login-input" v-model="emailUsername" />
-      <label for="login-password" class="whiteColor left-padding">Password</label>
-      <input type="password" id="login-password" class="login-input" v-model="password" />
-
-      <!-- Login & Forgot password buttons -->
-      <div id="button-components">
-        <input class="forgot-password-button whiteColor" type="button" value="Forgot password?" @click="resetPasswordButtonTapped" />
-        <input class="login-button" type="button" value="Login" @click="loginButtonTapped"/>
-      </div>
-      <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
-
-      <!-- Register button -->
-      <div id="register-components">
-        <input class="sign-up-button whiteColor" type="button" value="No account? Sign up" @click="signUpButtonTapped" />
+  <div class="wrapper">
+    <div class="content">
+      <h1>Login</h1>
+  
+      <!-- Login components -->
+      <div id="login-components">
+        <input type="text" id="login-username" class="login-input" v-model="emailUsername" placeholder="Email" />
+        <input type="password" id="login-password" class="login-input" v-model="password" placeholder="Password" />
+  
+        <!-- Login & Forgot password buttons -->
+        <div id="button-components">
+          <input class="forgot-password-button whiteColor" type="button" value="Forgot password?" @click="resetPasswordButtonTapped" />
+          <input class="login-button" type="button" value="Login" @click="loginButtonTapped"/>
+        </div>
+        <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
+  
+        <!-- Register button -->
+        <div id="register-components">
+          <input class="sign-up-button whiteColor" type="button" value="No account? Sign up" @click="signUpButtonTapped" />
+        </div>
       </div>
     </div>
   </div>
@@ -61,6 +61,21 @@ export default {
 </script>
 
 <style scoped>
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.content {
+  margin: auto;
+}
+
+h1 {
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 200;
+}
+
 /* Login components */
 #login-components{
   width: 80%;
@@ -70,7 +85,6 @@ export default {
 
 #login-components label {
   padding-bottom: 5px;
-  padding-left: 15px;
   display: block;
 }
 

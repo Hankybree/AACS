@@ -150,6 +150,7 @@ hr {
   background-color: teal;
   display: inline-block;
   font-family: Montserrat, sans-serif;
+  margin-bottom: 15px;
 }
 
 .image {

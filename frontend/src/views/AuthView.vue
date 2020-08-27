@@ -43,6 +43,15 @@
     font-size: 15pt;
   }
 
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Spartan&display=swap');
+
+
+  /deep/ input,
+    input::-webkit-input-placeholder {
+        font-size: 15px !important;
+    }
+
   /deep/ .errorMessage {
     text-align: center;
     border: 1px solid rgba(200, 0, 0, 0.6);

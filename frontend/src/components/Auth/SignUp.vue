@@ -1,34 +1,29 @@
 <template>
-  <div class="content">
-    <h1 class="whiteColor">Sign up</h1>
-
-    <!-- Sign up components -->
-    <div id="register-components">
-      <label for="sign-up-username" class="whiteColor">Username</label>
-      <input type="text" id="sign-up-username" class="sign-up-input" v-model="username" />
-
-      <label for="sign-up-email" class="whiteColor">Email</label>
-      <input type="text" id="sign-up-email" class="sign-up-input" v-model="email" />
-
-      <label for="sign-up-password" class="whiteColor">Password</label>
-      <input type="password" id="sign-up-password" class="sign-up-input" v-model="password" />
-
-      <label for="repeat-sign-up-password" class="whiteColor">Repeat password</label>
-      <input type="password" id="repeat-sign-up-password" class="sign-up-input" v-model="repeatPassword" />
-
-      <!-- Sign up button -->
-      <div id="button-components">
-        <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
+  <div class="wrapper">
+    <div class="content">
+      <h1 class="whiteColor">Sign up</h1>
+  
+      <!-- Sign up components -->
+      <div id="register-components">
+        <input type="text" id="sign-up-username" class="sign-up-input" v-model="username" placeholder="Username"/>
+        <input type="text" id="sign-up-email" class="sign-up-input" v-model="email" placeholder="Email"/>
+        <input type="password" id="sign-up-password" class="sign-up-input" v-model="password" placeholder="Password"/>
+        <input type="password" id="repeat-sign-up-password" class="sign-up-input" v-model="repeatPassword" placeholder="Repeat password" />
+  
+        <!-- Sign up button -->
+        <div id="button-components">
+          <input class="sign-up-button" type="button" value="Sign up" @click="signUpButtonTapped"/>
+        </div>
+  
+        <p v-if="successMessage" class="successMessage">{{ successMessage }}</p>
+        <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
+  
+        <!-- Login button -->
+        <div id="login-components">
+          <input class="login-button whiteColor" type="button" value="Already have an account? Sign in" @click="loginButtonTapped" />
+        </div>
+  
       </div>
-
-      <p v-if="successMessage" class="successMessage">{{ successMessage }}</p>
-      <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
-
-      <!-- Login button -->
-      <div id="login-components">
-        <input class="login-button whiteColor" type="button" value="Already have an account? Sign in" @click="loginButtonTapped" />
-      </div>
-
     </div>
   </div>
 </template>
@@ -69,6 +64,20 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.content {
+  margin: auto;
+}
+
+h1 {
+  font-family: 'Montserrat',sans-serif;
+  font-weight: lighter;
+}
+
 /* Sign up components */
 #register-components{
   width: 80%;
@@ -79,7 +88,6 @@ export default {
 
 #register-components label {
   padding-bottom: 5px;
-  padding-left: 15px;
   display: block;
 }
 
