@@ -1,6 +1,14 @@
 <template>
   <div class="content">
-    <h1 class="whiteColor">Login</h1>
+    <div>
+      <div class="profile-image"></div>
+    </div>
+
+    <p>
+      Welcome, please
+      <br />
+      <b>Sign in</b> to continue.
+    </p>
 
     <!-- Login components -->
     <div id="login-components">
@@ -37,7 +45,13 @@
           @click="resetPasswordButtonTapped"
         />
         <!-- <input class="login-button" type="button" value="Login" @click="loginButtonTapped" /> -->
-        <button :class="`${emailUsername && password ? 'login-button-valid' : 'login-button'}`" class="login-button" @click="loginButtonTapped"><font-awesome-icon :icon="['fas', 'arrow-circle-right']" /></button>
+        <button
+          :class="`${emailUsername && password ? 'login-button-valid' : 'login-button'}`"
+          class="login-button"
+          @click="loginButtonTapped"
+        >
+          <font-awesome-icon :icon="['fas', 'arrow-circle-right']" />
+        </button>
       </div>
       <p v-if="errorMessage" class="errorMessage">{{ errorMessage }}</p>
 
@@ -94,6 +108,7 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css?family=PlayfairDisplay");
 /* Login components */
 #login-components {
   width: 80%;
@@ -107,6 +122,23 @@ export default {
   padding-left: 12px;
   display: block;
   font-size: 0.9em;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  background-image: url("../../assets/logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+p {
+  margin-top: 1.5em;
+  margin-bottom: 3em;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2em;
 }
 
 .icons {
@@ -139,7 +171,7 @@ export default {
   border-radius: 50%;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 1.50em;
+  font-size: 1.5em;
   background-color: transparent;
   border-style: none;
 }
@@ -147,11 +179,11 @@ export default {
 .login-button-valid {
   width: 40%;
   height: 100%;
-  color: blue;
+  color: rgb(0, 68, 255);
   border-radius: 50%;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 1.50em;
+  font-size: 1.5em;
   background-color: transparent;
   border-style: none;
 }
