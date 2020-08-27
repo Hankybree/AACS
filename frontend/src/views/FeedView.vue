@@ -5,7 +5,7 @@
       <div class="image-container">
         <img class="image" :src="imageBaseUrl + image.imageId" alt />
         <div class="author">Author: {{ image.userName }}</div>
-        <div class="date">Created: {{ image.creationTime }}</div>
+        
         <div class="commentlikes-container">
           <div class="likes">
             <span>{{ image.likes.length }} spocks</span>
