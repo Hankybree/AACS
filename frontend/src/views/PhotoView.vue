@@ -106,7 +106,7 @@
     },
     data() {
       return {
-        imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/',
+        imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/',
         image: {},
         commentsVisible: false,
         imageId: this.$route.params.photoid
