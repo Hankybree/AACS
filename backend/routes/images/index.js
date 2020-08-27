@@ -9,7 +9,6 @@ const bodyParser = require('body-parser')
 const moment = require('moment')
 
 const webPush = require('web-push')
-// const { PRIVATE_VAPID_KEY, PUBLIC_VAPID_KEY } = require('./../push/keys')
 
 
 
@@ -162,14 +161,12 @@ function like(data, status) {
 
             mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.likeUserId)}`, (err, result) => {
               if (err) throw err
-              console.log(result);
               if (result.length > 0) {
 
 
                 mysqlConnection.query(`SELECT username, pushSubscription, pubprivkeys FROM images 
                 INNER JOIN userdetails ON userdetails.id = imageUserId
                 WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result2) => {
-                  console.log(result2);
                   webPush.setVapidDetails(
                     'mailto:picnet@aviliax.com',
                     JSON.parse(result2[0].pubprivkeys).pub,

@@ -102,7 +102,6 @@ export default {
           currentPage: this.currentPage,
         })
         .then((result) => {
-          console.log(result)
           if (this.currentPage === 0) {
             this.$store.commit("setImages", result.data);
           } else {

@@ -8,8 +8,6 @@
 export default {
   name: "Confirm",
   created(){
-
-    console.log(this.$route.params.token);
     this.axios
     .post("auth/confirm", {
       token: this.$route.params.token
