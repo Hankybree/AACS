@@ -52,8 +52,7 @@
         imageData: {},
         showImg: false,
         currentPage: 0,
-        imageBaseUrl: process.env.NODE_ENV == 'production' ? 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/' : 'http://localhost:8000/api/fileuploads/uploadedfiles/'
-        // userName: 'mybigpic'
+        imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'
       }
     },
     methods: {
