@@ -28,7 +28,6 @@ Vue.use(Vuex)
 
 //Router configuration
 const router = new VueRouter({
-  mode: 'history',
   routes: [
     {
       name: 'ExplorerView',
@@ -81,18 +80,23 @@ const router = new VueRouter({
       name: 'PhotoView',
       component: PhotoView,
       path: '/photo/:photoid'
-    }
-  ]
+    },
+  ],
 })
 
 router.beforeEach(async (to, from, next) => {
   const permission = await hasPermission()
 
-  if (to.meta.requiresAuth) {
-    if (permission) {
-      next()
+  if (navigator.onLine) {
+    if (to.meta.requiresAuth) {
+      if (permission) {
+  
+        next()
+      } else {
+        next({ name: 'AuthView', params: { page: 'login' } })
+      }
     } else {
-      next({ name: 'AuthView', params: { page: 'login' }, replace: true })
+      next()
     }
   } else {
     next()

@@ -53,7 +53,17 @@ import store from './store'
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
 
-if (process.env.NODE_ENV == 'development') {
+
+addEventListener('offline', () => {
+  alert('Offline')
+})
+
+addEventListener('online', () => {
+  alert('Online')
+})
+
+
+if (process.env.NODE_ENV == "development") {
   axios.defaults.baseURL = 'http://localhost:8000/api/'
 } else {
   axios.defaults.baseURL = 'https://picnet.aviliax.com/api/'
@@ -68,10 +78,12 @@ let vueApp = new Vue({
 })
 
 function secureCheck() {
-  if (store.state.token) {
-    axios
+
+  if (navigator.onLine == 'Offline') {
+    if (store.state.token) {
+      axios
       .post('auth/checkIfValidSession/')
-      .then((response) => {
+      .then(response => {
         const user = {
           email: response.data.email,
           id: response.data.userId
@@ -81,14 +93,17 @@ function secureCheck() {
         store.commit('SET_USER', Object.assign(tempUser, user))
         vueApp.$mount('#app')
       })
-      .catch((err) => {
-        console.log(err.response.data.msg)
+      .catch(err => {
+        console.log(err.response.data.msg);
         store.commit('SET_IS_LOGGED_IN', false)
         store.dispatch('logout')
         vueApp.$mount('#app')
-      })
+      }) 
+    } else {
+      store.commit('RESET')
+      vueApp.$mount('#app')
+    }
   } else {
-    store.commit('RESET')
     vueApp.$mount('#app')
   }
 }
