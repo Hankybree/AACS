@@ -130,6 +130,9 @@ const actions = {
   connect(context) {
     client.connect(context)
   },
+  disconnect(context) {
+    client.disconnect(context)
+  },
   like: (context, imageId) => {
     context.state.socket.send(
       JSON.stringify({

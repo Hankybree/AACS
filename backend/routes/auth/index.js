@@ -338,74 +338,60 @@ router.post('/forgot', (req, res, next) => {
 
 //Reset password
 router.post('/reset', (req, res, next) => {
-  mysqlConnection.query(
-    `SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(
-      req.body.userId
-    )}`,
-    (err, result) => {
-      if (err) {
-        console.log(err)
+
+  mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(req.body.userId)}`, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).send()
+    }
+
+    bcrypt.compare(req.body.oldPass, result[0]['password'], function (bErr, bResult) {
+      if (bErr) {
         return res.status(500).send()
       }
 
-      bcrypt.compare(req.body.oldPass, result[0]['password'], function (
-        bErr,
-        bResult
-      ) {
-        if (bErr) {
-          return res.status(500).send()
-        }
+      if (!bResult) {
+        return res.status(400).send({
+          msg: 'Wrong password'
+        })
+      }
 
-        if (!bResult) {
+      if (bResult) {
+
+        if (!req.body.newPassword || req.body.newPassword.length < 5) {
           return res.status(400).send({
-            msg: 'Fel lösenord'
-          })
+            msg: 'Enter a password with atleast 6 characters'
+          });
         }
 
-        if (bResult) {
-          console.log('Jämfört gamla lösenordet')
+        if (!req.body.repeatPassword || req.body.newPassword != req.body.repeatPassword) {
+          return res.status(400).send({
+            msg: 'Passwords does not match!'
+          });
+        }
 
-          if (!req.body.newPassword || req.body.newPassword.length < 7) {
-            return res.status(400).send({
-              msg: 'Ange ett lösenord med minst 7 tecken'
-            })
+        bcrypt.hash(req.body.newPassword, 10, (cErr, hash) => {
+          if (cErr) {
+            console.log(cErr);
+            return res.status(500).send();
           }
 
-          if (
-            !req.body.repeatPassword ||
-            req.body.newPassword != req.body.repeatPassword
-          ) {
-            return res.status(400).send({
-              msg: 'Lösenorden matchar inte'
-            })
-          }
-
-          bcrypt.hash(req.body.newPassword, 10, (cErr, hash) => {
-            if (cErr) {
-              console.log(cErr)
-              return res.status(500).send()
-            }
-
-            mysqlConnection.query(
-              `UPDATE users SET passwordHash = ${mysqlConnection.escape(
-                hash
-              )} WHERE id = ${mysqlConnection.escape(req.body.userId)}`,
-              (dErr, dResult) => {
-                if (dErr) {
-                  console.log(dErr)
-                  return res.status(500).send()
-                }
-
-                return res.status(200).send({
-                  msg: 'Lösenord ändrat!'
-                })
+          mysqlConnection.query(
+            `UPDATE userdetails SET password = ${mysqlConnection.escape(hash)} WHERE id = ${mysqlConnection.escape(req.body.userId)}`, (dErr, dResult) => {
+              if (dErr) {
+                console.log(dErr);
+                return res.status(500).send();
               }
-            )
-          })
-        }
-      })
-    }
-  )
+
+              return res.status(200).send({
+                msg: 'Password successfully changed',
+              });
+            }
+          )
+        })
+      }
+    })
+  })
 })
 
 module.exports = router

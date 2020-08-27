@@ -6,21 +6,11 @@
       PhotoView
     </button>
     <div class="navbar" v-if="isLoggedIn">
-      <router-link to="/feed"
-        ><font-awesome-icon :icon="['far', 'images']"
-      /></router-link>
-      <router-link to="/"
-        ><font-awesome-icon :icon="['fa', 'search']"
-      /></router-link>
-      <router-link to="/fileupload"
-        ><font-awesome-icon :icon="['far', 'plus-square']"
-      /></router-link>
-      <router-link to="/"
-        ><font-awesome-icon :icon="['fa', 'th']"
-      /></router-link>
-      <router-link to="/profile"
-        ><font-awesome-icon :icon="['fas', 'user']"
-      /></router-link>
+      <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
+      <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
+      <router-link to="/fileupload"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
+      <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
+      <router-link :to="'/profile/' + 'profileDetails'"><font-awesome-icon :icon="['fas', 'user']" /></router-link>
     </div>
   </div>
 </template>
