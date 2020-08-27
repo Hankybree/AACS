@@ -28,7 +28,6 @@ wss.on('connection', (socket, request) => {
 
   socket.onmessage = (message) => {
     let data = JSON.parse(message.data)
-    console.log(data)
 
     if (data.status === 1) {
       console.log(data.msg)
@@ -68,13 +67,18 @@ router.post('/grid', (req, res) => {
 function getImages(currentPage, limit) {
   return new Promise((resolve) => {
     mysqlConnection.query(
-      'SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?',
+      `SELECT imageId, imageUserId, creationTime, username FROM images 
+      LEFT JOIN userdetails ON images.imageUserId = userdetails.id
+      ORDER BY creationTime DESC LIMIT ? OFFSET ?`,
       [limit, currentPage * limit],
       (err, images) => {
         if (err) throw err
 
         mysqlConnection.query(
-          'SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id',
+          `SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, 
+          commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images 
+          LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId 
+          LEFT JOIN userdetails ON images.imageUserId = userdetails.id`,
           (err, imageData) => {
             if (err) throw err
 
@@ -100,10 +104,11 @@ function getImages(currentPage, limit) {
                     commentId: imageData[j].commentId,
                     commentUserId: imageData[j].commentUserId,
                     commentMessage: imageData[j].commentMessage,
-                    commentCreationTime: imageData[j].commentCreationTime
+                    commentCreationTime: imageData[j].commentCreationTime,
+                    commentUser: imageData[j].username
                   })
                 }
-
+                
                 resolve(images)
               }
 
