@@ -58,14 +58,15 @@
 <script>
 export default {
   beforeCreate() {
-    this.$store.dispatch("connect");
-
     window.addEventListener("scroll", () => {
       this.handleScroll();
     });
   },
   created() {
     this.getImages();
+  },
+  mounted() {
+    this.$store.dispatch("connect");
   },
   beforeDestroy() {
     this.$store.dispatch('disconnect')

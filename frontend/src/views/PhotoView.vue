@@ -31,38 +31,53 @@
               </button>
             </div>
 
-            <!-- <input v-model="message" placeholder="comment..." /> -->
-            <button class="sendbutton button">
-              <font-awesome-icon :icon="['fas', 'paper-plane']" />
-            </button>
-
             <div class="comments">
-              <button class="show-comment-button button" @click="open">
-                Show all {{ this.image.comments.length }} Comments
+              <button
+                v-if="!commentsVisible"
+                @click="showComments()"
+                class="show-comment-button button"
+              >
+                View all {{ image.comments.length }} comments
               </button>
-              <button class="show-comment-button button" @click="close">
+              <button
+                v-else
+                @click="showComments()"
+                class="show-comment-button button"
+              >
                 Hide comments
               </button>
-              <div v-if="this.showComments === true">
-                <div
-                  class="comment-container"
-                  :key="index"
-                  v-for="(comment, index) in this.image.comments"
+              <div
+                v-if="commentsVisible"
+                class="comment-container"
+              >
+                <input
+                  :id="'comment-input'"
+                  type="text"
+                  placeholder="comment..."
+                />
+                
+                <button
+                  class="sendbutton button"
+                  @click="sendComment(image.imageId)"
                 >
-                  <div>
-                    <!-- <div class="user">{{ this.image.username[index] }}</div> -->
-                    <div class="comment">{{ comment.commentMessage }}</div>
-                    <button
-                      @click="
-                        $store.dispatch('deleteComment', {
-                          imageId: image.imageId,
-                          commentId: comment.commentId
-                        })
-                      "
-                    >
-                      Delete comment
-                    </button>
-                  </div>
+                  <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                </button>
+
+                <div :key="index" v-for="(comment, index) in image.comments">
+                  <div class="user">{{ comment.commentUserId }}</div>
+                  <div class="comment">{{ comment.commentMessage }}</div>
+                  <button
+                    @click="
+                      $store.dispatch('deleteComment', {
+                        imageId: image.imageId,
+                        commentId: comment.commentId
+                      })
+                    "
+                  >
+                    Delete comment
+                  </button>
+                  <div>{{ comment.commentCreationTime }}</div>
+                  <hr />
                 </div>
               </div>
             </div>
@@ -76,6 +91,9 @@
 <script>
   export default {
     name: 'PhotoView',
+    beforeCreate() {
+      this.$store.dispatch('connect')
+    },
     created() {
       console.log(this.$route.params.photoid)
       this.image = this.$store.state.images.find(
@@ -83,11 +101,14 @@
       )
       console.log('Hej ' + JSON.stringify(this.image))
     },
+    beforeDestroy() {
+      this.$store.dispatch('disconnect')
+    },
     data() {
       return {
         imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/',
         image: {},
-        showComments: false,
+        commentsVisible: false,
         imageId: this.$route.params.photoid
       }
     },
@@ -99,12 +120,17 @@
       }
     },
     methods: {
-      open() {
-        this.showComments = true
+      showComments() {
+        if (this.commentsVisible) {
+          this.commentsVisible = false
+        } else {
+          this.commentsVisible = true
+        }
       },
-      close() {
-        this.showComments = false
-      }
+      sendComment(imageId) {
+      this.$store.dispatch('comment', { imageId: imageId, message: document.querySelector('#comment-input').value })
+      document.querySelector('#comment-input').value = ''
+    }
     }
   }
 </script>
