@@ -6,11 +6,23 @@
       PhotoView
     </button> -->
     <div class="navbar" v-if="isLoggedIn">
-      <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
-      <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
-      <router-link to="/fileupload"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
-      <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
-      <router-link :to="'/profile/' + 'profileDetails'"><font-awesome-icon :icon="['far', 'user']" /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/feed"
+        ><font-awesome-icon :icon="['far', 'images']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/"
+        ><font-awesome-icon :icon="['fa', 'search']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/fileupload"
+        ><font-awesome-icon :icon="['far', 'plus-square']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/explorer"
+        ><font-awesome-icon :icon="['fa', 'th']"
+      /></router-link>
+      <router-link
+        :style="{ color: $store.state.buttonColor }"
+        :to="'/profile/' + 'profileDetails'"
+        ><font-awesome-icon :icon="['far', 'user']"
+      /></router-link>
     </div>
   </div>
 </template>
@@ -18,6 +30,15 @@
 <script>
   export default {
     created() {
+      addEventListener('offline', () => {
+        this.$store.commit('setButtonColor', 'red')
+        alert('Offline')
+      })
+
+      addEventListener('online', () => {
+        this.$store.commit('setButtonColor', 'white')
+        alert('Online')
+      })
       let deferredPrompt
 
       window.addEventListener('beforeinstallprompt', (e) => {
@@ -47,7 +68,12 @@
   html {
     margin: 0;
     padding: 0;
-    background-image: linear-gradient( 10.9deg,  #222222 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
+    background-image: linear-gradient(
+      10.9deg,
+      #222222 8.3%,
+      rgb(9, 14, 41) 41.6%,
+      rgb(26, 27, 90) 93.4%
+    );
     background-repeat: no-repeat;
     background-attachment: fixed;
     width: 100%;
