@@ -8,7 +8,7 @@
       <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
       <router-link to="/fileupload"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
       <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
-      <router-link to="/profile"><font-awesome-icon :icon="['fas', 'user']" /></router-link>
+      <router-link to="/profile"><font-awesome-icon :icon="['far', 'user']" /></router-link>
     </div>
   </div>
 </template>
