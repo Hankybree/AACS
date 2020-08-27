@@ -7,8 +7,8 @@ import vueAxios from 'vue-axios'
 Vue.use(vueAxios, axios)
 
 //Importing vue-sweetalerts
-import SweetAlertIcons from 'vue-sweetalert-icons';
-Vue.use(SweetAlertIcons);
+import SweetAlertIcons from 'vue-sweetalert-icons'
+Vue.use(SweetAlertIcons)
 
 //Importing font-awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -28,7 +28,16 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
+
+
+addEventListener('offline', () => {
+  alert('Offline')
+})
+
+addEventListener('online', () => {
+  alert('Online')
+})
 
 
 if (process.env.NODE_ENV == "development") {
@@ -42,36 +51,38 @@ Vue.config.productionTip = false
 let vueApp = new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })
 
 function secureCheck() {
 
-
-  if (store.state.token) {
-    axios
-    .post('auth/checkIfValidSession/')
-    .then(response => {
-      const user = {
-        email: response.data.email,
-        id: response.data.userId
-      }
-      let tempUser = JSON.parse(JSON.stringify(store.getters.getUser))
-      store.commit('SET_IS_LOGGED_IN', true)
-      store.commit('SET_USER', Object.assign(tempUser, user))
+  if (navigator.onLine == 'Offline') {
+    if (store.state.token) {
+      axios
+      .post('auth/checkIfValidSession/')
+      .then(response => {
+        const user = {
+          email: response.data.email,
+          id: response.data.userId
+        }
+        let tempUser = JSON.parse(JSON.stringify(store.getters.getUser))
+        store.commit('SET_IS_LOGGED_IN', true)
+        store.commit('SET_USER', Object.assign(tempUser, user))
+        vueApp.$mount('#app')
+      })
+      .catch(err => {
+        console.log(err.response.data.msg);
+        store.commit('SET_IS_LOGGED_IN', false)
+        store.dispatch('logout')
+        vueApp.$mount('#app')
+      }) 
+    } else {
+      store.commit('RESET')
       vueApp.$mount('#app')
-    })
-    .catch(err => {
-      console.log(err.response.data.msg);
-      store.commit('SET_IS_LOGGED_IN', false)
-      store.dispatch('logout')
-      vueApp.$mount('#app')
-    }) 
+    }
   } else {
-    store.commit('RESET')
     vueApp.$mount('#app')
   }
-
 }
 
 secureCheck()

@@ -28,71 +28,75 @@ Vue.use(Vuex)
 
 //Router configuration
 const router = new VueRouter({
-  mode: 'history',
   routes: [
     {
-      name: "ExplorerView",
+      name: 'ExplorerView',
       component: ExplorerView,
-      path: '/explorer',
+      path: '/',
       meta: {
         requiresAuth: true
       }
-    }, 
+    },
     {
-      name: "FeedView",
+      name: 'FeedView',
       component: FeedView,
       path: '/feed',
       meta: {
         requiresAuth: true
       }
-    }, 
+    },
     {
-      name: "FileUploadView",
+      name: 'FileUploadView',
       component: FileUploadView,
       path: '/fileupload',
       meta: {
         requiresAuth: true
       }
-    }, 
+    },
     {
-      name: "AuthView",
+      name: 'AuthView',
       component: AuthView,
       path: '/auth/:page/:token?'
-    }, 
+    },
     {
-      name: "ProfileView",
+      name: 'ProfileView',
       component: ProfileView,
-      path: '/profile',
+      path: '/profile/:page?',
       meta: {
         requiresAuth: true
       }
-    }, {
-      name: "PurchaseView",
+    },
+    {
+      name: 'PurchaseView',
       component: PurchaseView,
       path: '/purchase'
     },
     {
-      name: "OfflineView",
+      name: 'OfflineView',
       component: OfflineView,
       path: '/offline'
-    }, {
-      name: "PhotoView",
+    },
+    {
+      name: 'PhotoView',
       component: PhotoView,
       path: '/photo/:photoid'
-    }
-  ]
+    },
+  ],
 })
 
 router.beforeEach(async (to, from, next) => {
-
   const permission = await hasPermission()
 
-  if (to.meta.requiresAuth) {
-    if (permission) {
-
-      next()
+  if (navigator.onLine) {
+    if (to.meta.requiresAuth) {
+      if (permission) {
+  
+        next()
+      } else {
+        next({ name: 'AuthView', params: { page: 'login' } })
+      }
     } else {
-      next({ name: 'AuthView', params: { page: 'login' }, replace: true })
+      next()
     }
   } else {
     next()
@@ -100,12 +104,12 @@ router.beforeEach(async (to, from, next) => {
 })
 
 function hasPermission() {
-
   return new Promise((resolve) => {
     Axios.post('auth/checkIfValidSession')
       .then(() => {
         resolve(true)
-      }).catch(() => {
+      })
+      .catch(() => {
         resolve(false)
       })
   })

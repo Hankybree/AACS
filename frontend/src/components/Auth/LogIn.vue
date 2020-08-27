@@ -76,23 +76,18 @@ export default {
     };
   },
   methods: {
-    loginButtonTapped() {
-      const credentials = {
-        emailUsername: this.emailUsername,
-        password: this.password,
-      };
-
-      this.axios
-        .post("auth/login", credentials)
-        .then((res) => {
-          let user = res.data.user;
-          let token = res.data.token;
-          this.$store.dispatch("login", { user, token });
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          this.errorMessage = err.response.data.msg;
-        });
+    loginButtonTapped(){
+      const credentials = { emailUsername: this.emailUsername, password: this.password }
+      
+      this.axios.post('auth/login', credentials)
+      .then(res => {
+        let user = res.data.user
+        let token = res.data.token
+        this.$store.dispatch('login', { user, token })
+      })
+      .catch(err => {
+        this.errorMessage = err.response.data.msg
+      })
     },
     signUpButtonTapped() {
       this.$router.push({ name: "AuthView", params: { page: "signup" } });

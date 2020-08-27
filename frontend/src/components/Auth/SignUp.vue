@@ -72,16 +72,11 @@ export default {
     loginButtonTapped() {
       this.$router.push({ name: "AuthView", params: { page: "login" } });
     },
-    signUpButtonTapped() {
-      const credentials = {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        repeatPassword: this.repeatPassword,
-      };
-      console.log(credentials);
+    signUpButtonTapped(){
+        const credentials = { username: this.username, email: this.email, password: this.password, repeatPassword: this.repeatPassword }
+        console.log(credentials)
 
-      this.axios
+        this.axios
         .post("auth/signup/", credentials)
         .then((res) => {
           this.successMessage = res.data.msg;
