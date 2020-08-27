@@ -1,9 +1,9 @@
 <template>
   <div class="content">
     <p>
-      Register to create a
+      Register to create
       <br />
-      <b>new account</b>!
+      a <b>new account</b>.
     </p>
 
     <!-- Sign up components -->
@@ -47,7 +47,7 @@
         <input
           class="login-button whiteColor"
           type="button"
-          value="Already have an account? Sign up"
+          value="Already have an account? Sign in"
           @click="loginButtonTapped"
         />
       </div>

@@ -1,9 +1,6 @@
 <template>
   <div class="content">
-    <div>
-      <div class="profile-image"></div>
-    </div>
-
+   
     <p>
       Welcome, please
       <br />
@@ -122,16 +119,6 @@ export default {
   padding-left: 12px;
   display: block;
   font-size: 0.9em;
-}
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  background-image: url("../../assets/logo.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  margin-left: 1em;
-  margin-top: 1em;
 }
 
 p {

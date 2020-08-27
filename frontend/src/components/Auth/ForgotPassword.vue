@@ -3,7 +3,8 @@
         
     <!-- Reset password components -->
     <div class="reset-password-components" v-if="!hasToken">
-      <p>
+   
+        <p>
       Forgot password?
       <br />
        get a new one to keep sharing pictures with your <b>friends</b>.
