@@ -2,7 +2,9 @@
   <div id="app">
     <router-view></router-view>
 
-    <button @click="$router.push({ name: 'PhotoView', params: '' })" >PhotoView</button>
+    <button @click="$router.push({ name: 'PhotoView', params: '' })">
+      PhotoView
+    </button>
     <div class="navbar" v-if="isLoggedIn">
       <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
       <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
@@ -23,7 +25,6 @@
     },
     created() {
       console.log(navigator.onLine ? 'Online' : 'Offline')
-
     }
   }
 </script>

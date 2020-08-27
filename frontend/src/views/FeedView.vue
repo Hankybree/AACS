@@ -58,14 +58,15 @@
 <script>
 export default {
   beforeCreate() {
-    this.$store.dispatch("connect");
-
     window.addEventListener("scroll", () => {
       this.handleScroll();
     });
   },
   created() {
     this.getImages();
+  },
+  mounted() {
+    this.$store.dispatch("connect");
   },
   beforeDestroy() {
     this.$store.dispatch('disconnect')
@@ -75,7 +76,7 @@ export default {
       visibleArray: [],
       loading: false,
       currentPage: 0,
-      imageBaseUrl: process.env.VUE_APP_SERVER + '/api/fileuploads/uploadedfiles/'
+      imageBaseUrl: 'http://localhost:8000/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {

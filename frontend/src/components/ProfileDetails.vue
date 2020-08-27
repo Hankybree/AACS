@@ -24,7 +24,7 @@
     <div class="image-grid-wrapper">
       <div class="column">
         <div class="grid-image" v-for="(result, index) in images" :key="index">
-          <img :src="process.env.VUE_APP_SERVER + '/api/fileuploads/uploadedfiles/' + images[index].imagePath" alt="Image" class="image" />
+          <img :src="'http://localhost:8000/api/fileuploads/uploadedfiles/' + images[index].imageId" alt="Image" class="image" />
         </div>
 
       </div>

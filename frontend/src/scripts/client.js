@@ -1,6 +1,6 @@
 export const client = {
   connect(context) {
-      context.commit('setSocket', new WebSocket(process.env.VUE_APP_SOCKET_SERVER))
+      context.commit('setSocket', new WebSocket('ws://localhost:8000'))
 
       context.state.socket.onopen = () => {
 
