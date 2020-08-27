@@ -1,6 +1,6 @@
 export const client = {
   connect(context) {
-      context.commit('setSocket', new WebSocket(process.env.NODE_ENV == 'production' ? 'wss://picnet.aviliax.com/api/' : 'ws://localhost:8000/'))
+      context.commit('setSocket', new WebSocket('wss://picnet.aviliax.com/ws/'))
 
       context.state.socket.onopen = () => {
 

@@ -95,8 +95,6 @@
 
 <style scoped>
   /* item = image container (inte själva bilden alltså) */
-  .item {
-  }
   .image {
     max-width: 150px;
   }
