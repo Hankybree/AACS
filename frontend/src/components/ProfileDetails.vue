@@ -41,7 +41,7 @@ export default {
     return{
       countedImages: 0,
       images: [],
-      imageBaseUrl: process.env.NODE_ENV == 'production' ? 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/' : 'http://localhost:8000/api/fileuploads/uploadedfiles/'
+      imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'
     }
   },
   created(){

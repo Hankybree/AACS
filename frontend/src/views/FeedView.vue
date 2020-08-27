@@ -1,6 +1,5 @@
 <template>
   <div class="content">
-    <div>FEED</div>
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
         <img class="image" :src="imageBaseUrl + image.imageId" alt />
@@ -82,7 +81,7 @@ export default {
       visibleArray: [],
       loading: false,
       currentPage: 0,
-      imageBaseUrl: process.env.NODE_ENV == 'production' ? 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/' : 'http://localhost:8000/api/fileuploads/uploadedfiles/'
+      imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'
     };
   },
   methods: {
