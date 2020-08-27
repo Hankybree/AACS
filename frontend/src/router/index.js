@@ -85,10 +85,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const permission = await hasPermission()
-
+  
   if (navigator.onLine) {
     if (to.meta.requiresAuth) {
+      const permission = await hasPermission()
       if (permission) {
   
         next()
