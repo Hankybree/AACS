@@ -19,7 +19,8 @@ let state = {
   user: {},
   isLoggedIn: false,
   socket: null,
-  images: []
+  images: [],
+  buttonColor: 'white'
 }
 
 // ======================
@@ -86,6 +87,9 @@ const mutations = {
       ),
       1
     )
+  },
+  setButtonColor(state, newButtonColor) {
+    state.buttonColor = newButtonColor
   }
 }
 

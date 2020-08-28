@@ -31,15 +31,6 @@ import store from './store'
 axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`
 
 
-addEventListener('offline', () => {
-  alert('Offline')
-})
-
-addEventListener('online', () => {
-  alert('Online')
-})
-
-
 if (process.env.NODE_ENV == "development") {
   axios.defaults.baseURL = 'http://localhost:8000/api/'
 } else {

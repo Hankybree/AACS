@@ -1,16 +1,29 @@
 <template>
   <div id="app">
+    <input v-if="showInstallButton" type="button" value="Install" @click="installApp">
     <router-view></router-view>
 
     <!-- <button @click="$router.push({ name: 'PhotoView', params: '' })">
       PhotoView
     </button> -->
     <div class="navbar" v-if="isLoggedIn">
-      <router-link to="/feed"><font-awesome-icon :icon="['far', 'images']" /></router-link>
-      <router-link to="/"><font-awesome-icon :icon="['fa', 'search']" /></router-link>
-      <router-link to="/fileupload"><font-awesome-icon :icon="['far', 'plus-square']" /></router-link>
-      <router-link to="/explorer"><font-awesome-icon :icon="['fa', 'th']" /></router-link>
-      <router-link :to="'/profile/' + 'profileDetails'"><font-awesome-icon :icon="['far', 'user']" /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/feed"
+        ><font-awesome-icon :icon="['far', 'images']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/"
+        ><font-awesome-icon :icon="['fa', 'search']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/fileupload"
+        ><font-awesome-icon :icon="['far', 'plus-square']"
+      /></router-link>
+      <router-link :style="{ color: $store.state.buttonColor }" to="/explorer"
+        ><font-awesome-icon :icon="['fa', 'th']"
+      /></router-link>
+      <router-link
+        :style="{ color: $store.state.buttonColor }"
+        :to="'/profile/' + 'profileDetails'"
+        ><font-awesome-icon :icon="['far', 'user']"
+      /></router-link>
     </div>
   </div>
 </template>
@@ -18,18 +31,70 @@
 <script>
   export default {
     created() {
-      let deferredPrompt
+
+      // Handles online/offline
+      addEventListener('offline', () => {
+        this.$store.commit('setButtonColor', 'red')
+        alert('Offline')
+      })
+      addEventListener('online', () => {
+        this.$store.commit('setButtonColor', 'white')
+        alert('Online')
+      })
+
+      // Handles custom install
 
       window.addEventListener('beforeinstallprompt', (e) => {
         // Prevent the mini-infobar from appearing on mobile
         e.preventDefault()
         // Stash the event so it can be triggered later.
-        deferredPrompt = e
-        // Update UI notify the user they can install the PWA
-        showInstallPromotion()
+        if(!this.installingApp && !this.appInstalled && !this.declinedInstall) {
+          this.installingApp = true
+          this.deferredPrompt = e
+          // Update UI notify the user they can install the PWA
+          this.showInstallPromotion()
+        }
+      })
+
+      window.addEventListener('appinstalled', (evt) => {
+        // Log install to analytics
+        alert('App installed!')
+        this.appInstalled = true
+        this.installingApp = false
       })
     },
     name: 'App',
+    data() {
+      return {
+        deferredPrompt: null,
+        showInstallButton: false,
+        installingApp: false,
+        appInstalled: false,
+        declinedInstall: false
+      }
+    },
+    methods: {
+      showInstallPromotion() {
+        alert('Installable')
+        this.showInstallButton = true
+      },
+      installApp() {
+        this.showInstallButton = false
+
+        this.deferredPrompt.prompt()
+
+        // Wait for the user to respond to the prompt
+        this.deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt')
+          } else {
+            console.log('User dismissed the install prompt')
+            this.declinedInstall = true
+            this.installingApp = false
+          }
+        })
+      }
+    },
     computed: {
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
@@ -49,7 +114,12 @@
   html {
     margin: 0;
     padding: 0;
-    background-image: linear-gradient( 10.9deg,  #222222 8.3%, rgb(9, 14, 41) 41.6%, rgb(26, 27, 90) 93.4% );
+    background-image: linear-gradient(
+      10.9deg,
+      #222222 8.3%,
+      rgb(9, 14, 41) 41.6%,
+      rgb(26, 27, 90) 93.4%
+    );
     background-repeat: no-repeat;
     background-attachment: fixed;
     width: 100%;
