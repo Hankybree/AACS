@@ -224,7 +224,7 @@ function comment(data, status) {
     (err) => {
       if (err) throw err
 
-      mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.likeUserId)}`, (err, result) => {
+      mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.commentUserId)}`, (err, result) => {
         if (err) throw err
         if (result.length > 0) {
 
@@ -242,7 +242,7 @@ function comment(data, status) {
               webPush.sendNotification(
                 JSON.parse(result2[0].pushSubscription),
                 JSON.stringify({
-                  body: result[0].username + ' commented on your image',
+                  body: result[0].username + ' commented: ' + data.commentMessage + ' on your image',
                   title: 'New comment!'
                 })
               )
