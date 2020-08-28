@@ -108,7 +108,7 @@ function getImages(currentPage, limit) {
                     commentUser: imageData[j].username
                   })
                 }
-                
+
                 resolve(images)
               }
 
@@ -172,23 +172,27 @@ function like(data, status) {
                 mysqlConnection.query(`SELECT username, pushSubscription, pubprivkeys FROM images 
                 INNER JOIN userdetails ON userdetails.id = imageUserId
                 WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result2) => {
-                  webPush.setVapidDetails(
-                    'mailto:picnet@aviliax.com',
-                    JSON.parse(result2[0].pubprivkeys).pub,
-                    JSON.parse(result2[0].pubprivkeys).priv
-                  )
-  
-                  webPush.sendNotification(
-                    JSON.parse(result2[0].pushSubscription),
-                    JSON.stringify({
-                      body: result[0].username + ' spocked your image',
-                      title: 'New spock!'
-                    })
-                  )
+
+                  if (result2.length > 0) {
+                    webPush.setVapidDetails(
+                      'mailto:picnet@aviliax.com',
+                      JSON.parse(result2[0].pubprivkeys).pub,
+                      JSON.parse(result2[0].pubprivkeys).priv
+                    )
+
+                    webPush.sendNotification(
+                      JSON.parse(result2[0].pushSubscription),
+                      JSON.stringify({
+                        body: result[0].username + ' spocked your image',
+                        title: 'New spock!'
+                      })
+                    )
+
+                  }
 
                 });
 
-            
+
               }
 
             })
@@ -209,8 +213,7 @@ function comment(data, status) {
   const token = uuid.v4()
   const timeStamp = new Date(moment().format())
 
-  mysqlConnection.query(
-    'INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage, commentCreationTime) VALUES (?, ?, ?, ?, ?)',
+  mysqlConnection.query('INSERT INTO comments (commentId, commentImageId, commentUserId, commentMessage, commentCreationTime) VALUES (?, ?, ?, ?, ?)',
     [
       token,
       data.commentImageId,
@@ -220,6 +223,37 @@ function comment(data, status) {
     ],
     (err) => {
       if (err) throw err
+
+      mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.likeUserId)}`, (err, result) => {
+        if (err) throw err
+        if (result.length > 0) {
+
+          mysqlConnection.query(`SELECT username, pushSubscription, pubprivkeys FROM images 
+           INNER JOIN userdetails ON userdetails.id = imageUserId
+           WHERE imageId = ${mysqlConnection.escape(data.commentImageId)}`, (err, result2) => {
+
+            if (result2.length > 0) {
+              webPush.setVapidDetails(
+                'mailto:picnet@aviliax.com',
+                JSON.parse(result2[0].pubprivkeys).pub,
+                JSON.parse(result2[0].pubprivkeys).priv
+              )
+
+              webPush.sendNotification(
+                JSON.parse(result2[0].pushSubscription),
+                JSON.stringify({
+                  body: result[0].username + ' commented on your image',
+                  title: 'New comment!'
+                })
+              )
+
+            }
+
+          });
+
+
+        }
+      });
 
       clients.forEach((client) => {
         client.send(
