@@ -93,6 +93,8 @@
     outline: none;
   }
 
+
+
   body,
   html {
     margin: 0;
@@ -116,12 +118,21 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: white;
+
   }
   .content {
     width: 100%;
     margin: 0;
     padding: 0;
+  }
+
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active  {
+transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #fff !important;
   }
 
   .navbar {

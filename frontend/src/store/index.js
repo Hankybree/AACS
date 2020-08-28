@@ -122,6 +122,7 @@ const actions = {
     commit('SET_IS_LOGGED_IN', true)
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     router.push({ name: 'ExplorerView' })
+    subscribeToPush(user.id)
   },
   logout: ({ commit }) => {
     commit('RESET', '')
@@ -165,6 +166,67 @@ const actions = {
       })
     )
   }
+}
+const webpush = require('web-push')
+
+
+function subscribeToPush(userId) {
+  
+
+  const vapidKeys = webpush.generateVAPIDKeys();
+
+
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/service-worker.js')
+
+    navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+      serviceWorkerRegistration.pushManager.getSubscription().then((subscription) => {
+        if (!subscription) {
+          serviceWorkerRegistration.pushManager
+          .subscribe({
+            // The public key in the correct format
+            applicationServerKey: urlBase64ToUint8Array(vapidKeys.publicKey),
+            // Notifications will be used for user visible messages only
+            userVisibleOnly: true
+          })
+          .then((pushSubscription) => {
+              
+              axios.post('/push/subscribe', {
+                body: {pushSubscription, userId, pubprivkeys: {pub: vapidKeys.publicKey, priv: vapidKeys.privateKey}},
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+              })
+                .then(() => {
+                  console.log('Subscribed!')
+                })
+                .catch((error) => {
+                  console.error(error)
+                })
+  
+          })
+        }
+      })
+    
+    })
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+
 }
 
 const store = new Vuex.Store({
