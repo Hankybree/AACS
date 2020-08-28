@@ -75,6 +75,7 @@
     },
     methods: {
       showInstallPromotion() {
+
         this.showInstallButton = true
       },
       installApp() {
