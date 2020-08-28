@@ -194,7 +194,7 @@ export default {
 
           setTimeout(function () {
             this.showModal = false
-            _this.$router.push({ name: 'ProfileView' })
+            _this.$router.push({ name: "ProfileView", params:{ page: "profileDetails" }})
           }, millisecondsToWait);
         })
         .catch((err) => {
