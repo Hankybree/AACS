@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <input v-if="showInstallButton" type="button" value="Install" @click="installApp">
     <router-view></router-view>
 
     <!-- <button @click="$router.push({ name: 'PhotoView', params: '' })">
@@ -30,27 +31,44 @@
 <script>
   export default {
     created() {
+
+      // Handles online/offline
       addEventListener('offline', () => {
         this.$store.commit('setButtonColor', 'red')
         alert('Offline')
       })
-
       addEventListener('online', () => {
         this.$store.commit('setButtonColor', 'white')
         alert('Online')
       })
-      let deferredPrompt
+
+      // Handles custom install
 
       window.addEventListener('beforeinstallprompt', (e) => {
         // Prevent the mini-infobar from appearing on mobile
         e.preventDefault()
         // Stash the event so it can be triggered later.
-        deferredPrompt = e
+        this.deferredPrompt = e
         // Update UI notify the user they can install the PWA
-        showInstallPromotion()
+        this.showInstallPromotion()
       })
     },
     name: 'App',
+    data() {
+      return {
+        deferredPrompt: null,
+        showInstallButton: false
+      }
+    },
+    methods: {
+      showInstallPromotion() {
+        alert('Installable')
+        this.showInstallButton = true
+      },
+      installApp() {
+
+      }
+    },
     computed: {
       isLoggedIn() {
         return this.$store.getters.isLoggedIn
