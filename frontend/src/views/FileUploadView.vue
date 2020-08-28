@@ -193,7 +193,6 @@ export default {
           var millisecondsToWait = 1000;
 
           setTimeout(function () {
-            console.log('NU HARE GÅTT EN STUND')
             this.showModal = false
             _this.$router.push({ name: 'ProfileView' })
           }, millisecondsToWait);

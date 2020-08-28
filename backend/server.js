@@ -32,8 +32,10 @@ module.exports = server
 app.use('/api/images', require('./routes/images'))
 app.use('/api/auth', require('./routes/auth/'))
 app.use('/api/fileuploads', require('./routes/fileuploads/'))
+app.use('/api/push', require('./routes/push/'))
 
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
+
 
