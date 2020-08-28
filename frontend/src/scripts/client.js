@@ -13,8 +13,6 @@ export const client = {
 
           let data = JSON.parse(message.data)
 
-          console.log(data)
-
           client.checkStatus(context, data)
       }
 

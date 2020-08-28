@@ -8,6 +8,11 @@ const server = require('../../server.js')
 const bodyParser = require('body-parser')
 const moment = require('moment')
 
+const webPush = require('web-push')
+
+
+
+
 router.use(cors())
 router.use(bodyParser.json())
 
@@ -23,7 +28,6 @@ wss.on('connection', (socket, request) => {
 
   socket.onmessage = (message) => {
     let data = JSON.parse(message.data)
-    console.log(data)
 
     if (data.status === 1) {
       console.log(data.msg)
@@ -63,13 +67,18 @@ router.post('/grid', (req, res) => {
 function getImages(currentPage, limit) {
   return new Promise((resolve) => {
     mysqlConnection.query(
-      'SELECT * FROM images ORDER BY creationTime DESC LIMIT ? OFFSET ?',
+      `SELECT imageId, imageUserId, creationTime, username FROM images 
+      LEFT JOIN userdetails ON images.imageUserId = userdetails.id
+      ORDER BY creationTime DESC LIMIT ? OFFSET ?`,
       [limit, currentPage * limit],
       (err, images) => {
         if (err) throw err
 
         mysqlConnection.query(
-          'SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId LEFT JOIN userdetails ON images.imageUserId = userdetails.id',
+          `SELECT imageId, imageUserId, likeId, likeImageId, likeUserId, commentId, 
+          commentImageId, commentUserId, commentMessage, commentCreationTime, username FROM images 
+          LEFT JOIN likes ON images.imageId = likes.likeImageId LEFT JOIN comments ON images.imageId = comments.commentImageId 
+          LEFT JOIN userdetails ON images.imageUserId = userdetails.id`,
           (err, imageData) => {
             if (err) throw err
 
@@ -95,10 +104,11 @@ function getImages(currentPage, limit) {
                     commentId: imageData[j].commentId,
                     commentUserId: imageData[j].commentUserId,
                     commentMessage: imageData[j].commentMessage,
-                    commentCreationTime: imageData[j].commentCreationTime
+                    commentCreationTime: imageData[j].commentCreationTime,
+                    commentUser: imageData[j].username
                   })
                 }
-
+                
                 resolve(images)
               }
 
@@ -153,6 +163,36 @@ function like(data, status) {
           [data.likeImageId, data.likeUserId],
           (err) => {
             if (err) throw err
+
+            mysqlConnection.query(`SELECT * FROM userdetails WHERE id = ${mysqlConnection.escape(data.likeUserId)}`, (err, result) => {
+              if (err) throw err
+              if (result.length > 0) {
+
+
+                mysqlConnection.query(`SELECT username, pushSubscription, pubprivkeys FROM images 
+                INNER JOIN userdetails ON userdetails.id = imageUserId
+                WHERE imageId = ${mysqlConnection.escape(data.likeImageId)}`, (err, result2) => {
+                  webPush.setVapidDetails(
+                    'mailto:picnet@aviliax.com',
+                    JSON.parse(result2[0].pubprivkeys).pub,
+                    JSON.parse(result2[0].pubprivkeys).priv
+                  )
+  
+                  webPush.sendNotification(
+                    JSON.parse(result2[0].pushSubscription),
+                    JSON.stringify({
+                      body: result[0].username + ' spocked your image',
+                      title: 'New spock!'
+                    })
+                  )
+
+                });
+
+            
+              }
+
+            })
+
 
             clients.forEach((client) => {
               likeData.isLiking = true

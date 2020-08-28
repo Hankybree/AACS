@@ -2,35 +2,42 @@
   <div class="content">
     <div :key="index" v-for="(image, index) in images">
       <div class="image-container">
+        <div class="author">{{ image.username }}</div>
         <img class="image" :src="imageBaseUrl + image.imageId" alt />
+<<<<<<< HEAD
         <div class="author">Author: {{ image.userName }}</div>
         
+=======
+>>>>>>> master
         <div class="commentlikes-container">
-          <div class="likes">
-            <span>{{ image.likes.length }} spocks</span>
-            <button
-              v-if="!image.likes.includes($store.state.user.id)"
-              class="likebutton button"
-              @click="$store.dispatch('like', image.imageId)"
-            >
-              <font-awesome-icon :icon="['fas', 'hand-spock']" />
-            </button>
-            <button
-              v-else
-              class="likebutton-pressed button"
-              @click="$store.dispatch('like', image.imageId)"
-            >
-              <font-awesome-icon :icon="['fas', 'hand-spock']" />
-            </button>
+          <div class="spockCommentBox">
+            <div style="display:flex">
+              <div class="likes">
+                <span>{{ image.likes.length }}</span>
+                <button
+                  v-if="!image.likes.includes($store.state.user.id)"
+                  class="likebutton button"
+                  @click="$store.dispatch('like', image.imageId)"
+                >
+                  <font-awesome-icon :icon="['fas', 'hand-spock']" />
+                </button>
+                <button
+                  v-else
+                  class="likebutton-pressed button"
+                  @click="$store.dispatch('like', image.imageId)"
+                >
+                  <font-awesome-icon :icon="['fas', 'hand-spock']" />
+                </button>
+              </div>
+              <font-awesome-icon class="commentIcon" @click="showComments(index)" :icon="['far', 'comment-dots']" />
+            </div>
+            <div class="date">{{ prettyDate(image.creationTime) }}</div>
+
           </div>
 
+      
+
           <div class="comments">
-            <button
-              v-if="!visibleArray.includes(index)"
-              @click="showComments(index)"
-              class="show-comment-button button"
-            >View all {{image.comments.length}} comments</button>
-            <button v-else @click="showComments(index)" class="show-comment-button button">Hide comments</button>
             <div v-if="visibleArray.includes(index)" class="comment-container">
 
               <input :id="'comment-input' + index" type="text" placeholder="comment..." />
@@ -39,8 +46,8 @@
               <font-awesome-icon :icon="['fas', 'paper-plane']" />
               </button>
               
-              <div :key="index" v-for="(comment, index) in image.comments">
-                <div class="user">{{ comment.commentUserId }}</div>
+              <div class="commentWrapper" :key="index" v-for="(comment, index) in image.comments">
+                <div class="user">{{ comment.commentUser }}</div>
                 <div class="comment">{{ comment.commentMessage }}</div>
                 <div class="delete-button-wrapper">
                   <button
@@ -54,6 +61,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -81,7 +89,8 @@ export default {
       visibleArray: [],
       loading: false,
       currentPage: 0,
-      imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/'
+      imageBaseUrl: 'https://picnet.aviliax.com/api/fileuploads/uploadedfiles/',
+      monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
   },
   methods: {
@@ -96,13 +105,15 @@ export default {
         this.visibleArray.splice(this.visibleArray.indexOf(index), 1)
       }
     },
+    reverseArray(arr) {
+
+    },
     getImages() {
       this.axios
         .post("images/feed", {
           currentPage: this.currentPage,
         })
         .then((result) => {
-          console.log(result)
           if (this.currentPage === 0) {
             this.$store.commit("setImages", result.data);
           } else {
@@ -121,6 +132,10 @@ export default {
         this.getImages();
       }
     },
+    prettyDate(date) {
+      const dateobj = new Date(date)
+      return  dateobj.getDate()+' '+this.monthNames[dateobj.getMonth()]+' '+dateobj.getFullYear()
+    }
   },
   computed: {
     images: {
@@ -150,12 +165,15 @@ hr {
 }
 
 .image-container {
-  width: 90%;
+  padding: 15px;
+  margin-top: 15px;
+  width: 85%;
   max-width: 30em;
-  background-color: #0a0a27;
+  background-color: #f5f5f5;
   display: inline-block;
   font-family: Montserrat, sans-serif;
-  margin-bottom: 2em;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .image {
@@ -163,21 +181,49 @@ hr {
   max-width: 30em;
 }
 
-.commentlikes-container {
-  background-color: #0a0a27;
-  padding-bottom: 1em;
+.spockCommentBox {
+  display: flex;
+  justify-content: space-between;
 }
+
+.date {
+  position: relative;
+  top: 15px;
+  font-size: 11pt;
+}
+
+.spockCommentBox .commentIcon {
+  font-size: 16pt;
+  margin: 5px;
+}
+
+.commentWrapper {
+  display: flex;
+  margin-top: 10px;
+}
+
+.commentWrapper .user {
+  font-weight: bold;
+  color: #333;
+  margin-right: 5px;
+}
+
+.comment-container {
+  text-align: left;
+  padding: 1em;
+}
+
 
 .likes {
   text-align: start;
-  margin-left: 1em;
   font-weight: 600;
 }
 
 .author {
   text-align: start;
-  margin-left: 1em;
   font-weight: 500;
+  font-size: 13pt;
+  margin-bottom: 5px;
 }
 
 /** --------------BUTTONS----------- */
@@ -185,7 +231,6 @@ hr {
   font-size: 1.5em;
   background-color: transparent;
   border-style: none;
-  color: white;
   cursor: pointer;
 }
 .likebutton-pressed {
@@ -206,16 +251,9 @@ hr {
 .delete {
   border-style: none;
   background-color: transparent;
-  color: white;
   font-size: 1.2em;
 }
 
-.comment-container {
-  text-align: left;
-  margin-left: 2em;
-  margin-right: 2em;
-  padding: 1em;
-}
 
 .delete-button-wrapper {
   text-align: right;

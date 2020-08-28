@@ -38,7 +38,6 @@
 
   export default {
     created() {
-      console.log("Public", process.env);
       this.getImages()
     },
     name: 'Public',
@@ -65,7 +64,6 @@
             currentPage: this.currentPage
           })
           .then((result) => {
-            console.log(result)
             this.$store.commit('setImages', result.data)
             // this.images = result.data
           })
