@@ -75,7 +75,7 @@
     },
     methods: {
       showInstallPromotion() {
-        alert('Installable')
+
         this.showInstallButton = true
       },
       installApp() {
