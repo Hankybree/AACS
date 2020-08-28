@@ -136,11 +136,13 @@ p {
   margin-bottom: 3em;
   font-family: Montserrat, sans-serif;
   font-size: 1.2em;
+  color: white;
 }
 
 .icons {
   margin-left: -1em;
   opacity: 0.5;
+  color: white;
 }
 
 .sign-up-button {
