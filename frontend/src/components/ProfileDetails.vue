@@ -8,9 +8,9 @@
       </div>
       <!-- Profile details -->
       <div class="profile-details">
-        <p class="profile-text">{{this.$store.state.user.username}}</p>
-        <p class="profile-text">{{this.$store.state.user.email}}</p>
-        <p class="profile-text uploads">Uploads: {{countedImages}}</p>
+        <p class="profile-text"><font-awesome-icon class="icons" :icon="['far', 'user']" />{{this.$store.state.user.username}}</p>
+        <p class="profile-text"><font-awesome-icon class="icons" :icon="['fas', 'at']" />{{this.$store.state.user.email}}</p>
+        <p class="profile-text "><font-awesome-icon class="icons" :icon="['far', 'images']" /> {{countedImages}}</p>
       </div>
     </div>
     <!-- Settings -->
@@ -90,6 +90,7 @@ export default {
 }
 .grid-image{
   width: 32%;
+  max-width: 10em;
   height: 100pt;
   margin: 1px;
   border: 1px solid black;
@@ -101,7 +102,11 @@ export default {
 .image-grid-wrapper{
   margin: 10px auto;
 }
+.icons{
+  margin-right: 0.5em;
+}
 .profile-details{
+  margin-top: 0.5em;
   width: 80%;
   display: flex; 
   flex-direction: column;
@@ -135,6 +140,7 @@ export default {
 }
 .red{
   background-color: tomato;
+  color: white;
 }
 .settings-button{
   width: 80%;
@@ -157,6 +163,7 @@ export default {
 }
 .white{
   background-color: white;
+  color: #1a1818;
 }
 .whiteLine{
   background-color: white;
