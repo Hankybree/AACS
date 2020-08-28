@@ -2,9 +2,15 @@ export const client = {
   connect(context) {
       context.commit('setSocket', new WebSocket('wss://picnet.aviliax.com/ws/'))
 
+      let pinger
+
       context.state.socket.onopen = () => {
 
           console.log('Connected to server')
+
+          pinger = setInterval(() => {
+              context.state.socket.send(JSON.stringify({ status: 5, msg: 'Ping' }))
+          }, 45000)
 
           context.state.socket.send(JSON.stringify({ msg: 'Hello server', status: 1 }))
       }
@@ -17,6 +23,7 @@ export const client = {
       }
 
       context.state.socket.onclose = () => {
+          clearInterval(pinger)
           console.log('Disconnected from server')
       }
   },
