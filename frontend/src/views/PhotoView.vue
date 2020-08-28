@@ -4,7 +4,6 @@
     <transition name="fade">
       <div class="photoview">
         <div class="image-container">
-          <button class="closebutton">X</button>
           <div class="author">{{ this.image.userName }}</div>
           <img
             class="image"
@@ -13,8 +12,8 @@
           />
 
           <div class="commentlikes-container">
-            <div class="likes">
-              <span>{{ image.likes.length }} spocks</span>
+            <span class="likes">
+              <span>{{ image.likes.length }}</span>
               <button
                 v-if="!image.likes.includes($store.state.user.id)"
                 class="likebutton button"
@@ -29,23 +28,18 @@
               >
                 <font-awesome-icon :icon="['fas', 'hand-spock']" />
               </button>
-            </div>
+              <button
+                
+                @click="showComments()"
+                class="show-comment-button button"
+              >
+               <font-awesome-icon :icon="['far', 'comment-dots']" />
+              </button>
+            </span>
 
             <div class="comments">
-              <button
-                v-if="!commentsVisible"
-                @click="showComments()"
-                class="show-comment-button button"
-              >
-                View all {{ image.comments.length }} comments
-              </button>
-              <button
-                v-else
-                @click="showComments()"
-                class="show-comment-button button"
-              >
-                Hide comments
-              </button>
+              
+              
               <div
                 v-if="commentsVisible"
                 class="comment-container"
@@ -156,20 +150,26 @@
   }
 
   .image-container {
-    width: 95%;
-    max-width: 30em;
-    background-color: white;
-    display: inline-block;
-    font-family: Montserrat, sans-serif;
+    padding: 15px;
+  margin-top: 15px;
+  width: 85%;
+  max-width: 30em;
+  background-color: #f5f5f5;
+  display: inline-block;
+  font-family: Montserrat, sans-serif;
+  border-radius: 8px;
+  overflow: hidden;
   }
 
   .image {
-    width: 90%;
+    width: 100%;
     max-width: 30em;
   }
 
   .commentlikes-container {
-    background-color: #0a0a27;
+   color: #333;
+   display: flex;
+   margin-left: -1em;
   }
 
   .likes {
@@ -188,7 +188,7 @@
     font-size: 1.5em;
     background-color: transparent;
     border-style: none;
-    color: white;
+    color: grey;
     cursor: pointer;
   }
   .likebutton-pressed {
@@ -202,26 +202,4 @@
     color: tomato;
   }
 
-  .show-comment-button {
-    font-size: 1.3em;
-  }
-
-  .closebutton {
-    margin-right: 90%;
-    text-align: start;
-    background-color: transparent;
-    color: black;
-    font-weight: 700;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    border-style: none;
-    cursor: pointer;
-  }
-
-  .comment-container {
-    text-align: left;
-    margin-left: 2em;
-    margin-right: 2em;
-    padding: 1em;
-  }
 </style>
