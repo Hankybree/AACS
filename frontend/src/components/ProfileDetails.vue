@@ -104,6 +104,7 @@ export default {
 }
 .icons{
   margin-right: 0.5em;
+  color: white;
 }
 .profile-details{
   margin-top: 0.5em;
@@ -137,6 +138,7 @@ export default {
   margin: 0;
   padding-left: 10px;
   padding-right: 10px;
+  color: white;
 }
 .red{
   background-color: tomato;

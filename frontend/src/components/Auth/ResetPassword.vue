@@ -67,23 +67,30 @@ export default {
 
 #reset-password-container label{
   padding-bottom: 5px;
-  padding-left: 12.5%;
+  padding-left: 5%;
   display: flex;
   align-self: flex-start;
+  color: white;
+  font-size: 0.8em;
+  font-family: Montserrat, sans-serif;
 }
 .reset-password-input{
-  width: 80%;
-  height: 35px;
-  border-radius: 10px;
-  border: 0;
-  padding-left: 10px;
+    display: inline-block;
+  width: 100%;
+  padding: 12px;
   box-sizing: border-box;
-  margin-bottom: 10px;
+  font-size: 12pt;
+  margin-bottom: 10pt;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.253);
+  color: white;
 }
 .reset-password-button{
   width: 40%;
   height: 35px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 0;
   box-sizing: border-box;
   margin-bottom: 10px;
