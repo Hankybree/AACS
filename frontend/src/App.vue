@@ -48,16 +48,29 @@
         // Prevent the mini-infobar from appearing on mobile
         e.preventDefault()
         // Stash the event so it can be triggered later.
-        this.deferredPrompt = e
-        // Update UI notify the user they can install the PWA
-        this.showInstallPromotion()
+        if(!this.installingApp && !this.appInstalled && !this.declinedInstall) {
+          this.installingApp = true
+          this.deferredPrompt = e
+          // Update UI notify the user they can install the PWA
+          this.showInstallPromotion()
+        }
+      })
+
+      window.addEventListener('appinstalled', (evt) => {
+        // Log install to analytics
+        alert('App installed!')
+        this.appInstalled = true
+        this.installingApp = false
       })
     },
     name: 'App',
     data() {
       return {
         deferredPrompt: null,
-        showInstallButton: false
+        showInstallButton: false,
+        installingApp: false,
+        appInstalled: false,
+        declinedInstall: false
       }
     },
     methods: {
@@ -76,6 +89,8 @@
             console.log('User accepted the install prompt')
           } else {
             console.log('User dismissed the install prompt')
+            this.declinedInstall = true
+            this.installingApp = false
           }
         })
       }
