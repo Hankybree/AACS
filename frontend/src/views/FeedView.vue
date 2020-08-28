@@ -4,11 +4,6 @@
       <div class="image-container">
         <div class="author">{{ image.username }}</div>
         <img class="image" :src="imageBaseUrl + image.imageId" alt />
-<<<<<<< HEAD
-        <div class="author">Author: {{ image.userName }}</div>
-        
-=======
->>>>>>> master
         <div class="commentlikes-container">
           <div class="spockCommentBox">
             <div style="display:flex">
